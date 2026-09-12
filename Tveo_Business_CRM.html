@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b3d91"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Tveo CRM"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-192.png"><title>Tveo Business CRM</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#162033;font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}.primary{background:#1565c0;color:#fff}.light{background:#eaf0f8;color:#17365f}.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,#0b3d91,#102b52);padding:20px}.box{background:#fff;border-radius:20px;padding:26px;width:min(440px,100%);box-shadow:0 20px 60px #0004}.logo{font-weight:900;color:#0b3d91;font-size:24px}.muted{font-size:12px;color:#6b7280}.field{margin:11px 0}.field label{display:block;font-size:12px;font-weight:700;color:#657086;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #dbe2ec;border-radius:9px}.app{display:none}.side{position:fixed;inset:0 auto 0 0;width:240px;background:#0b1f3a;color:#fff;padding:20px}.brand{font-weight:900;font-size:21px;margin-bottom:22px}.nav button{display:block;width:100%;text-align:left;background:transparent;color:#dbeafe;margin:3px 0}.nav button.active{background:#17365f}.main{margin-left:240px;padding:24px;max-width:1450px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.view{display:none}.view.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid #e6ebf2;border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 2px 9px #0000000b}.num{font-size:28px;font-weight:900}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{padding:11px;border:1px solid #dbe2ec;border-radius:9px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px 7px;border-bottom:1px solid #e8edf3;text-align:left;font-size:13px}.badge{display:inline-block;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:900}.A{background:#dcfce7;color:#166534}.B{background:#fef3c7;color:#92400e}.C{background:#eef0f3;color:#4b5563}.blue{background:#e8f0fe;color:#174ea6}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:end;padding:12px;z-index:10}.modal.show{display:flex}.modal .box{max-height:94vh;overflow:auto;width:100%;max-width:700px;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.toast{position:fixed;right:15px;bottom:15px;background:#162033;color:#fff;padding:12px;border-radius:10px;display:none}.logout{position:absolute;bottom:18px;left:20px;right:20px;background:#17365f;color:#fff}@media(max-width:800px){.side{width:66px;padding:12px}.brand span,.nav button span{display:none}.main{margin-left:66px;padding:13px 13px 70px}.stats{grid-template-columns:1fr 1fr}.table th:nth-child(3),.table td:nth-child(3){display:none}.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@media(max-width:800px){body{background:#f4f7fb}.side{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:64px;padding:6px 8px;display:flex;z-index:20;box-shadow:0 -3px 15px #0002}.brand,.logout{display:none}.nav{display:flex;width:100%;justify-content:space-around;gap:2px}.nav button{margin:0;padding:7px 5px;text-align:center;border-radius:9px;font-size:18px;line-height:1}.nav button span{display:block;font-size:9px;margin-top:2px}.main{margin-left:0;padding:12px 12px 82px}.main h1{font-size:22px;margin:5px 0 0}.top{position:sticky;top:0;background:#f4f7fb;z-index:5;padding:3px 0 8px}.table{min-width:650px}.card{overflow-x:auto}.toolbar .search{flex:1;min-width:170px}.primary{min-height:44px}.field input,.field select,.field textarea{min-height:44px}.modal{padding:0}.modal .box{border-radius:20px 20px 0 0;max-height:92vh}.stats .card{overflow:hidden}}
+</style></head>
+<body>
+<div id="login" class="login"><div class="box" id="loginBox"><div class="logo">TVEO BUSINESS</div><div class="muted">CRM COMERCIAL ONLINE</div><h2>Iniciar sesión</h2>
+<div class="field"><label>Correo</label><input id="email" type="email" placeholder="tu-correo@dominio.com"></div>
+<div class="field"><label>Contraseña</label><input id="password" type="password"></div>
+<button class="primary" style="width:100%" onclick="signIn()">Ingresar</button>
+<p class="muted">Los usuarios se crean desde Supabase Auth. Cada sesión se guarda online.</p></div>
+<div class="box" id="recoveryBox" style="display:none"><div class="logo">TVEO BUSINESS</div><div class="muted">RECUPERAR CONTRASEÑA</div><h2>Nueva contraseña</h2>
+<div class="field"><label>Nueva contraseña</label><input id="newPassword" type="password" minlength="6"></div>
+<div class="field"><label>Repetir contraseña</label><input id="newPassword2" type="password" minlength="6"></div>
+<button class="primary" style="width:100%" onclick="updatePassword()">Guardar nueva contraseña</button>
+<p class="muted">Después podrás ingresar normalmente al CRM.</p></div></div>
+<div id="app" class="app"><aside class="side"><div class="brand">TVEO <span>BUSINESS</span></div><nav class="nav">
+<button class="active" onclick="go('dashboard',this)">📊 <span>Dashboard</span></button><button onclick="go('prospectos',this)">👥 <span>Prospectos</span></button><button onclick="go('seguimientos',this)">📅 <span>Seguimientos</span></button><button onclick="go('equipo',this)">👩‍💼 <span>Equipo</span></button><button onclick="go('proyectos',this)">🏗️ <span>Proyectos</span></button><button onclick="go('reportes',this)">📈 <span>Reportes</span></button></nav><button class="logout" onclick="signOut()">Salir</button></aside>
+<main class="main"><div class="top"><h1 id="title">Dashboard</h1><span id="who" class="muted"></span></div>
+<section id="dashboard" class="view active"></section><section id="prospectos" class="view"></section><section id="seguimientos" class="view"></section><section id="equipo" class="view"></section><section id="proyectos" class="view"></section><section id="reportes" class="view"></section></main></div>
+<div id="modal" class="modal"><div class="box"><div class="top"><h2>Nuevo prospecto</h2><button class="light" onclick="closeModal()">✕</button></div><form id="form"><div class="grid">
+<div class="field"><label>Nombre *</label><input id="fn" required></div><div class="field"><label>WhatsApp *</label><input id="fp" required></div><div class="field"><label>Correo</label><input id="fe" type="email"></div><div class="field"><label>Proyecto</label><select id="fproj"></select></div><div class="field"><label>Equipo de asignación</label><select id="fteam"><option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option></select></div><div class="field"><label>Origen</label><select id="fsrc"><option>Facebook Ads</option><option>Instagram Ads</option><option>TikTok</option><option>WhatsApp</option><option>Página web</option><option>Referido</option><option>Orgánico</option></select></div><div class="field"><label>Asesora</label><select id="fadv"></select></div><div class="field"><label>Clasificación</label><select id="fgrade"><option>A</option><option>B</option><option>C</option></select></div><div class="field"><label>Estado</label><select id="fstatus"><option>Nuevo</option><option>Contactado</option><option>Interesado</option><option>Visita programada</option><option>Reserva</option><option>Venta</option><option>No responde</option><option>No interesado</option></select></div><div class="field full"><label>Nota</label><textarea id="fnote"></textarea></div></div><button class="primary" style="width:100%;margin-top:8px">Guardar prospecto</button></form></div></div>
+<div id="toast" class="toast"></div>
+<script>
+const CONFIG={url:"https://mfkdhrwtlmfdmuntsbav.supabase.co",key:"sb_publishable_ddzIlLZE4Eoo3RyNkozzzw_RF0a1WAp"};
+var supabaseClient=supabase.createClient(CONFIG.url,CONFIG.key);
+let me=null, profile=null;
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function toast(x){let e=document.getElementById("toast");e.textContent=x;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
+async function updatePassword(){
+  const p1=document.getElementById("newPassword").value;
+  const p2=document.getElementById("newPassword2").value;
+  if(!p1 || p1.length<6){toast("La contraseña debe tener al menos 6 caracteres");return;}
+  if(p1!==p2){toast("Las contraseñas no coinciden");return;}
+  try{
+    const {error}=await supabaseClient.auth.updateUser({password:p1});
+    if(error){toast(error.message);return;}
+    toast("Contraseña actualizada. Ya puedes ingresar.");
+    document.getElementById("recoveryBox").style.display="none";
+    document.getElementById("loginBox").style.display="block";
+    document.getElementById("password").value="";
+  }catch(e){toast("Error: "+(e?.message||String(e)));}
+}
+function showRecovery(){
+  document.getElementById("app").style.display="none";
+  document.getElementById("login").style.display="grid";
+  document.getElementById("loginBox").style.display="none";
+  document.getElementById("recoveryBox").style.display="block";
+}
+supabaseClient.auth.onAuthStateChange((event)=>{
+  if(event==="PASSWORD_RECOVERY") showRecovery();
+});
+async function signIn(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(!email||!password){toast("Completa correo y contraseña");return;}
+  try{
+    toast("Conectando...");
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error){toast(error.message);return;}
+    if(!data || !data.user){toast("No se recibió el usuario desde Supabase.");return;}
+    me=data.user;
+    await boot();
+  }catch(e){
+    console.error(e);
+    toast("Error de conexión: "+(e?.message||String(e)));
+  }
+}
+async function signOut(){await supabaseClient.auth.signOut();location.reload()}
+async function boot(){const {data}=await supabaseClient.from("profiles").select("*").eq("id",me.id).single();profile=data;if(!profile)return toast("Usuario sin perfil CRM");document.getElementById("login").style.display="none";document.getElementById("app").style.display="block";document.getElementById("who").textContent=`${profile.full_name} · ${profile.role}`;await render()}
+function go(id,b){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b?.classList.add("active");document.getElementById("title").textContent={dashboard:"Dashboard",prospectos:"Prospectos",seguimientos:"Seguimientos",equipo:"Equipo",proyectos:"Proyectos",reportes:"Reportes"}[id];render()}
+async function prospects(){let q=supabaseClient.from("prospects").select("*").order("created_at",{ascending:false});if(profile.role==="asesora")q=q.eq("advisor_id",me.id);if(profile.role==="team_leader")q=q.eq("leader_id",me.id);return (await q).data||[]}
+function rows(p){return `<table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesora</th><th>Nivel</th><th>Estado</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div></td><td>${esc(x.project_name||"")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${x.grade}">${x.grade}</span></td><td><span class="badge blue">${esc(x.status)}</span></td></tr>`).join("")}</table>`}
+async function render(){let p=await prospects();let all=(await supabaseClient.from("prospects").select("*")).data||p;document.getElementById("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${p.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${p.filter(x=>x.grade==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${p.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${p.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><h3>Asignación automática</h3><p class="muted">Los nuevos prospectos pueden distribuirse automáticamente entre las asesoras activas, priorizando a quien tenga menos prospectos abiertos. Los Team Leaders siguen viendo únicamente su equipo.</p></div><div class="card"><div class="top"><h3>Últimos prospectos</h3><button class="primary" onclick="openModal()">+ Nuevo</button></div>${rows(p.slice(0,8))}</div>`;
+document.getElementById("prospectos").innerHTML=`<div class="toolbar"><input class="search" id="search" placeholder="🔎 Buscar" oninput="filterTable()"><button class="primary" onclick="openModal()">+ Nuevo prospecto</button></div><div class="card" id="ptable">${rows(p)}</div>`;
+let f=(await supabaseClient.from("followups").select("*").eq("done",false).order("date")).data||[];document.getElementById("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos pendientes</h3>${f.map(x=>`<p><b>${esc(x.title)}</b> · ${x.date}</p>`).join("")||"<p class='muted'>Sin pendientes.</p>"}</div>`;
+let u=(await supabaseClient.from("profiles").select("*").order("role")).data||[];if(profile.role==="team_leader")u=u.filter(x=>x.leader_id===me.id);if(profile.role==="asesora")u=u.filter(x=>x.id===me.id);document.getElementById("equipo").innerHTML=`<div class="card">${u.map(x=>`<p><b>${esc(x.full_name)}</b> · ${esc(x.role)}<br><span class="muted">${esc(x.email||"")}</span></p>`).join("")}</div>`;
+let pr=(await supabaseClient.from("projects").select("*").order("name")).data||[];document.getElementById("proyectos").innerHTML=`<div class="card"><h3>Proyectos</h3>${pr.map(x=>`<p><b>${esc(x.name)}</b> · ${esc(x.location||"")}</p>`).join("")}</div>`;
+document.getElementById("reportes").innerHTML=`<div class="stats"><div class="card"><span class="muted">Total CRM</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Contactados</span><div class="num">${all.filter(x=>x.status!=="Nuevo").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div><div class="card"><span class="muted">Conversión</span><div class="num">${all.length?((all.filter(x=>x.status==="Venta").length/all.length)*100).toFixed(1):0}%</div></div></div>`;
+}
+async function filterTable(){let q=document.getElementById("search").value.toLowerCase();let p=(await prospects()).filter(x=>`${x.name} ${x.phone} ${x.project_name}`.toLowerCase().includes(q));document.getElementById("ptable").innerHTML=rows(p)}
+async function openModal(){
+ let pr=(await supabaseClient.from("projects").select("*")).data||[],us=(await supabaseClient.from("profiles").select("*").eq("role","asesora")).data||[];
+ if(profile.role==="team_leader")us=us.filter(x=>x.leader_id===me.id);
+ if(profile.role==="asesora")us=us.filter(x=>x.id===me.id);
+ fproj.innerHTML=pr.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("");
+ fteam.innerHTML=profile.role==="administrador"?`<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>${(await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader")).data?.map(x=>`<option value="${x.id}">Equipo de ${esc(x.full_name)}</option>`).join("")||""}`:`<option value="${profile.role==="asesora"?"self":profile.id}">${profile.role==="asesora"?"Mi asignación":"Mi equipo"}</option>`;
+ fadv.innerHTML=`<option value="">Asignación automática</option>`+us.map(x=>`<option value="${x.id}">${esc(x.full_name)}</option>`).join("");
+ modal.classList.add("show")
+}
+function closeModal(){modal.classList.remove("show");form.reset()}
+form.addEventListener("submit",async e=>{
+ e.preventDefault();
+ let a=null;
+ if(fadv.value) a=(await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",fadv.value).single()).data;
+ let pr=(await supabaseClient.from("projects").select("name").eq("id",fproj.value).single()).data;
+ let payload={name:fn.value,phone:fp.value,email:fe.value||null,project_id:fproj.value,project_name:pr?.name||"",source:fsrc.value,advisor_id:a?.id||null,advisor_name:a?.full_name||"",leader_id:a?.leader_id||null,assignment_mode:fteam.value||"auto",grade:fgrade.value,status:fstatus.value,note:fnote.value};
+ let {data,error}=await supabaseClient.from("prospects").insert(payload).select("*").single();
+ if(error)return toast(error.message);
+ closeModal();
+ toast(data?.advisor_name?`Prospecto asignado a ${data.advisor_name}`:"Prospecto guardado");
+ await render()
+});
+supabaseClient.auth.getSession().then(async ({data})=>{if(data.session){me=data.session.user;await boot()}});
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+let deferredPrompt; window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e; const b=document.createElement("button"); b.className="primary"; b.textContent="📲 Instalar app"; b.style.position="fixed"; b.style.right="12px"; b.style.bottom="76px"; b.style.zIndex="19"; b.onclick=async()=>{deferredPrompt.prompt(); await deferredPrompt.userChoice; b.remove(); deferredPrompt=null}; document.body.appendChild(b)});
+</script></body></html>
