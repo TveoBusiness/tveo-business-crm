@@ -101,7 +101,7 @@ form.addEventListener("submit",async e=>{
  let a=null;
  if(fadv.value) a=(await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",fadv.value).single()).data;
  let pr=(await supabaseClient.from("projects").select("name").eq("id",fproj.value).single()).data;
- let payload={name:fn.value,phone:fp.value,email:fe.value||null,project_id:fproj.value,project_name:pr?.name||"",source:fsrc.value,advisor_id:a?.id||null,advisor_name:a?.full_name||"",leader_id:a?.leader_id||null,assignment_mode:fteam.value||"auto",grade:fgrade.value,status:fstatus.value,note:fnote.value};
+ let payload={name:fn.value,phone:fp.value,email:fe.value||null,project_id:fproj.value||null,project_name:pr?.name||"",source:fsrc.value,advisor_id:a?.id||null,advisor_name:a?.full_name||"",leader_id:a?.leader_id||null,assignment_mode:fteam.value||"auto",grade:fgrade.value,status:fstatus.value,note:fnote.value};
  let {data,error}=await supabaseClient.from("prospects").insert(payload).select("*").single();
  if(error)return toast(error.message);
  closeModal();
