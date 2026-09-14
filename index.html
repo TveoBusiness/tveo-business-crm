@@ -131,7 +131,68 @@ async function deleteProject(id){if(!confirm("¿Eliminar este proyecto?"))return
 async function editProfile(id){try{const r=await supabaseClient.from("profiles").select("id,full_name,phone,active,role,leader_id").eq("id",id).single();if(r.error)throw r.error;const tl=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");if(tl.error)throw tl.error;$("editProfileId").value=id;$("profileName").value=r.data.full_name||"";$("profilePhone").value=r.data.phone||"";$("profileRole").value=r.data.role||"asesora";$("profileLeader").innerHTML='<option value="">Asesora directa Tveo Business</option>'+(tl.data||[]).filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");$("profileLeader").value=r.data.leader_id||"";$("profileLeader").disabled=r.data.role!=="asesora";$("profileRole").onchange=()=>{$("profileLeader").disabled=$("profileRole").value!=="asesora"};$("profileActive").value=r.data.active===false?"false":"true";$("profileModal").classList.add("show")}catch(e){err("Integrante",e)}}
 function openNewMemberModal(role){if(!isAdmin())return toast("Solo el administrador puede crear integrantes");$("newMemberRole").value=role;$("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Nuevo Asesor Directo Tveo";$("newMemberForm").reset();$("newMemberRole").value=role;$("newMemberModal").classList.add("show")}
 function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
-$("newMemberForm").addEventListener("submit",async e=>{e.preventDefault();const btn=e.currentTarget.querySelector("button[type=submit],button.primary");if(btn)btn.disabled=true;try{const role=$("newMemberRole").value;const name=$("newMemberName").value.trim();const email=$("newMemberEmail").value.trim().toLowerCase();const phone=$("newMemberPhone").value.trim()||null;if(!name||!email)return toast("Completa nombre y correo");const action=role==="team_leader"?"create_team_leader":"create_direct_advisor";toast("Creando cuenta...");const r=await supabaseClient.functions.invoke("smooth-service",{body:{action,name,email,phone}});if(r.error)throw r.error;if(r.data?.error)throw new Error(r.data.error);closeNewMemberModal();toast(role==="team_leader"?"Team Leader creado. Se envió la invitación por correo.":"Asesora directa creada. Se envió la invitación por correo.");await renderTeam()}catch(e){console.error("Crear integrante",e);toast("No se pudo crear: "+(e?.message||String(e)))}finally{if(btn)btn.disabled=false}});
+$("newMemberForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const btn=e.currentTarget.querySelector("button[type=submit],button.primary");
+  if(btn)btn.disabled=true;
+
+  try{
+    const role=$("newMemberRole").value;
+    const name=$("newMemberName").value.trim();
+    const email=$("newMemberEmail").value.trim().toLowerCase();
+    const phone=$("newMemberPhone").value.trim()||null;
+    const password=$("newMemberPassword").value;
+
+    if(!name||!email||!password){
+      return toast("Completa nombre, correo y contraseña");
+    }
+
+    if(password.length<8){
+      return toast("La contraseña debe tener al menos 8 caracteres");
+    }
+
+    const action=role==="team_leader"
+      ?"create_team_leader"
+      :"create_direct_advisor";
+
+    toast("Creando cuenta...");
+
+    const r=await supabaseClient.functions.invoke("smooth-service",{
+      body:{
+        action,
+        full_name:name,
+        email,
+        phone,
+        password
+      }
+    });
+
+    if(r.data?.error){
+      throw new Error(r.data.error);
+    }
+
+    if(r.error){
+      throw r.error;
+    }
+
+    closeNewMemberModal();
+
+    toast(
+      role==="team_leader"
+        ?"Team Leader creado correctamente"
+        :"Asesora directa creada correctamente"
+    );
+
+    await renderTeam();
+
+  }catch(e){
+    console.error("Crear integrante",e);
+    toast("No se pudo crear: "+(e?.message||String(e)));
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+});
 function closeProfileModal(){$("profileModal").classList.remove("show");$("profileForm").reset()}
 $("profileForm").addEventListener("submit",async e=>{e.preventDefault();try{const id=$("editProfileId").value;const role=$("profileRole").value;const leaderId=role==="asesora"&&uuid($("profileLeader").value)?$("profileLeader").value:null;const payload={full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()||null,active:$("profileActive").value==="true",role,leader_id:leaderId};if(id===me.id&&role!==profile.role)return toast("No cambies el rol de tu propio usuario aquí");const r=await supabaseClient.from("profiles").update(payload).eq("id",id);if(r.error)throw r.error;closeProfileModal();toast("Integrante actualizado");await renderTeam();if(id===me.id){profile={...profile,...payload};$("who").textContent=`${profile.full_name} · ${profile.role}`}}catch(e){err("Guardar integrante",e)}});
 supabaseClient.auth.getSession().then(async r=>{if(r.error)return err("Sesión",r.error);if(r.data.session){me=r.data.session.user;await boot()}}).catch(e=>err("Sesión",e));
