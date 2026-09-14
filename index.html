@@ -31,7 +31,55 @@
 
 <div id="projectModal" class="modal"><div class="box"><div class="top"><h2 id="projectModalTitle">Nuevo proyecto</h2><button class="light" onclick="closeProjectModal()">✕</button></div><form id="projectForm"><input id="editProjectId" type="hidden"><div class="field"><label>Nombre *</label><input id="projectName" required></div><div class="field"><label>Ubicación</label><input id="projectLocation"></div><button class="primary" style="width:100%">Guardar proyecto</button></form></div></div>
 
-<div id="newMemberModal" class="modal"><div class="box"><div class="top"><h2 id="newMemberTitle">Nuevo integrante</h2><button class="light" onclick="closeNewMemberModal()">✕</button></div><form id="newMemberForm"><input id="newMemberRole" type="hidden"><div class="field"><label>Nombre *</label><input id="newMemberName" required></div><div class="field"><label>Correo de acceso *</label><input id="newMemberEmail" type="email" required></div><div class="field"><label>Teléfono</label><input id="newMemberPhone"></div><p class="muted" style="font-size:13px">La cuenta de acceso se creará de forma segura en el siguiente paso. No ingreses contraseñas aquí.</p><button class="primary" style="width:100%">Continuar</button></form></div></div>
+<div id="newMemberModal" class="modal">
+  <div class="box">
+    <div class="top">
+      <h2 id="newMemberTitle">Nuevo integrante</h2>
+      <button class="light" type="button" onclick="closeNewMemberModal()">✕</button>
+    </div>
+
+    <form id="newMemberForm">
+
+      <input id="newMemberRole" type="hidden">
+
+      <div class="field">
+        <label>Nombre *</label>
+        <input id="newMemberName" required>
+      </div>
+
+      <div class="field">
+        <label>Correo de acceso *</label>
+        <input id="newMemberEmail" type="email" required>
+      </div>
+
+      <div class="field">
+        <label>Teléfono</label>
+        <input id="newMemberPhone">
+      </div>
+
+      <div class="field">
+        <label>Contraseña de acceso *</label>
+        <input
+          id="newMemberPassword"
+          type="password"
+          minlength="8"
+          autocomplete="new-password"
+          required
+        >
+      </div>
+
+      <p class="muted" style="font-size:13px">
+        El administrador define directamente la contraseña de acceso.
+        Debe tener al menos 8 caracteres.
+      </p>
+
+      <button type="submit" class="primary" style="width:100%">
+        Crear cuenta
+      </button>
+
+    </form>
+  </div>
+</div> class="box"><div class="top"><h2 id="newMemberTitle">Nuevo integrante</h2><button class="light" onclick="closeNewMemberModal()">✕</button></div><form id="newMemberForm"><input id="newMemberRole" type="hidden"><div class="field"><label>Nombre *</label><input id="newMemberName" required></div><div class="field"><label>Correo de acceso *</label><input id="newMemberEmail" type="email" required></div><div class="field"><label>Teléfono</label><input id="newMemberPhone"></div><p class="muted" style="font-size:13px">La cuenta de acceso se creará de forma segura en el siguiente paso. No ingreses contraseñas aquí.</p><button class="primary" style="width:100%">Continuar</button></form></div></div>
 <div id="profileModal" class="modal"><div class="box"><div class="top"><h2>Editar integrante</h2><button class="light" onclick="closeProfileModal()">✕</button></div><form id="profileForm"><input id="editProfileId" type="hidden"><div class="field"><label>Nombre</label><input id="profileName" required></div><div class="field"><label>Teléfono</label><input id="profilePhone"></div><div class="field"><label>Rol</label><select id="profileRole"><option value="administrador">Administrador</option><option value="team_leader">Team Leader</option><option value="asesora">Asesora</option></select></div><div class="field"><label>Team Leader</label><select id="profileLeader"><option value="">Asesora directa Tveo Business</option></select><small class="muted">Solo aplica a asesores.</small></div><div class="field"><label>Activo</label><select id="profileActive"><option value="true">Sí</option><option value="false">No</option></select></div><button class="primary" style="width:100%">Guardar cambios</button></form></div></div>
 <div id="toast" class="toast"></div>
 <script>
