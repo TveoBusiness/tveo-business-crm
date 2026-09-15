@@ -92,6 +92,7 @@
 
     </form>
   </div>
+</div>
 
 <div id="profileModal" class="modal"><div class="box"><div class="top"><h2>Editar integrante</h2><button class="light" onclick="closeProfileModal()">✕</button></div><form id="profileForm"><input id="editProfileId" type="hidden"><div class="field"><label>Nombre</label><input id="profileName" required></div><div class="field"><label>Teléfono</label><input id="profilePhone"></div><div class="field"><label>Rol</label><select id="profileRole"><option value="administrador">Administrador</option><option value="team_leader">Team Leader</option><option value="asesora">Asesora</option></select></div><div class="field"><label>Team Leader</label><select id="profileLeader"><option value="">Asesora directa Tveo Business</option></select><small class="muted">Solo aplica a asesores.</small></div><div class="field"><label>Activo</label><select id="profileActive"><option value="true">Sí</option><option value="false">No</option></select></div><button class="primary" style="width:100%">Guardar cambios</button></form></div></div>
 
@@ -255,7 +256,7 @@ async function renderLeads(){
             </p>
           </div>
 
-          <button class="primary" onclick="openLeadModal()">
+          <button type="button" class="primary" onclick="openLeadModal()">
             + Nuevo Lead
           </button>
         </div>
