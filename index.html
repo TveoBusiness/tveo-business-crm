@@ -393,29 +393,53 @@ function filterLeads(){
 }
 
 async function openLeadModal(id=null){
+  // Abrir primero el modal para que un problema de permisos en una tabla
+  // auxiliar no impida mostrar el formulario.
+  $("leadModalTitle").textContent=id?"Editar Lead":"Nuevo Lead";
+  $("editLeadId").value=id||"";
+  $("leadForm").reset();
+  $("lfSource").value="Facebook";
+  $("lfStatus").value="Nuevo";
+  $("lfProject").innerHTML='<option value="">Sin proyecto</option>';
+  $("lfLeader").innerHTML='<option value="">Sin asignar</option>';
+  $("lfAdvisor").innerHTML='<option value="">Sin asignar</option>';
+
+  if(!id){
+    if(profile?.role==="team_leader") $("lfLeader").value=me?.id||"";
+    if(profile?.role==="asesora") $("lfAdvisor").value=me?.id||"";
+  }
+
+  $("leadModal").classList.add("show");
+
   try{
     const pr=await supabaseClient.from("projects").select("id,name").order("name");
-    if(pr.error)throw pr.error;
+    if(pr.error) throw pr.error;
 
+    $("lfProject").innerHTML='<option value="">Sin proyecto</option>'+
+      (pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
+  }catch(e){
+    console.error("Carga de proyectos para Lead",e);
+    toast("El formulario abrió, pero no se pudieron cargar los proyectos.");
+  }
+
+  try{
     const ur=await supabaseClient
       .from("profiles")
       .select("id,full_name,leader_id,role,active")
       .in("role",["team_leader","asesora"])
       .order("full_name");
-    if(ur.error)throw ur.error;
+
+    if(ur.error) throw ur.error;
 
     const all=ur.data||[];
     const leaders=all.filter(x=>x.role==="team_leader"&&x.active!==false);
     let advisors=all.filter(x=>x.role==="asesora"&&x.active!==false);
 
-    if(profile.role==="team_leader"){
+    if(profile?.role==="team_leader"){
       advisors=advisors.filter(x=>x.leader_id===me.id);
-    }else if(profile.role==="asesora"){
+    }else if(profile?.role==="asesora"){
       advisors=advisors.filter(x=>x.id===me.id);
     }
-
-    $("lfProject").innerHTML='<option value="">Sin proyecto</option>'+
-      (pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
 
     $("lfLeader").innerHTML='<option value="">Sin asignar</option>'+
       leaders.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
@@ -423,12 +447,19 @@ async function openLeadModal(id=null){
     $("lfAdvisor").innerHTML='<option value="">Sin asignar</option>'+
       advisors.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
 
-    $("leadModalTitle").textContent=id?"Editar Lead":"Nuevo Lead";
-    $("editLeadId").value=id||"";
+    if(!id){
+      if(profile?.role==="team_leader") $("lfLeader").value=me?.id||"";
+      if(profile?.role==="asesora") $("lfAdvisor").value=me?.id||"";
+    }
+  }catch(e){
+    console.error("Carga de equipo para Lead",e);
+    toast("El formulario abrió, pero no se pudo cargar el equipo.");
+  }
 
-    if(id){
+  if(id){
+    try{
       const r=await supabaseClient.from("leads").select("*").eq("id",id).single();
-      if(r.error)throw r.error;
+      if(r.error) throw r.error;
       const x=r.data||{};
 
       $("lfName").value=x.name||"";
@@ -440,26 +471,11 @@ async function openLeadModal(id=null){
       $("lfAdvisor").value=uuid(x.advisor_id)?x.advisor_id:"";
       $("lfStatus").value=x.status||"Nuevo";
       $("lfNote").value=x.note||"";
-    }else{
-      $("leadForm").reset();
-      $("editLeadId").value="";
-      $("lfSource").value="Facebook";
-      $("lfStatus").value="Nuevo";
-
-      if(profile.role==="team_leader"){
-        $("lfLeader").value=me.id;
-      }
-      if(profile.role==="asesora"){
-        $("lfAdvisor").value=me.id;
-      }
+    }catch(e){
+      err("Cargar Lead",e);
     }
-
-    $("leadModal").classList.add("show");
-  }catch(e){
-    err("Lead",e);
   }
 }
-
 function closeLeadModal(){
   $("leadModal").classList.remove("show");
   $("leadForm").reset();
