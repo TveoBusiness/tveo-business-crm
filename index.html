@@ -256,7 +256,7 @@ async function renderLeads(){
             </p>
           </div>
 
-          <button type="button" id="btnNuevoLead" class="primary" onclick="showLeadFormDirect()">
+          <button type="button" id="btnNuevoLead" class="primary" onclick="(function(){var m=document.getElementById('leadModal');if(m){document.body.appendChild(m);m.style.display='flex';m.style.position='fixed';m.style.inset='0';m.style.zIndex='2147483647';m.style.background='rgba(0,0,0,.55)';m.style.alignItems='center';m.style.justifyContent='center';m.style.padding='12px';m.classList.add('show');}})()">
             + Nuevo Lead
           </button>
         </div>
