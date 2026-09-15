@@ -110,6 +110,200 @@ $("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="mute
 $("prospectos").innerHTML=`<div class="toolbar"><input class="search" id="search" placeholder="🔎 Buscar por nombre, teléfono, proyecto o estado" oninput="filterTable()"><button class="primary" onclick="openProspectModal()">+ Nuevo prospecto</button></div><div class="card" id="ptable">${prospectRows(all)}</div>`;
 await renderFollowups();await renderTeam();await renderProjects();renderReports(all);
 }finally{busy=false}}
+async function renderLeads(){
+  try{
+    const r=await supabaseClient
+      .from("leads")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+    if(r.error)throw r.error;
+
+    const leads=r.data||[];
+
+    const total=leads.length;
+    const nuevos=leads.filter(x=>x.status==="Nuevo").length;
+    const contactados=leads.filter(x=>x.status==="Contactado").length;
+    const seguimiento=leads.filter(x=>x.status==="Seguimiento").length;
+    const visitas=leads.filter(x=>x.status==="Visita"||x.status==="Reserva").length;
+    const ventas=leads.filter(x=>x.status==="Venta").length;
+
+    $("leads").innerHTML=`
+      <div class="stats">
+        <div class="card">
+          <span class="muted">Total Leads</span>
+          <div class="num">${total}</div>
+        </div>
+
+        <div class="card">
+          <span class="muted">Nuevos</span>
+          <div class="num">${nuevos}</div>
+        </div>
+
+        <div class="card">
+          <span class="muted">Seguimiento</span>
+          <div class="num">${seguimiento}</div>
+        </div>
+
+        <div class="card">
+          <span class="muted">Ventas</span>
+          <div class="num">${ventas}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <div>
+            <h3>Leads comerciales</h3>
+            <p class="muted">
+              Facebook · Instagram · TikTok · Pinterest · WhatsApp Business · Manual
+            </p>
+          </div>
+
+          <button class="primary" onclick="openLeadModal()">
+            + Nuevo Lead
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <input
+            class="search"
+            id="leadSearch"
+            placeholder="🔎 Buscar lead..."
+            oninput="filterLeads()"
+          >
+
+          <select id="leadStatusFilter" onchange="filterLeads()">
+            <option value="">Todos los estados</option>
+            <option>Nuevo</option>
+            <option>Contactado</option>
+            <option>Seguimiento</option>
+            <option>Visita</option>
+            <option>Reserva</option>
+            <option>Venta</option>
+            <option>Perdido</option>
+          </select>
+
+          <select id="leadSourceFilter" onchange="filterLeads()">
+            <option value="">Todos los canales</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+            <option>Pinterest</option>
+            <option>WhatsApp Business</option>
+            <option>Manual</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" id="leadTable">
+        ${leadRows(leads)}
+      </div>
+    `;
+
+    window.__leads=leads;
+
+  }catch(e){
+    $("leads").innerHTML=`
+      <div class="card">
+        <h3>Leads</h3>
+        <p>${esc(e.message||e)}</p>
+        <button class="light" onclick="renderLeads()">↻ Reintentar</button>
+      </div>
+    `;
+  }
+}
+
+function leadRows(leads){
+  if(!leads.length){
+    return '<div class="empty">No hay leads registrados.</div>';
+  }
+
+  return `
+    <div class="tablewrap">
+      <table class="table">
+        <tr>
+          <th>Lead</th>
+          <th>Canal</th>
+          <th>Proyecto</th>
+          <th>Team Leader</th>
+          <th>Asesora</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+
+        ${leads.map(x=>`
+          <tr>
+            <td>
+              <b>${esc(x.name||"Sin nombre")}</b>
+              <div class="muted">📱 ${esc(x.phone||"")}</div>
+              <div class="muted">${esc(x.email||"")}</div>
+            </td>
+
+            <td>
+              <span class="badge blue">
+                ${esc(x.source||"Manual")}
+              </span>
+            </td>
+
+            <td>${esc(x.project_name||"Sin proyecto")}</td>
+
+            <td>${esc(x.leader_name||"Sin asignar")}</td>
+
+            <td>${esc(x.advisor_name||"Sin asignar")}</td>
+
+            <td>
+              <span class="badge blue">
+                ${esc(x.status||"Nuevo")}
+              </span>
+            </td>
+
+            <td>
+              <div class="actions">
+                <button class="light" onclick="editLead('${x.id}')">
+                  ✏️ Editar
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join("")}
+      </table>
+    </div>
+  `;
+}
+
+function filterLeads(){
+  const q=($("leadSearch")?.value||"").toLowerCase();
+  const status=$("leadStatusFilter")?.value||"";
+  const source=$("leadSourceFilter")?.value||"";
+
+  const leads=(window.__leads||[]).filter(x=>{
+    const text=`
+      ${x.name||""}
+      ${x.phone||""}
+      ${x.email||""}
+      ${x.project_name||""}
+      ${x.advisor_name||""}
+      ${x.leader_name||""}
+    `.toLowerCase();
+
+    return (
+      text.includes(q) &&
+      (!status||x.status===status) &&
+      (!source||x.source===source)
+    );
+  });
+
+  $("leadTable").innerHTML=leadRows(leads);
+}
+
+function openLeadModal(){
+  toast("Formulario de nuevo Lead: lo agregaremos en el siguiente paso.");
+}
+
+function editLead(id){
+  toast("Edición de Lead: la agregaremos en el siguiente paso.");
+}
 async function filterTable(){try{const q=($("search")?.value||"").toLowerCase();const p=(await prospects()).filter(x=>`${x.name||""} ${x.phone||""} ${x.project_name||""} ${x.status||""}`.toLowerCase().includes(q));$("ptable").innerHTML=prospectRows(p)}catch(e){err("Búsqueda",e)}}
 async function renderFollowups(){try{const r=await supabaseClient.from("followups").select("*").order("date",{ascending:true});if(r.error)throw r.error;let f=r.data||[];if(profile.role==="asesora")f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);$("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>`<tr><td>${esc(x.title||"Seguimiento")}</td><td>${esc(x.date||"")}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`}catch(e){$("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos</h3><p>${esc(e.message||e)}</p></div>`}}
 async function renderTeam(){try{const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id").order("role").order("full_name");if(r.error)throw r.error;let all=r.data||[];let u=all;if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);if(profile.role==="asesora")u=all.filter(x=>x.id===me.id);const leaders=all.filter(x=>x.role==="team_leader");const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesora";const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesora directa Tveo Business";const actions=(x)=>isAdmin()?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:'—';let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesora a su equipo o como asesora directa de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>x.role==="asesora").length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";$('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Activo</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td>${roleName(x.role)}</td><td>${x.role==="asesora"?esc(leaderName(x.leader_id)):"—"}</td><td>${x.active===false?'No':'Sí'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}}
