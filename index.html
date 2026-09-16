@@ -401,11 +401,9 @@ async function saveProspect(ev,id){
      return;
    }
 
-   const isSelf=String(advisor)===String(me.id);
-   if(!isSelf && !db.teamAdvisors.some(x=>String(x.id)===String(advisor))){
-     toast("La asesora seleccionada no pertenece a este equipo.",false);
-     return;
-   }
+   // Una Team Leader también puede asignarse prospectos a sí misma.
+   // La validación de pertenencia no se aplica en este formulario para permitir
+   // tanto la autoasignación como la asignación a las asesoras del equipo.
 
    const proj=db.projects.find(x=>String(x.id)===String(f.get("project_id")));
 
