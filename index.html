@@ -397,11 +397,12 @@ async function saveProspect(ev,id){
    leader=me.id;
 
    if(!advisor){
-     toast("Selecciona una asesora de tu equipo.",false);
+     toast("Selecciona una asesora o tu propio nombre.",false);
      return;
    }
 
-   if(!db.teamAdvisors.some(x=>String(x.id)===String(advisor))){
+   const isSelf=String(advisor)===String(me.id);
+   if(!isSelf && !db.teamAdvisors.some(x=>String(x.id)===String(advisor))){
      toast("La asesora seleccionada no pertenece a este equipo.",false);
      return;
    }
