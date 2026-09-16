@@ -1,590 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TVEO BUSINESS CRM</title>
-<meta name="tveo-build" content="2026-09-16-team-rpc-v1">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b3d91"><meta name="mobile-web-app-capable" content="yes">
+<title>Tveo Business CRM</title>
 <style>
-:root{--blue:#075bb5;--blue2:#0b73d9;--navy:#063b78;--bg:#f4f8fc;--card:#fff;--line:#dbe8f4;--text:#12304f;--muted:#647b93;--danger:#b42318}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#f4f8fc,#eef6ff);color:var(--text)}
-button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.center{min-height:100vh;display:grid;place-items:center;padding:20px}.login{width:min(480px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px;box-shadow:0 20px 60px #063b7820}
-.brand{text-align:center;font-size:30px;font-weight:800;color:var(--navy)}.brand span{color:var(--blue2)}.muted{color:var(--muted);font-size:14px}
-.field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-input,select,textarea{width:100%;padding:11px 12px;border:1px solid #ccd7e2;border-radius:9px;background:#fff;outline:none}
-textarea{min-height:90px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 3px #0b73d918}
-.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700}.btn-primary,.btn-accent{background:var(--blue);color:#fff}.btn-accent{background:var(--blue2)}
-.btn-light{background:#f3f4f6;color:#172033}.btn-danger{background:#fee2e2;color:#991b1b}.btn:disabled{opacity:.5;cursor:not-allowed}
-.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.sidebar{background:linear-gradient(180deg,#063b78,#075bb5);color:#fff;padding:20px;position:sticky;top:0;height:100vh}
-.side-brand{font-size:20px;font-weight:800;margin-bottom:22px}.side-brand span{color:#8ed0ff}
-.user{padding:12px 4px 16px;border-bottom:1px solid #ffffff22;margin-bottom:12px}.nav button{width:100%;border:0;background:transparent;color:#dbeeff;text-align:left;padding:11px;border-radius:8px;margin:3px 0}.nav button:hover,.nav button.active{background:#ffffff20;color:#fff}
-.main{min-width:0}.top{background:#fff;border-bottom:1px solid var(--line);padding:15px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-.content{padding:22px}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-.stat,.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 7px 24px #12304f0b}.stat b{display:block;font-size:28px;margin-top:7px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.actions{display:flex;gap:8px;flex-wrap:wrap}
-.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:14px}.table th{background:#f3f8fd}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;font-weight:700}.ok{background:#dcfce7;color:#166534}.red{background:#fee2e2;color:#991b1b}
-.modal{position:fixed;inset:0;background:#063b7888;display:grid;place-items:center;padding:15px;z-index:20}.modal-box{background:#fff;border-radius:16px;width:min(760px,100%);max-height:92vh;overflow:auto;padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
-.empty{text-align:center;padding:30px;color:var(--muted)}.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:12px 16px;border-radius:10px;z-index:50;box-shadow:0 8px 30px #0003;max-width:420px}
-.notice{padding:12px;border-radius:10px;background:#eef7ff;border:1px solid #cfe4f8;margin:12px 0}.error{background:#fff1f0;border-color:#ffccc7;color:#8b1e17}
-@media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px}.nav{display:flex;overflow:auto;gap:4px}.nav button{width:auto;white-space:nowrap}.stats{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.content{padding:14px}.stats,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.top{padding:12px 14px}}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#162033;font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}.primary{background:#1565c0;color:#fff}.light{background:#eaf0f8;color:#17365f}.danger{background:#fee2e2;color:#991b1b}.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,#0b3d91,#102b52);padding:20px}.box{background:#fff;border-radius:20px;padding:26px;width:min(520px,100%);box-shadow:0 20px 60px #0004}.logo{font-weight:900;color:#0b3d91;font-size:24px}.muted{font-size:12px;color:#6b7280}.field{margin:11px 0}.field label{display:block;font-size:12px;font-weight:700;color:#657086;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #dbe2ec;border-radius:9px;background:#fff}.field textarea{min-height:80px}.app{display:none}.side{position:fixed;inset:0 auto 0 0;width:240px;background:#0b1f3a;color:#fff;padding:20px;z-index:20}.brand{font-weight:900;font-size:21px;margin-bottom:22px}.nav button{display:block;width:100%;text-align:left;background:transparent;color:#dbeafe;margin:3px 0}.nav button.active{background:#17365f}.main{margin-left:240px;padding:24px;max-width:1450px}.view{display:none}.view.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid #e6ebf2;border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 2px 9px #0000000b}.num{font-size:28px;font-weight:900}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.search{padding:11px;border:1px solid #dbe2ec;border-radius:9px;flex:1;min-width:180px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{padding:10px 7px;border-bottom:1px solid #e8edf3;text-align:left;font-size:13px;vertical-align:top}.badge{display:inline-block;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:900}.A{background:#dcfce7;color:#166534}.B{background:#fef3c7;color:#92400e}.C{background:#eef0f3;color:#4b5563}.blue{background:#e8f0fe;color:#174ea6}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;padding:12px;z-index:50}.modal.show{display:flex}.modal .box{max-height:94vh;overflow:auto;width:100%;max-width:720px;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.toast{position:fixed;right:15px;bottom:15px;background:#162033;color:#fff;padding:12px;border-radius:10px;display:none;z-index:100;max-width:min(520px,90vw)}.logout{position:absolute;bottom:18px;left:20px;right:20px;background:#17365f;color:#fff}.empty{padding:20px;text-align:center;color:#6b7280}.small{font-size:11px}.actions{display:flex;gap:5px;flex-wrap:wrap}.kpi{display:flex;gap:8px;flex-wrap:wrap}.kpi .badge{font-size:11px}@media(max-width:800px){.side{top:auto;bottom:0;left:0;right:0;width:100%;height:66px;padding:6px 8px;box-shadow:0 -3px 15px #0002}.brand,.logout{display:none}.nav{display:flex;width:100%;justify-content:space-around;gap:2px}.nav button{margin:0;padding:7px 5px;text-align:center;border-radius:9px;font-size:18px;line-height:1}.nav button span{display:block;font-size:9px;margin-top:2px}.main{margin-left:0;padding:12px 12px 82px}.main h1{font-size:22px;margin:5px 0 0}.top{display:flex;justify-content:space-between;align-items:center;gap:8px}.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.modal{padding:0;align-items:end}.modal .box{border-radius:20px 20px 0 0;max-height:92vh}.primary{min-height:44px}.field input,.field select,.field textarea{min-height:44px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<div id="login" class="login"><div class="box" id="loginBox"><div class="logo">TVEO BUSINESS</div><div class="muted">CRM COMERCIAL ONLINE</div><h2>Iniciar sesión</h2>
+<div class="field"><label>Correo</label><input id="email" type="email" autocomplete="username"></div>
+<div class="field"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password"></div>
+<button class="primary" style="width:100%" onclick="signIn()">Ingresar</button>
+<p class="muted">Sesión conectada a Supabase.</p></div>
+<div class="box" id="recoveryBox" style="display:none"><div class="logo">TVEO BUSINESS</div><div class="muted">RECUPERAR CONTRASEÑA</div><h2>Nueva contraseña</h2>
+<div class="field"><label>Nueva contraseña</label><input id="newPassword" type="password" minlength="6"></div><div class="field"><label>Repetir contraseña</label><input id="newPassword2" type="password" minlength="6"></div>
+<button class="primary" style="width:100%" onclick="updatePassword()">Guardar nueva contraseña</button></div></div>
 
-<div id="loginView" class="center">
-  <div class="login">
-    <div class="brand">TVEO <span>BUSINESS</span></div>
-    <p class="muted" style="text-align:center">CRM Inmobiliario</p>
-    <form id="loginForm">
-      <div class="field"><label>Correo electrónico</label><input id="loginEmail" type="email" required autocomplete="username"></div>
-      <div class="field"><label>Contraseña</label><input id="loginPassword" type="password" required autocomplete="current-password"></div>
-      <button class="btn btn-primary" style="width:100%">Ingresar</button>
-    </form>
-    <button id="forgotBtn" class="btn btn-light" style="width:100%;margin-top:8px">Recuperar contraseña</button>
-    <div id="loginMsg" class="muted" style="margin-top:12px"></div>
-  </div>
-</div>
+<div id="app" class="app"><aside class="side"><div class="brand">TVEO <span>BUSINESS</span></div><nav class="nav">
+<button class="active" onclick="go('dashboard',this)">📊 <span>Dashboard</span></button><button onclick="go('prospectos',this)">👥 <span>Prospectos</span></button><button onclick="go('seguimientos',this)">📅 <span>Seguimientos</span></button><button onclick="go('equipo',this)">👩‍💼 <span>Equipo</span></button><button onclick="go('proyectos',this)">🏗️ <span>Proyectos</span></button><button onclick="go('reportes',this)">📈 <span>Reportes</span></button></nav><button class="logout" onclick="signOut()">Salir</button></aside>
+<main class="main"><div class="top"><h1 id="title">Dashboard</h1><span id="who" class="muted"></span></div>
+<section id="dashboard" class="view active"></section><section id="prospectos" class="view"></section><section id="seguimientos" class="view"></section><section id="equipo" class="view"></section><section id="proyectos" class="view"></section><section id="reportes" class="view"></section></main></div>
 
-<div id="appView" class="app hidden">
-<aside class="sidebar">
-  <div class="side-brand">TVEO <span>BUSINESS</span></div>
-  <div class="user"><strong id="userName">Usuario</strong><br><small id="userEmail"></small><br><span id="sideRole"></span></div>
-  <nav class="nav">
-    <button data-section="dashboard">📊 Dashboard</button>
-    <button data-section="leads">🎯 Leads</button>
-    <button data-section="prospectos">👥 Prospectos</button>
-    <button data-section="seguimientos">📅 Seguimientos</button>
-    <button data-section="equipo">🧑‍💼 Equipo</button>
-    <button data-section="proyectos">🏢 Proyectos</button>
-    <button data-section="reportes">📈 Reportes</button>
-    <button id="logoutBtn">🚪 Cerrar sesión</button>
-  </nav>
-</aside>
+<div id="prospectModal" class="modal"><div class="box"><div class="top"><h2 id="prospectModalTitle">Nuevo prospecto</h2><button class="light" onclick="closeProspectModal()">✕</button></div><form id="prospectForm"><input id="editProspectId" type="hidden"><div class="grid">
+<div class="field"><label>Nombre *</label><input id="fn" required></div><div class="field"><label>WhatsApp *</label><input id="fp" required></div><div class="field"><label>Correo</label><input id="fe" type="email"></div><div class="field"><label>Proyecto</label><select id="fproj"></select></div><div class="field"><label>Equipo de asignación</label><select id="fteam"></select></div><div class="field"><label>Origen</label><select id="fsrc"><option>Facebook Ads</option><option>Instagram Ads</option><option>TikTok</option><option>WhatsApp</option><option>Página web</option><option>Referido</option><option>Orgánico</option></select></div><div class="field"><label>Asesora</label><select id="fadv"></select></div><div class="field"><label>Clasificación</label><select id="fgrade"><option>A</option><option>B</option><option>C</option></select></div><div class="field"><label>Estado</label><select id="fstatus"><option>Nuevo</option><option>Contactado</option><option>Interesado</option><option>Visita programada</option><option>Reserva</option><option>Venta</option><option>No responde</option><option>No interesado</option></select></div><div class="field full"><label>Nota</label><textarea id="fnote"></textarea></div></div><button class="primary" id="prospectSubmit" style="width:100%;margin-top:8px">Guardar prospecto</button></form></div></div>
 
-<main class="main">
-<header class="top"><strong id="pageTitle">Dashboard</strong><span id="roleBadge" class="badge"></span></header>
-<div class="content">
+<div id="followupModal" class="modal"><div class="box"><div class="top"><h2>Nuevo seguimiento</h2><button class="light" onclick="closeFollowupModal()">✕</button></div><form id="followupForm"><div class="field"><label>Título *</label><input id="fuTitle" required placeholder="Llamar al cliente"></div><div class="field"><label>Fecha *</label><input id="fuDate" type="date" required></div><button class="primary" style="width:100%">Guardar seguimiento</button></form></div></div>
 
-<section id="dashboard" class="section">
-<div class="grid stats">
-<div class="stat"><span class="muted">Leads visibles</span><b id="statLeads">0</b></div>
-<div class="stat"><span class="muted">Prospectos visibles</span><b id="statProspects">0</b></div>
-<div class="stat"><span class="muted">Seguimientos</span><b id="statPending">0</b></div>
-<div class="stat"><span class="muted">Ventas</span><b id="statSales">0</b></div>
-</div>
-<div id="systemNotice" class="notice hidden"></div>
-</section>
+<div id="projectModal" class="modal"><div class="box"><div class="top"><h2 id="projectModalTitle">Nuevo proyecto</h2><button class="light" onclick="closeProjectModal()">✕</button></div><form id="projectForm"><input id="editProjectId" type="hidden"><div class="field"><label>Nombre *</label><input id="projectName" required></div><div class="field"><label>Ubicación</label><input id="projectLocation"></div><button class="primary" style="width:100%">Guardar proyecto</button></form></div></div>
 
-<section id="leads" class="section hidden">
-<div class="toolbar"><div><h2>Leads</h2><div class="muted">Contactos comerciales.</div></div><button id="newLeadBtn" class="btn btn-accent">+ Nuevo lead</button></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Teléfono</th><th>Proyecto</th><th>Origen</th><th>Estado</th><th>Asesora</th><th></th></tr></thead><tbody id="leadsBody"></tbody></table></div>
-</section>
-
-<section id="prospectos" class="section hidden">
-<div class="toolbar"><div><h2>Prospectos</h2><div class="muted">Gestión comercial por equipo.</div></div><button id="newProspectBtn" class="btn btn-accent">+ Nuevo prospecto</button></div>
-<div id="prospectNotice" class="notice hidden"></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Teléfono</th><th>Proyecto</th><th>Team Leader</th><th>Asesora</th><th>Grado</th><th>Estado</th><th></th></tr></thead><tbody id="prospectsBody"></tbody></table></div>
-</section>
-
-<section id="seguimientos" class="section hidden">
-<div class="toolbar"><div><h2>Seguimientos</h2><div class="muted">Agenda comercial.</div></div><button id="newFollowBtn" class="btn btn-accent">+ Nuevo seguimiento</button></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Título</th><th>Fecha</th><th>Prospecto</th><th>Estado</th><th></th></tr></thead><tbody id="followupsBody"></tbody></table></div>
-</section>
-
-<section id="equipo" class="section hidden">
-<div class="toolbar"><div><h2>Equipo</h2><div class="muted">Usuarios y asignaciones.</div></div><button id="newMemberBtn" class="btn btn-accent">+ Nuevo miembro</button></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Teléfono</th><th>Team Leader</th><th>Activo</th><th></th></tr></thead><tbody id="teamBody"></tbody></table></div>
-</section>
-
-<section id="proyectos" class="section hidden">
-<div class="toolbar"><div><h2>Proyectos</h2><div class="muted">Proyectos inmobiliarios.</div></div><button id="newProjectBtn" class="btn btn-accent">+ Nuevo proyecto</button></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Ubicación</th><th></th></tr></thead><tbody id="projectsBody"></tbody></table></div>
-</section>
-
-<section id="reportes" class="section hidden">
-<div class="toolbar"><div><h2>Reportes</h2><div class="muted">Resumen de prospectos visibles.</div></div></div>
-<div class="card table-wrap"><table class="table"><thead><tr><th>Estado</th><th>Cantidad</th></tr></thead><tbody id="reportsBody"></tbody></table><p id="conversion" class="muted"></p></div>
-</section>
-
-</div></main></div>
-
-<div id="modal" class="modal hidden"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">Formulario</h3><button class="btn btn-light" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
-<div id="toast" class="toast hidden"></div>
-
+<div id="newMemberModal" class="modal"><div class="box"><div class="top"><h2 id="newMemberTitle">Nuevo integrante</h2><button class="light" onclick="closeNewMemberModal()">✕</button></div><form id="newMemberForm"><input id="newMemberRole" type="hidden"><div class="field"><label>Nombre *</label><input id="newMemberName" required></div><div class="field"><label>Correo de acceso *</label><input id="newMemberEmail" type="email" required></div><div class="field"><label>Teléfono</label><input id="newMemberPhone"></div><p class="muted" style="font-size:13px">La cuenta de acceso se creará de forma segura en el siguiente paso. No ingreses contraseñas aquí.</p><button class="primary" style="width:100%">Continuar</button></form></div></div>
+<div id="profileModal" class="modal"><div class="box"><div class="top"><h2>Editar integrante</h2><button class="light" onclick="closeProfileModal()">✕</button></div><form id="profileForm"><input id="editProfileId" type="hidden"><div class="field"><label>Nombre</label><input id="profileName" required></div><div class="field"><label>Teléfono</label><input id="profilePhone"></div><div class="field"><label>Rol</label><select id="profileRole"><option value="administrador">Administrador</option><option value="team_leader">Team Leader</option><option value="asesora">Asesora</option></select></div><div class="field"><label>Team Leader</label><select id="profileLeader"><option value="">Asesora directa Tveo Business</option></select><small class="muted">Solo aplica a asesores.</small></div><div class="field"><label>Activo</label><select id="profileActive"><option value="true">Sí</option><option value="false">No</option></select></div><button class="primary" style="width:100%">Guardar cambios</button></form></div></div>
+<div id="toast" class="toast"></div>
 <script>
-const CONFIG={
- url:"https://mfkdhrwtlmfdmuntsbav.supabase.co",
- anonKey:"sb_publishable_ddzIlLZE4Eoo3RyNkozzzw_RF0a1WAp",
- edgeFunction:"smooth-service"
-};
-const sb=window.supabase.createClient(CONFIG.url,CONFIG.anonKey);
-let me=null,profile=null;
-let db={profiles:[],teamAdvisors:[],projects:[],leads:[],prospects:[],followups:[]};
-
+const CONFIG={url:"https://mfkdhrwtlmfdmuntsbav.supabase.co",key:"sb_publishable_ddzIlLZE4Eoo3RyNkozzzw_RF0a1WAp"};
+var supabaseClient=supabase.createClient(CONFIG.url,CONFIG.key);
+let me=null,profile=null,busy=false;
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const roleLabel=r=>({administrador:"Administrador",team_leader:"Team Leader",asesora:"Asesora"}[r]||r||"");
-const canAdmin=()=>profile?.role==="administrador";
-const canLeader=()=>profile?.role==="team_leader";
-const canAdvisor=()=>profile?.role==="asesora";
-const show=id=>$(id).classList.remove("hidden");
-const hide=id=>$(id).classList.add("hidden");
-
-function toast(msg,ok=true){
- $("toast").textContent=msg;$("toast").style.background=ok?"#111827":"#991b1b";show("toast");
- clearTimeout(window._toast);window._toast=setTimeout(()=>hide("toast"),4500);
-}
-function errMsg(e){
- if(!e)return"Error desconocido.";
- if(e.message)return e.message;
- if(e.error_description)return e.error_description;
- return JSON.stringify(e);
-}
-function openModal(title,body){$("modalTitle").textContent=title;$("modalBody").innerHTML=body;show("modal")}
-function closeModal(){hide("modal")}
-window.closeModal=closeModal;
-
-function openSection(section){
- document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
- const el=$(section);if(el)el.classList.remove("hidden");
- document.querySelectorAll(".nav button[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===section));
- $("pageTitle").textContent=section.charAt(0).toUpperCase()+section.slice(1);
-}
-
-async function login(){
- const email=$("loginEmail").value.trim(),password=$("loginPassword").value;
- $("loginMsg").textContent="Ingresando…";
- const {data,error}=await sb.auth.signInWithPassword({email,password});
- if(error){$("loginMsg").textContent=errMsg(error);return}
- try{
-   me=data.user;
-   await loadProfile();
-   await startApp();
- }catch(e){
-   await sb.auth.signOut();
-   $("loginMsg").textContent=errMsg(e);
- }
-}
-async function loadProfile(){
- const {data:s,error:se}=await sb.auth.getSession();
- if(se)throw se;if(!s.session)return false;
- me=s.session.user;
- const {data:p,error}=await sb.from("profiles").select("*").eq("id",me.id).maybeSingle();
- if(error)throw error;if(!p)throw new Error("No existe el perfil de este usuario en public.profiles.");
- profile=p;return true;
-}
-async function startApp(){
- hide("loginView");show("appView");openSection("dashboard");
- $("userName").textContent=profile.full_name||me.email;
- $("userEmail").textContent=me.email;
- $("sideRole").textContent=roleLabel(profile.role);
- $("roleBadge").textContent=roleLabel(profile.role);
- await loadAll();
-}
-async function signOut(){await sb.auth.signOut();location.reload()}
-
-async function get(table,select="*"){
- const {data,error}=await sb.from(table).select(select);
- if(error)throw error;return data||[];
-}
-
-/*
- NUEVA LÓGICA DE EQUIPOS:
- - El Team Leader obtiene sus asesoras mediante una consulta específica.
- - No depende de que el frontend haya cargado accidentalmente perfiles de otros equipos.
- - Todos los IDs se normalizan como strings antes de comparar.
-*/
-async function loadTeamAdvisors(){
- db.teamAdvisors=[];
- if(!canLeader())return;
- const {data,error}=await sb.rpc("tveo_team_advisors");
- if(error)throw error;
- db.teamAdvisors=(data||[]).filter(x=>x.active!==false);
-}
-
-async function loadAll(){
- db.projects=await get("projects");
- db.profiles=await get("profiles");
- db.profiles.sort((a,b)=>(a.full_name||"").localeCompare(b.full_name||""));
- await loadTeamAdvisors();
- await loadLeads();
- await loadProspects();
- await loadFollowups();
- renderAll();
- if(canLeader() && db.teamAdvisors.length===0){
-   $("systemNotice").textContent="No se encontraron asesoras asignadas a este Team Leader. Revisa la asignación de leader_id en Equipo.";
-   show("systemNotice");
- }else hide("systemNotice");
-}
-
-async function loadLeads(){
- let q=sb.from("leads").select("*").order("created_at",{ascending:false});
- if(canAdvisor())q=q.eq("advisor_id",me.id);
- else if(canLeader()){
-   const ids=[me.id,...db.teamAdvisors.map(x=>x.id)];
-   q=q.in("advisor_id",ids);
- }
- const {data,error}=await q;if(error)throw error;db.leads=data||[];
-}
-
-async function loadProspects(){
- if(canLeader()){
-   const {data,error}=await sb.rpc("tveo_team_prospects");
-   if(error)throw error;
-   db.prospects=data||[];
-   return;
- }
- let q=sb.from("prospects").select("*").order("created_at",{ascending:false});
- if(canAdvisor())q=q.eq("advisor_id",me.id);
- const {data,error}=await q;
- if(error)throw error;
- db.prospects=data||[];
-}
-
-async function loadFollowups(){
- let q=sb.from("followups").select("*").order("date",{ascending:true});
- const visibleProspectIds=db.prospects.map(x=>x.id).filter(Boolean);
- if(canAdvisor()||canLeader()){
-  if(!visibleProspectIds.length){db.followups=[];return;}
-  q=q.in("prospect_id",visibleProspectIds);
- }
- const {data,error}=await q;if(error)throw error;db.followups=data||[];
-}
-
-function advisors(){
- if(canLeader())return db.teamAdvisors;
- return db.profiles.filter(x=>x.role==="asesora"&&x.active!==false);
-}
-function leaders(){return db.profiles.filter(x=>x.role==="team_leader"&&x.active!==false)}
-function personName(id){return db.profiles.find(x=>String(x.id)===String(id))?.full_name||""}
-function projectName(id){return db.projects.find(x=>String(x.id)===String(id))?.name||""}
-function teamAdvisor(id){return db.teamAdvisors.find(x=>String(x.id)===String(id))}
-function personOptions(list,selected="",placeholder="Seleccionar"){
- return `<option value="">${placeholder}</option>`+list.map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(selected)?"selected":""}>${esc(p.full_name)}</option>`).join("");
-}
-function projectOptions(selected=""){
- return `<option value="">Seleccionar proyecto</option>`+db.projects.map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(selected)?"selected":""}>${esc(p.name)}</option>`).join("");
-}
-
-function renderAll(){
- $("statLeads").textContent=db.leads.length;
- $("statProspects").textContent=db.prospects.length;
- $("statPending").textContent=db.followups.filter(x=>!x.done).length;
- $("statSales").textContent=db.prospects.filter(x=>x.status==="Venta").length;
- renderLeads();renderProspects();renderFollowups();renderTeam();renderProjects();renderReports();
- $("newMemberBtn").style.display=canAdmin()?"":"none";
- $("newProjectBtn").style.display=canAdmin()?"":"none";
-}
-function renderLeads(){
- $("leadsBody").innerHTML=db.leads.length?db.leads.map(x=>`<tr>
- <td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.project_name||projectName(x.project_id))}</td>
- <td>${esc(x.source)}</td><td><span class="badge">${esc(x.status)}</span></td><td>${esc(x.advisor_name||personName(x.advisor_id))}</td>
- <td><button class="btn btn-light" onclick="editLead('${x.id}')">Editar</button></td></tr>`).join(""):`<tr><td colspan="7" class="empty">No hay leads.</td></tr>`;
-}
-function renderProspects(){
- $("prospectsBody").innerHTML=db.prospects.length?db.prospects.map(x=>`<tr>
- <td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.project_name||projectName(x.project_id))}</td>
- <td>${esc(x.leader_name||personName(x.leader_id))}</td><td>${esc(x.advisor_name||personName(x.advisor_id))}</td>
- <td><span class="badge">${esc(x.grade)}</span></td><td><span class="badge">${esc(x.status)}</span></td>
- <td><button class="btn btn-light" onclick="editProspect('${x.id}')">Editar</button></td></tr>`).join(""):`<tr><td colspan="8" class="empty">No hay prospectos visibles.</td></tr>`;
-}
-function renderFollowups(){
- $("followupsBody").innerHTML=db.followups.length?db.followups.map(x=>`<tr>
- <td>${esc(x.title)}</td><td>${esc(x.date)}</td><td>${esc(x.prospect_name||"—")}</td>
- <td><span class="badge ${x.done?"ok":""}">${x.done?"Completado":"Pendiente"}</span></td>
- <td><button class="btn btn-light" onclick="toggleFollow('${x.id}',${!x.done})">${x.done?"Reabrir":"Completar"}</button>
- ${canAdmin()?`<button class="btn btn-danger" onclick="deleteFollow('${x.id}')">Eliminar</button>`:""}</td></tr>`).join(""):`<tr><td colspan="5" class="empty">No hay seguimientos.</td></tr>`;
-}
-function renderTeam(){
- if(!canAdmin()){$("teamBody").innerHTML=`<tr><td class="empty">Solo el Administrador gestiona el equipo.</td></tr>`;return}
- $("teamBody").innerHTML=db.profiles.map(x=>`<tr>
- <td>${esc(x.full_name)}</td><td>${esc(x.email)}</td><td>${esc(roleLabel(x.role))}</td><td>${esc(x.phone)}</td>
- <td>${esc(personName(x.leader_id))}</td><td>${x.active===false?'<span class="badge red">Inactivo</span>':'<span class="badge ok">Activo</span>'}</td>
- <td><button class="btn btn-light" onclick="editMember('${x.id}')">Editar</button></td></tr>`).join("");
-}
-function renderProjects(){
- $("projectsBody").innerHTML=db.projects.length?db.projects.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.location)}</td><td>
- ${canAdmin()?`<button class="btn btn-light" onclick="editProject('${x.id}')">Editar</button> <button class="btn btn-danger" onclick="deleteProject('${x.id}')">Eliminar</button>`:""}
- </td></tr>`).join(""):`<tr><td colspan="3" class="empty">No hay proyectos.</td></tr>`;
-}
-function renderReports(){
- const statuses=[...new Set(db.prospects.map(x=>x.status).filter(Boolean))];
- $("reportsBody").innerHTML=statuses.map(s=>`<tr><td>${esc(s)}</td><td>${db.prospects.filter(x=>x.status===s).length}</td></tr>`).join("")||`<tr><td colspan="2" class="empty">Sin datos.</td></tr>`;
- const total=db.prospects.length,sales=db.prospects.filter(x=>x.status==="Venta").length;
- $("conversion").textContent=total?`Conversión a venta: ${((sales/total)*100).toFixed(1)}% (${sales}/${total})`:"Conversión a venta: 0%";
-}
-
-const leadSources=["Facebook","Instagram","TikTok","Pinterest","WhatsApp Business","Manual"];
-const leadStatuses=["Nuevo","Contactado","Seguimiento","Visita","Reserva","Venta","Perdido"];
-const prosSources=["Facebook Ads","Instagram Ads","TikTok","WhatsApp","Página web","Referido","Orgánico"];
-const prosStatuses=["Nuevo","Contactado","Interesado","Visita programada","Reserva","Venta","No responde","No interesado"];
-
-function leadForm(x={}){
- const advList=advisors();
- const leader=x.leader_id|| (canAdvisor()?profile.leader_id:canLeader()?me.id:"");
- const advisor=x.advisor_id|| (canAdvisor()?me.id:"");
- return `<form id="entityForm" onsubmit="saveLead(event,'${x.id||""}')"><div class="form-grid">
- <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
- <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
- <div class="field"><label>Email</label><input name="email" type="email" value="${esc(x.email)}"></div>
- <div class="field"><label>Proyecto</label><select name="project_id">${projectOptions(x.project_id)}</select></div>
- <div class="field"><label>Origen</label><select name="source">${leadSources.map(v=>`<option ${v===x.source?"selected":""}>${v}</option>`).join("")}</select></div>
- <div class="field"><label>Estado</label><select name="status">${leadStatuses.map(v=>`<option ${v===(x.status||"Nuevo")?"selected":""}>${v}</option>`).join("")}</select></div>
- <div class="field"><label>Team Leader</label><select name="leader_id" disabled>${personOptions(leaders(),leader)}</select></div>
- <div class="field"><label>Asesora *</label><select name="advisor_id" ${canAdvisor()?"disabled":""}>${personOptions(advList,advisor)}</select></div>
- <div class="field full"><label>Nota</label><textarea name="note">${esc(x.note)}</textarea></div>
- <div class="full"><button class="btn btn-accent">Guardar lead</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
- </div></form>`;
-}
-function newLead(){openModal("Nuevo lead",leadForm({}))}
-function editLead(id){const x=db.leads.find(a=>a.id===id);if(x)openModal("Editar lead",leadForm(x))}
-async function saveLead(ev,id){
- ev.preventDefault();const f=new FormData(ev.target);
- let leader=f.get("leader_id")||null,advisor=f.get("advisor_id")||null;
- if(canAdvisor()){leader=profile.leader_id||null;advisor=me.id}
- if(canLeader()){leader=me.id}
- const p=db.projects.find(x=>String(x.id)===String(f.get("project_id")));
- const adv=db.profiles.find(x=>String(x.id)===String(advisor));
- const lead=db.profiles.find(x=>String(x.id)===String(leader));
- const payload={name:f.get("name"),phone:f.get("phone"),email:f.get("email"),source:f.get("source"),project_id:f.get("project_id")||null,project_name:p?.name||null,leader_id:leader,advisor_id:advisor,leader_name:lead?.full_name||null,advisor_name:adv?.full_name||null,status:f.get("status"),note:f.get("note")};
- const q=id?sb.from("leads").update(payload).eq("id",id):sb.from("leads").insert(payload);
- const {error}=await q;if(error){toast(errMsg(error),false);return}
- closeModal();await loadLeads();renderAll();toast("Lead guardado correctamente.");
-}
-
-function prospectForm(x={}){
- let leader=x.leader_id||"",advisor=x.advisor_id||"";
- if(canAdvisor()){leader=profile.leader_id||"";advisor=me.id}
- if(canLeader()){leader=me.id}
- const advList=canLeader()?[{id:me.id,full_name:(profile.full_name||me.email)},...db.teamAdvisors]:canAdvisor()?db.profiles.filter(p=>p.id===me.id):advisors();
- return `<form id="entityForm" onsubmit="saveProspect(event,'${x.id||""}')"><div class="form-grid">
- <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
- <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
- <div class="field"><label>Email</label><input name="email" type="email" value="${esc(x.email)}"></div>
- <div class="field"><label>Proyecto</label><select name="project_id">${projectOptions(x.project_id)}</select></div>
- <div class="field"><label>Team Leader</label><select name="leader_id" disabled>${personOptions(leaders(),leader)}</select></div>
- <div class="field"><label>Asesora *</label><select name="advisor_id" ${canAdvisor()?"disabled":""}><option value="">Sin asesora</option>${personOptions(advList,advisor)}</select></div>
- <div class="field"><label>Origen</label><select name="source">${prosSources.map(v=>`<option ${v===(x.source||"Orgánico")?"selected":""}>${v}</option>`).join("")}</select></div>
- <div class="field"><label>Grado</label><select name="grade">${["A","B","C"].map(v=>`<option ${v===(x.grade||"A")?"selected":""}>${v}</option>`).join("")}</select></div>
- <div class="field"><label>Estado</label><select name="status">${prosStatuses.map(v=>`<option ${v===(x.status||"Nuevo")?"selected":""}>${v}</option>`).join("")}</select></div>
- <div class="field full"><label>Nota</label><textarea name="note">${esc(x.note)}</textarea></div>
- <div class="full"><button class="btn btn-accent">Guardar prospecto</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
- </div></form>`;
-}
-function newProspect(){
- if(canLeader()&&!db.teamAdvisors.length){
-   $("prospectNotice").textContent="Este Team Leader no tiene asesoras asignadas. No se puede asignar el prospecto hasta que exista una asesora con leader_id igual a tu usuario.";
-   show("prospectNotice");
- }
- openModal("Nuevo prospecto",prospectForm({}));
-}
-function editProspect(id){const x=db.prospects.find(a=>a.id===id);if(x)openModal("Editar prospecto",prospectForm(x))}
-async function saveProspect(ev,id){
- ev.preventDefault();
- const f=new FormData(ev.target);
- let leader=f.get("leader_id")||null,advisor=f.get("advisor_id")||null;
-
- if(canAdvisor()){
-   leader=profile.leader_id||null;
-   advisor=me.id;
- }
-
- if(canLeader()){
-   leader=me.id;
-
-   if(!advisor){
-     toast("Selecciona una asesora o tu propio nombre.",false);
-     return;
-   }
-
-   // Una Team Leader también puede asignarse prospectos a sí misma.
-   // La validación de pertenencia no se aplica en este formulario para permitir
-   // tanto la autoasignación como la asignación a las asesoras del equipo.
-
-   const proj=db.projects.find(x=>String(x.id)===String(f.get("project_id")));
-
-   const {data:result,error}=await sb.rpc("tveo_save_team_prospect",{
-     p_name:f.get("name"),
-     p_phone:f.get("phone")||null,
-     p_email:f.get("email")||null,
-     p_project_id:f.get("project_id")||null,
-     p_project_name:proj?.name||null,
-     p_advisor_id:advisor,
-     p_source:f.get("source")||null,
-     p_grade:f.get("grade")||"A",
-     p_status:f.get("status")||"Nuevo",
-     p_note:f.get("note")||null,
-     p_id:id||null
-   });
-
-   if(error){
-     toast("No se pudo guardar: "+errMsg(error),false);
-     console.error("ERROR RPC TEAM PROSPECT",error);
-     return;
-   }
-
-   closeModal();
-   await loadProspects();
-   renderAll();
-   toast("Prospecto guardado correctamente.");
-   return;
- }
-
- if(canAdmin()&&advisor){
-   const a=db.profiles.find(x=>String(x.id)===String(advisor));
-   if(!a){toast("La asesora seleccionada no existe.",false);return}
-   if(!leader)leader=a.leader_id||null;
-   if(a.leader_id&&leader&&String(a.leader_id)!==String(leader)){
-     toast("La asesora no pertenece al Team Leader seleccionado.",false);
-     return
-   }
- }
-
- const adv=db.profiles.find(x=>String(x.id)===String(advisor));
- const lead=db.profiles.find(x=>String(x.id)===String(leader));
- const proj=db.projects.find(x=>String(x.id)===String(f.get("project_id")));
-
- const payload={
-   name:f.get("name"),phone:f.get("phone"),email:f.get("email"),
-   project_id:f.get("project_id")||null,project_name:proj?.name||null,
-   leader_id:leader,advisor_id:advisor,
-   leader_name:lead?.full_name||null,advisor_name:adv?.full_name||null,
-   source:f.get("source"),grade:f.get("grade"),status:f.get("status"),note:f.get("note"),
-   assignment_mode:"admin"
- };
-
- if(canAdvisor())payload.assignment_mode="asesora";
-
- const q=id
-   ?sb.from("prospects").update(payload).eq("id",id)
-   :sb.from("prospects").insert(payload);
-
- const {error}=await q;
-
- if(error){
-   toast("No se pudo guardar: "+errMsg(error),false);
-   console.error("ERROR GUARDANDO PROSPECTO",error,payload);
-   return;
- }
-
- closeModal();
- await loadProspects();
- renderAll();
- toast("Prospecto guardado correctamente.");
-}
-
-function followForm(x={}){
- return `<form id="entityForm" onsubmit="saveFollow(event,'${x.id||""}')"><div class="form-grid">
- <div class="field full"><label>Título *</label><input name="title" required value="${esc(x.title)}"></div>
- <div class="field"><label>Fecha *</label><input name="date" type="datetime-local" required value="${esc((x.date||"").slice(0,16))}"></div>
- <div class="field"><label>Prospecto</label><select name="prospect_id"><option value="">Sin prospecto</option>${db.prospects.map(p=>`<option value="${p.id}" ${String(p.id)===String(x.prospect_id)?"selected":""}>${esc(p.name)}</option>`).join("")}</select></div>
- <div class="full"><button class="btn btn-accent">Guardar</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
- </div></form>`;
-}
-function newFollow(){openModal("Nuevo seguimiento",followForm({}))}
-async function saveFollow(ev,id){
- ev.preventDefault();const f=new FormData(ev.target),p=db.prospects.find(x=>String(x.id)===String(f.get("prospect_id")));
- const payload={title:f.get("title"),date:f.get("date")||null,prospect_id:f.get("prospect_id")||null,done:false};
- const q=id?sb.from("followups").update(payload).eq("id",id):sb.from("followups").insert(payload);
- const {error}=await q;if(error){toast(errMsg(error),false);return}closeModal();await loadFollowups();renderAll();toast("Seguimiento guardado.");
-}
-async function toggleFollow(id,done){const {error}=await sb.from("followups").update({done}).eq("id",id);if(error){toast(errMsg(error),false);return}await loadFollowups();renderAll()}
-async function deleteFollow(id){if(!confirm("¿Eliminar este seguimiento?"))return;const {error}=await sb.from("followups").delete().eq("id",id);if(error){toast(errMsg(error),false);return}await loadFollowups();renderAll()}
-
-function memberForm(x={}){
- const isNew=!x.id;
- return `<form id="entityForm" onsubmit="saveMember(event,'${x.id||""}')"><div class="form-grid">
- <div class="field"><label>Nombre completo *</label><input name="full_name" required value="${esc(x.full_name)}"></div>
- <div class="field"><label>Correo *</label><input name="email" type="email" required value="${esc(x.email)}"></div>
- <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
- <div class="field"><label>Rol</label><select name="role">${["team_leader","asesora","administrador"].map(v=>`<option value="${v}" ${v===x.role?"selected":""}>${roleLabel(v)}</option>`).join("")}</select></div>
- <div class="field"><label>Team Leader</label><select name="leader_id"><option value="">Directo a TVEO</option>${personOptions(leaders(),x.leader_id)}</select></div>
- <div class="field"><label>${isNew?"Contraseña inicial *":"Nueva contraseña (opcional)"}</label><input name="password" type="password" minlength="8" ${isNew?"required":""}></div>
- <div class="field"><label>Activo</label><select name="active"><option value="true" ${x.active!==false?"selected":""}>Sí</option><option value="false" ${x.active===false?"selected":""}>No</option></select></div>
- <div class="full"><button class="btn btn-accent">${isNew?"Crear miembro":"Guardar perfil"}</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
- </div></form>`;
-}
-function newMember(){if(canAdmin())openModal("Nuevo miembro",memberForm({active:true}))}
-function editMember(id){if(canAdmin()){const x=db.profiles.find(p=>p.id===id);if(x)openModal("Editar miembro",memberForm(x))}}
-async function saveMember(ev,id){
- ev.preventDefault();const f=new FormData(ev.target),role=f.get("role"),password=String(f.get("password")||"");
- const leader_id=role==="asesora"?(f.get("leader_id")||null):null;
- if(!id){
-   if(role==="administrador"){toast("La creación de administradores se mantiene bloqueada desde el CRM.",false);return}
-   if(password.length<8){toast("La contraseña debe tener al menos 8 caracteres.",false);return}
-   const action=role==="team_leader"?"create_team_leader":"create_direct_advisor";
-   const {data:r,error}=await sb.functions.invoke(CONFIG.edgeFunction,{body:{action,full_name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),password}});
-   if(error){toast(errMsg(error),false);return}
-   if(r?.error){toast(r.error,false);return}
- }else{
-   const payload={full_name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),role,leader_id,active:f.get("active")==="true"};
-   const {error}=await sb.from("profiles").update(payload).eq("id",id);
-   if(error){toast(errMsg(error),false);return}
-   if(password){
-     if(password.length<8){toast("La contraseña debe tener al menos 8 caracteres.",false);return}
-     const {data:r,error:e}=await sb.functions.invoke(CONFIG.edgeFunction,{body:{action:"update_password",user_id:id,password}});
-     if(e){toast(errMsg(e),false);return}if(r?.error){toast(r.error,false);return}
-   }
- }
- closeModal();await loadAll();toast(id?"Perfil actualizado.":"Miembro creado correctamente.");
-}
-
-function projectForm(x={}){
- return `<form id="entityForm" onsubmit="saveProject(event,'${x.id||""}')"><div class="form-grid">
- <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
- <div class="field"><label>Ubicación</label><input name="location" value="${esc(x.location)}"></div>
- <div class="full"><button class="btn btn-accent">Guardar proyecto</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
- </div></form>`;
-}
-function newProject(){if(canAdmin())openModal("Nuevo proyecto",projectForm({}))}
-function editProject(id){if(canAdmin()){const x=db.projects.find(p=>p.id===id);if(x)openModal("Editar proyecto",projectForm(x))}}
-async function saveProject(ev,id){
- ev.preventDefault();const f=new FormData(ev.target),payload={name:f.get("name"),location:f.get("location")};
- const q=id?sb.from("projects").update(payload).eq("id",id):sb.from("projects").insert(payload);
- const {error}=await q;if(error){toast(errMsg(error),false);return}closeModal();db.projects=await get("projects");renderAll();toast("Proyecto guardado.");
-}
-async function deleteProject(id){if(!confirm("¿Eliminar este proyecto?"))return;const {error}=await sb.from("projects").delete().eq("id",id);if(error){toast(errMsg(error),false);return}db.projects=await get("projects");renderAll();toast("Proyecto eliminado.")}
-
-$("loginForm").addEventListener("submit",e=>{e.preventDefault();login()});
-$("forgotBtn").addEventListener("click",async()=>{
- const email=$("loginEmail").value.trim();if(!email){$("loginMsg").textContent="Escribe primero tu correo.";return}
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href});
- $("loginMsg").textContent=error?errMsg(error):"Revisa tu correo para continuar.";
-});
-$("logoutBtn").addEventListener("click",signOut);
-document.querySelectorAll(".nav button[data-section]").forEach(b=>b.addEventListener("click",()=>openSection(b.dataset.section)));
-$("newLeadBtn").addEventListener("click",newLead);
-$("newProspectBtn").addEventListener("click",newProspect);
-$("newFollowBtn").addEventListener("click",newFollow);
-$("newMemberBtn").addEventListener("click",newMember);
-$("newProjectBtn").addEventListener("click",newProject);
-$("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
-
-sb.auth.onAuthStateChange((event)=>{
- if(event==="PASSWORD_RECOVERY"){
-   openModal("Nueva contraseña",`<form onsubmit="updatePassword(event)"><div class="field"><label>Nueva contraseña</label><input name="password" type="password" minlength="6" required></div><button class="btn btn-accent">Actualizar contraseña</button></form>`);
- }
-});
-async function updatePassword(ev){
- ev.preventDefault();const password=new FormData(ev.target).get("password");
- const {error}=await sb.auth.updateUser({password});if(error){toast(errMsg(error),false);return}
- closeModal();toast("Contraseña actualizada.");
-}
-
-async function boot(){
- try{
-   const ok=await loadProfile();
-   if(ok)await startApp();
- }catch(e){
-   console.error(e);
-   $("loginMsg").textContent=errMsg(e);
- }
-}
-boot();
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function toast(x){const e=$("toast");e.textContent=x;e.style.display="block";clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.style.display="none",4500)}
+function err(where,e){console.error(where,e);toast(where+": "+(e?.message||String(e)))}
+function uuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||""))}
+function isAdmin(){return profile?.role==="administrador"}
+async function updatePassword(){const a=$("newPassword").value,b=$("newPassword2").value;if(a.length<6)return toast("La contraseña debe tener al menos 6 caracteres");if(a!==b)return toast("Las contraseñas no coinciden");try{const r=await supabaseClient.auth.updateUser({password:a});if(r.error)throw r.error;toast("Contraseña actualizada");$("recoveryBox").style.display="none";$("loginBox").style.display="block"}catch(e){err("Contraseña",e)}}
+function showRecovery(){$("app").style.display="none";$('login').style.display="grid";$('loginBox').style.display="none";$('recoveryBox').style.display="block"}
+supabaseClient.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY")showRecovery()});
+async function signIn(){const email=$("email").value.trim(),password=$("password").value;if(!email||!password)return toast("Completa correo y contraseña");try{toast("Conectando...");const r=await supabaseClient.auth.signInWithPassword({email,password});if(r.error)throw r.error;me=r.data.user;await boot()}catch(e){err("Ingreso",e)}}
+async function signOut(){await supabaseClient.auth.signOut();location.reload()}
+async function boot(){try{const r=await supabaseClient.from("profiles").select("*").eq("id",me.id).single();if(r.error)throw r.error;if(!r.data)throw new Error("No existe perfil CRM para este usuario");profile=r.data;$("login").style.display="none";$("app").style.display="block";$("who").textContent=`${profile.full_name||"Usuario"} · ${profile.role||""}`;await render()}catch(e){err("Perfil",e)}}
+function go(id,b){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(v=>v.classList.remove("active"));if(b)b.classList.add("active");$("title").textContent={dashboard:"Dashboard",prospectos:"Prospectos",seguimientos:"Seguimientos",equipo:"Equipo",proyectos:"Proyectos",reportes:"Reportes"}[id]||"CRM";render()}
+async function prospects(){let q=supabaseClient.from("prospects").select("*").order("created_at",{ascending:false});if(profile?.role==="asesora")q=q.eq("advisor_id",me.id);if(profile?.role==="team_leader")q=q.eq("leader_id",me.id);const r=await q;if(r.error)throw r.error;return r.data||[]}
+function prospectRows(p){if(!p.length)return '<div class="empty">No hay prospectos.</div>';return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`}
+async function render(){if(busy)return;busy=true;try{let p;try{p=await prospects()}catch(e){["dashboard","prospectos"].forEach(id=>$(id).innerHTML=`<div class="card"><h3>Error de datos</h3><p>${esc(e.message||e)}</p><button class="light" onclick="render()">↻ Reintentar</button></div>`);return}const all=isAdmin()?((await supabaseClient.from("prospects").select("*")).data||p):p;
+$("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${all.filter(x=>x.grade==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${all.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><div class="top"><div><h3>Asignación automática</h3><p class="muted">Los nuevos prospectos pueden asignarse a asesoras activas.</p></div><button class="primary" onclick="openProspectModal()">+ Nuevo</button></div></div><div class="card"><h3>Últimos prospectos</h3>${prospectRows(all.slice(0,8))}</div>`;
+$("prospectos").innerHTML=`<div class="toolbar"><input class="search" id="search" placeholder="🔎 Buscar por nombre, teléfono, proyecto o estado" oninput="filterTable()"><button class="primary" onclick="openProspectModal()">+ Nuevo prospecto</button></div><div class="card" id="ptable">${prospectRows(all)}</div>`;
+await renderFollowups();await renderTeam();await renderProjects();renderReports(all);
+}finally{busy=false}}
+async function filterTable(){try{const q=($("search")?.value||"").toLowerCase();const p=(await prospects()).filter(x=>`${x.name||""} ${x.phone||""} ${x.project_name||""} ${x.status||""}`.toLowerCase().includes(q));$("ptable").innerHTML=prospectRows(p)}catch(e){err("Búsqueda",e)}}
+async function renderFollowups(){try{const r=await supabaseClient.from("followups").select("*").order("date",{ascending:true});if(r.error)throw r.error;let f=r.data||[];if(profile.role==="asesora")f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);$("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>`<tr><td>${esc(x.title||"Seguimiento")}</td><td>${esc(x.date||"")}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`}catch(e){$("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos</h3><p>${esc(e.message||e)}</p></div>`}}
+async function renderTeam(){try{const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id").order("role").order("full_name");if(r.error)throw r.error;let all=r.data||[];let u=all;if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);if(profile.role==="asesora")u=all.filter(x=>x.id===me.id);const leaders=all.filter(x=>x.role==="team_leader");const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesora";const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesora directa Tveo Business";const actions=(x)=>isAdmin()?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:'—';let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesora a su equipo o como asesora directa de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>x.role==="asesora").length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";$('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Activo</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td>${roleName(x.role)}</td><td>${x.role==="asesora"?esc(leaderName(x.leader_id)):"—"}</td><td>${x.active===false?'No':'Sí'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}}
+async function renderProjects(){try{const r=await supabaseClient.from("projects").select("*").order("name");if(r.error)throw r.error;const p=r.data||[];$("proyectos").innerHTML=`<div class="toolbar">${isAdmin()?'<button class="primary" onclick="openProjectModal()">+ Nuevo proyecto</button>':''}</div><div class="card"><h3>Proyectos</h3>${p.length?`<div class="tablewrap"><table class="table"><tr><th>Proyecto</th><th>Ubicación</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.location||"")}</td><td>${isAdmin()?`<div class="actions"><button class="light" onclick="editProject('${x.id}')">✏️ Editar</button><button class="danger" onclick="deleteProject('${x.id}')">🗑️</button></div>`:'—'}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay proyectos registrados.</div>'}</div>`}catch(e){$("proyectos").innerHTML=`<div class="card"><h3>Proyectos</h3><p>${esc(e.message||e)}</p></div>`}}
+function renderReports(all){const total=all.length,ventas=all.filter(x=>x.status==="Venta").length;const grouped={};all.forEach(x=>grouped[x.status||"Sin estado"]=(grouped[x.status||"Sin estado"]||0)+1);$("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>: ${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`}
+async function openProspectModal(id=null){try{const pr=await supabaseClient.from("projects").select("id,name").order("name");if(pr.error)throw pr.error;const ur=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").in("role",["asesora","team_leader"]).order("full_name");if(ur.error)throw ur.error;let us=(ur.data||[]).filter(x=>x.active!==false);if(profile.role==="team_leader")us=us.filter(x=>x.id===me.id || x.leader_id===me.id);if(profile.role==="asesora")us=us.filter(x=>x.id===me.id);$("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");$("fadv").innerHTML='<option value="">Asignación automática</option>'+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");$("fteam").innerHTML=isAdmin()?'<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>':'<option value="auto">Mi asignación</option>';$("prospectModalTitle").textContent=id?'Editar prospecto':'Nuevo prospecto';$("editProspectId").value=id||"";if(id){const r=await supabaseClient.from("prospects").select("*").eq("id",id).single();if(r.error)throw r.error;const x=r.data;$("fn").value=x.name||"";$("fp").value=x.phone||"";$("fe").value=x.email||"";$("fproj").value=uuid(x.project_id)?x.project_id:"";$("fadv").value=uuid(x.advisor_id)?x.advisor_id:"";$("fteam").value=x.assignment_mode||"auto";$("fsrc").value=x.source||"Facebook Ads";$("fgrade").value=x.grade||"A";$("fstatus").value=x.status||"Nuevo";$("fnote").value=x.note||""}else{$("prospectForm").reset();$("fproj").value="";$("fadv").value="";$("fteam").value=""}$("prospectModal").classList.add("show")}catch(e){err("Prospecto",e)}}
+function closeProspectModal(){$("prospectModal").classList.remove("show");$("prospectForm").reset()}
+async function editProspect(id){await openProspectModal(id)}
+async function deleteProspect(id){if(!confirm("¿Eliminar este prospecto?"))return;try{const r=await supabaseClient.from("prospects").delete().eq("id",id);if(r.error)throw r.error;toast("Prospecto eliminado");await render()}catch(e){err("Eliminar prospecto",e)}}
+$("prospectForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("prospectSubmit");btn.disabled=true;try{let advisor=null;if(uuid($("fadv").value)){const r=await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",$("fadv").value).single();if(r.error)throw r.error;advisor=r.data}let projectId=null,projectName="";if(uuid($("fproj").value)){projectId=$("fproj").value;const r=await supabaseClient.from("projects").select("name").eq("id",projectId).single();if(r.error)throw r.error;projectName=r.data?.name||""}const payload={name:$("fn").value.trim(),phone:$("fp").value.trim(),email:$("fe").value.trim()||null,project_id:projectId,project_name:projectName,source:$("fsrc").value,advisor_id:advisor?.id||null,advisor_name:advisor?.full_name||"",leader_id:advisor?.id===me.id?me.id:(advisor?.leader_id||null),assignment_mode:$("fteam").value||"auto",grade:$("fgrade").value,status:$("fstatus").value,note:$("fnote").value.trim()||null};const id=$("editProspectId").value;let r=id?await supabaseClient.from("prospects").update(payload).eq("id",id):await supabaseClient.from("prospects").insert(payload);if(r.error)throw r.error;closeProspectModal();toast(id?"Prospecto actualizado":"Prospecto guardado");await render()}catch(e){err("Guardar prospecto",e)}finally{btn.disabled=false}});
+function newFollowup(prospectId){openFollowupModal(prospectId)}
+async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId||"";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("followupModal").classList.add("show")}
+function closeFollowupModal(){$("followupModal").classList.remove("show");$("followupForm").reset()}
+$("followupForm").addEventListener("submit",async e=>{e.preventDefault();try{const payload={title:$("fuTitle").value.trim(),date:$("fuDate").value,done:false};const pid=e.currentTarget.dataset.prospectId;if(pid&&uuid(pid))payload.prospect_id=pid;let r=await supabaseClient.from("followups").insert(payload);if(r.error){if(payload.prospect_id){delete payload.prospect_id;r=await supabaseClient.from("followups").insert(payload)}if(r.error)throw r.error}closeFollowupModal();toast("Seguimiento guardado");await renderFollowups()}catch(e){err("Guardar seguimiento",e)}});
+async function completeFollowup(id){try{const r=await supabaseClient.from("followups").update({done:true}).eq("id",id);if(r.error)throw r.error;toast("Seguimiento completado");await renderFollowups()}catch(e){err("Completar seguimiento",e)}}
+async function deleteFollowup(id){if(!confirm("¿Eliminar este seguimiento?"))return;try{const r=await supabaseClient.from("followups").delete().eq("id",id);if(r.error)throw r.error;toast("Seguimiento eliminado");await renderFollowups()}catch(e){err("Eliminar seguimiento",e)}}
+function openProjectModal(id=null){$("projectForm").reset();$("editProjectId").value=id||"";$("projectModalTitle").textContent=id?'Editar proyecto':'Nuevo proyecto';if(id)loadProject(id);$("projectModal").classList.add("show")}
+async function loadProject(id){try{const r=await supabaseClient.from("projects").select("id,name,location").eq("id",id).single();if(r.error)throw r.error;$("projectName").value=r.data.name||"";$("projectLocation").value=r.data.location||""}catch(e){err("Proyecto",e)}}
+function closeProjectModal(){$("projectModal").classList.remove("show");$("projectForm").reset()}
+async function editProject(id){openProjectModal(id)}
+$("projectForm").addEventListener("submit",async e=>{e.preventDefault();try{const id=$("editProjectId").value;const payload={name:$("projectName").value.trim(),location:$("projectLocation").value.trim()||null};const r=id?await supabaseClient.from("projects").update(payload).eq("id",id):await supabaseClient.from("projects").insert(payload);if(r.error)throw r.error;closeProjectModal();toast(id?"Proyecto actualizado":"Proyecto creado");await renderProjects()}catch(e){err("Guardar proyecto",e)}});
+async function deleteProject(id){if(!confirm("¿Eliminar este proyecto?"))return;try{const r=await supabaseClient.from("projects").delete().eq("id",id);if(r.error)throw r.error;toast("Proyecto eliminado");await renderProjects()}catch(e){err("Eliminar proyecto",e)}}
+async function editProfile(id){try{const r=await supabaseClient.from("profiles").select("id,full_name,phone,active,role,leader_id").eq("id",id).single();if(r.error)throw r.error;const tl=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");if(tl.error)throw tl.error;$("editProfileId").value=id;$("profileName").value=r.data.full_name||"";$("profilePhone").value=r.data.phone||"";$("profileRole").value=r.data.role||"asesora";$("profileLeader").innerHTML='<option value="">Asesora directa Tveo Business</option>'+(tl.data||[]).filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");$("profileLeader").value=r.data.leader_id||"";$("profileLeader").disabled=r.data.role!=="asesora";$("profileRole").onchange=()=>{$("profileLeader").disabled=$("profileRole").value!=="asesora"};$("profileActive").value=r.data.active===false?"false":"true";$("profileModal").classList.add("show")}catch(e){err("Integrante",e)}}
+function openNewMemberModal(role){if(!isAdmin())return toast("Solo el administrador puede crear integrantes");$("newMemberRole").value=role;$("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Nuevo Asesor Directo Tveo";$("newMemberForm").reset();$("newMemberRole").value=role;$("newMemberModal").classList.add("show")}
+function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
+$("newMemberForm").addEventListener("submit",async e=>{e.preventDefault();const btn=e.currentTarget.querySelector("button[type=submit],button.primary");if(btn)btn.disabled=true;try{const role=$("newMemberRole").value;const name=$("newMemberName").value.trim();const email=$("newMemberEmail").value.trim().toLowerCase();const phone=$("newMemberPhone").value.trim()||null;if(!name||!email)return toast("Completa nombre y correo");const action=role==="team_leader"?"create_team_leader":"create_direct_advisor";toast("Creando cuenta...");const r=await supabaseClient.functions.invoke("smooth-service",{body:{action,name,email,phone}});if(r.error)throw r.error;if(r.data?.error)throw new Error(r.data.error);closeNewMemberModal();toast(role==="team_leader"?"Team Leader creado. Se envió la invitación por correo.":"Asesora directa creada. Se envió la invitación por correo.");await renderTeam()}catch(e){console.error("Crear integrante",e);toast("No se pudo crear: "+(e?.message||String(e)))}finally{if(btn)btn.disabled=false}});
+function closeProfileModal(){$("profileModal").classList.remove("show");$("profileForm").reset()}
+$("profileForm").addEventListener("submit",async e=>{e.preventDefault();try{const id=$("editProfileId").value;const role=$("profileRole").value;const leaderId=role==="asesora"&&uuid($("profileLeader").value)?$("profileLeader").value:null;const payload={full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()||null,active:$("profileActive").value==="true",role,leader_id:leaderId};if(id===me.id&&role!==profile.role)return toast("No cambies el rol de tu propio usuario aquí");const r=await supabaseClient.from("profiles").update(payload).eq("id",id);if(r.error)throw r.error;closeProfileModal();toast("Integrante actualizado");await renderTeam();if(id===me.id){profile={...profile,...payload};$("who").textContent=`${profile.full_name} · ${profile.role}`}}catch(e){err("Guardar integrante",e)}});
+supabaseClient.auth.getSession().then(async r=>{if(r.error)return err("Sesión",r.error);if(r.data.session){me=r.data.session.user;await boot()}}).catch(e=>err("Sesión",e));
 </script>
-</body>
-</html>
+</body></html>
