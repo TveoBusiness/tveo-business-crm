@@ -165,9 +165,41 @@ function errMsg(e){ return e?.message || "Ocurrió un error."; }
 async function signIn(){
   const email=$("loginEmail").value.trim(), password=$("loginPassword").value;
   $("loginMsg").textContent="Ingresando…";
-  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error){$("loginMsg").textContent=errMsg(error);return;}
-  $("loginMsg").textContent="";
+
+  const {data:authData,error}=await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    $("loginMsg").textContent=errMsg(error);
+    return;
+  }
+
+  try{
+    me=authData.user;
+
+    const {data:p,error:profileError}=await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id",me.id)
+      .maybeSingle();
+
+    if(profileError) throw profileError;
+    if(!p) throw new Error("No existe un perfil en public.profiles para este usuario.");
+
+    profile=p;
+
+    hide("loginView");
+    show("appView");
+    openSection("dashboard");
+    $("loginMsg").textContent="";
+
+    await loadBase();
+  }catch(e){
+    await supabaseClient.auth.signOut();
+    $("loginMsg").textContent=errMsg(e);
+  }
 }
 async function signOut(){ await supabaseClient.auth.signOut(); location.reload(); }
 
