@@ -246,14 +246,13 @@ async function loadProspects(){
 }
 
 async function loadFollowups(){
- const ids=db.prospects.map(x=>x.id).filter(Boolean);
- if(!ids.length){db.followups=[];return}
- const {data,error}=await sb.from("followups")
-  .select("*")
-  .in("prospect_id",ids)
-  .order("date",{ascending:true});
- if(error)throw error;
- db.followups=data||[];
+ let q=sb.from("followups").select("*").order("date",{ascending:true});
+ const visibleProspectIds=db.prospects.map(x=>x.id).filter(Boolean);
+ if(canAdvisor()||canLeader()){
+  if(!visibleProspectIds.length){db.followups=[];return;}
+  q=q.in("prospect_id",visibleProspectIds);
+ }
+ const {data,error}=await q;if(error)throw error;db.followups=data||[];
 }
 
 function advisors(){
@@ -482,7 +481,7 @@ async function saveProspect(ev,id){
 function followForm(x={}){
  return `<form id="entityForm" onsubmit="saveFollow(event,'${x.id||""}')"><div class="form-grid">
  <div class="field full"><label>Título *</label><input name="title" required value="${esc(x.title)}"></div>
- <div class="field"><label>Fecha *</label><input name="date" type="date" required value="${esc((x.date||"").slice(0,10))}"></div>
+ <div class="field"><label>Fecha *</label><input name="date" type="datetime-local" required value="${esc((x.date||"").slice(0,16))}"></div>
  <div class="field"><label>Prospecto</label><select name="prospect_id"><option value="">Sin prospecto</option>${db.prospects.map(p=>`<option value="${p.id}" ${String(p.id)===String(x.prospect_id)?"selected":""}>${esc(p.name)}</option>`).join("")}</select></div>
  <div class="full"><button class="btn btn-accent">Guardar</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
  </div></form>`;
@@ -490,8 +489,7 @@ function followForm(x={}){
 function newFollow(){openModal("Nuevo seguimiento",followForm({}))}
 async function saveFollow(ev,id){
  ev.preventDefault();const f=new FormData(ev.target),p=db.prospects.find(x=>String(x.id)===String(f.get("prospect_id")));
- if(!p){toast("Selecciona un prospecto para el seguimiento.",false);return}
- const payload={title:f.get("title"),date:f.get("date"),prospect_id:p.id,done:false};
+ const payload={title:f.get("title"),date:f.get("date")||null,prospect_id:f.get("prospect_id")||null,done:false};
  const q=id?sb.from("followups").update(payload).eq("id",id):sb.from("followups").insert(payload);
  const {error}=await q;if(error){toast(errMsg(error),false);return}closeModal();await loadFollowups();renderAll();toast("Seguimiento guardado.");
 }
