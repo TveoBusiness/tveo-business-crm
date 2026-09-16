@@ -360,7 +360,7 @@ function prospectForm(x={}){
  let leader=x.leader_id||"",advisor=x.advisor_id||"";
  if(canAdvisor()){leader=profile.leader_id||"";advisor=me.id}
  if(canLeader()){leader=me.id}
- const advList=canLeader()?db.teamAdvisors:canAdvisor()?db.profiles.filter(p=>p.id===me.id):advisors();
+ const advList=canLeader()?[{id:me.id,full_name:(profile.full_name||me.email)},...db.teamAdvisors]:canAdvisor()?db.profiles.filter(p=>p.id===me.id):advisors();
  return `<form id="entityForm" onsubmit="saveProspect(event,'${x.id||""}')"><div class="form-grid">
  <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
  <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
