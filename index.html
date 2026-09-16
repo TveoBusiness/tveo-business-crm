@@ -37,8 +37,18 @@
 <section id="proyectos" class="view"></section>
 <section id="reportes" class="view"></section>
 
-<div id="prospectModal" class="modal"><div class="box"><div class="top"><h2 id="prospectModalTitle">Nuevo prospecto</h2><button class="light" onclick="closeProspectModal()">✕</button></div><form id="prospectForm"><input id="editProspectId" type="hidden"><div class="grid">
-<div class="field"><label>Nombre *</label><input id="fn" required></div><div class="field"><label>WhatsApp *</label><input id="fp" required></div><div class="field"><label>Correo</label><input id="fe" type="email"></div><div class="field"><label>Proyecto</label><select id="fproj"></select></div><div class="field"><label>Equipo de asignación</label><select id="fteam"></select></div><div class="field"><label>Origen</label><select id="fsrc"><option>Facebook Ads</option><option>Instagram Ads</option><option>TikTok</option><option>WhatsApp</option><option>Página web</option><option>Referido</option><option>Orgánico</option></select></div><div class="field"><label>Asesora</label><select id="fadv"></select></div><div class="field"><label>Clasificación</label><select id="fgrade"><option>A</option><option>B</option><option>C</option></select></div><div class="field"><label>Estado</label><select id="fstatus"><option>Nuevo</option><option>Contactado</option><option>Interesado</option><option>Visita programada</option><option>Reserva</option><option>Venta</option><option>No responde</option><option>No interesado</option></select></div><div class="field full"><label>Nota</label><textarea id="fnote"></textarea></div></div><button class="primary" id="prospectSubmit" style="width:100%;margin-top:8px">Guardar prospecto</button></form></div></div>
+<div id="prospectModal" class="modal"><div class="box"><div class="top"><h2 id="prospectModalTitle">Nuevo prospecto</h2><button class="light" type="button" onclick="closeProspectModal()">✕</button></div><form id="prospectForm"><input id="editProspectId" type="hidden"><div class="grid">
+<div class="field"><label>Nombre *</label><input id="fn" required></div>
+<div class="field"><label>WhatsApp *</label><input id="fp" required></div>
+<div class="field"><label>Correo</label><input id="fe" type="email"></div>
+<div class="field"><label>Proyecto</label><select id="fproj"></select></div>
+<div class="field"><label>Team Leader</label><select id="fteam"></select></div>
+<div class="field"><label>Origen</label><select id="fsrc"><option>Facebook Ads</option><option>Instagram Ads</option><option>TikTok</option><option>WhatsApp</option><option>Página web</option><option>Referido</option><option>Orgánico</option></select></div>
+<div class="field"><label>Asesora</label><select id="fadv"></select></div>
+<div class="field"><label>Clasificación</label><select id="fgrade"><option>A</option><option>B</option><option>C</option></select></div>
+<div class="field"><label>Estado</label><select id="fstatus"><option>Nuevo</option><option>Contactado</option><option>Interesado</option><option>Visita programada</option><option>Reserva</option><option>Venta</option><option>No responde</option><option>No interesado</option></select></div>
+<div class="field full"><label>Nota</label><textarea id="fnote"></textarea></div>
+</div><p id="prospectAssignmentHelp" class="muted"></p><button class="primary" id="prospectSubmit" type="submit" style="width:100%;margin-top:8px">Guardar prospecto</button></form></div></div>
 
 <div id="followupModal" class="modal"><div class="box"><div class="top"><h2>Nuevo seguimiento</h2><button class="light" onclick="closeFollowupModal()">✕</button></div><form id="followupForm"><div class="field"><label>Título *</label><input id="fuTitle" required placeholder="Llamar al cliente"></div><div class="field"><label>Fecha *</label><input id="fuDate" type="date" required></div><button class="primary" style="width:100%">Guardar seguimiento</button></form></div></div>
 
@@ -636,11 +646,160 @@ async function renderFollowups(){try{const r=await supabaseClient.from("followup
 async function renderTeam(){try{const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id").order("role").order("full_name");if(r.error)throw r.error;let all=r.data||[];let u=all;if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);if(profile.role==="asesora")u=all.filter(x=>x.id===me.id);const leaders=all.filter(x=>x.role==="team_leader");const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesora";const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesora directa Tveo Business";const actions=(x)=>isAdmin()?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:'—';let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesora a su equipo o como asesora directa de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>x.role==="asesora").length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";$('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Activo</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td>${roleName(x.role)}</td><td>${x.role==="asesora"?esc(leaderName(x.leader_id)):"—"}</td><td>${x.active===false?'No':'Sí'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}}
 async function renderProjects(){try{const r=await supabaseClient.from("projects").select("*").order("name");if(r.error)throw r.error;const p=r.data||[];$("proyectos").innerHTML=`<div class="toolbar">${isAdmin()?'<button class="primary" onclick="openProjectModal()">+ Nuevo proyecto</button>':''}</div><div class="card"><h3>Proyectos</h3>${p.length?`<div class="tablewrap"><table class="table"><tr><th>Proyecto</th><th>Ubicación</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.location||"")}</td><td>${isAdmin()?`<div class="actions"><button class="light" onclick="editProject('${x.id}')">✏️ Editar</button><button class="danger" onclick="deleteProject('${x.id}')">🗑️</button></div>`:'—'}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay proyectos registrados.</div>'}</div>`}catch(e){$("proyectos").innerHTML=`<div class="card"><h3>Proyectos</h3><p>${esc(e.message||e)}</p></div>`}}
 function renderReports(all){const total=all.length,ventas=all.filter(x=>x.status==="Venta").length;const grouped={};all.forEach(x=>grouped[x.status||"Sin estado"]=(grouped[x.status||"Sin estado"]||0)+1);$("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>: ${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`}
-async function openProspectModal(id=null){try{const pr=await supabaseClient.from("projects").select("id,name").order("name");if(pr.error)throw pr.error;const ur=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").eq("role","asesora").order("full_name");if(ur.error)throw ur.error;let us=(ur.data||[]).filter(x=>x.active!==false);if(profile.role==="team_leader")us=us.filter(x=>x.leader_id===me.id);if(profile.role==="asesora")us=us.filter(x=>x.id===me.id);$("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");$("fadv").innerHTML='<option value="">Asignación automática</option>'+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");$("fteam").innerHTML=isAdmin()?'<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>':'<option value="auto">Mi asignación</option>';$("prospectModalTitle").textContent=id?'Editar prospecto':'Nuevo prospecto';$("editProspectId").value=id||"";if(id){const r=await supabaseClient.from("prospects").select("*").eq("id",id).single();if(r.error)throw r.error;const x=r.data;$("fn").value=x.name||"";$("fp").value=x.phone||"";$("fe").value=x.email||"";$("fproj").value=uuid(x.project_id)?x.project_id:"";$("fadv").value=uuid(x.advisor_id)?x.advisor_id:"";$("fteam").value=x.assignment_mode||"auto";$("fsrc").value=x.source||"Facebook Ads";$("fgrade").value=x.grade||"A";$("fstatus").value=x.status||"Nuevo";$("fnote").value=x.note||""}else{$("prospectForm").reset();$("fproj").value="";$("fadv").value="";$("fteam").value=""}$("prospectModal").classList.add("show")}catch(e){err("Prospecto",e)}}
+async function openProspectModal(id=null){
+  try{
+    $("prospectModalTitle").textContent=id?"Editar prospecto":"Nuevo prospecto";
+    $("editProspectId").value=id||"";
+    $("prospectForm").reset();
+    $("fteam").disabled=false; $("fadv").disabled=false;
+    $("fproj").innerHTML='<option value="">Sin proyecto</option>';
+    $("fteam").innerHTML='<option value="">Sin asignar</option>';
+    $("fadv").innerHTML='<option value="">Sin asignar</option>';
+    $("prospectAssignmentHelp").textContent="";
+
+    const pr=await supabaseClient.from("projects").select("id,name").order("name");
+    if(pr.error)throw pr.error;
+    $("fproj").innerHTML='<option value="">Sin proyecto</option>'+
+      (pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
+
+    const ur=await supabaseClient.from("profiles")
+      .select("id,full_name,leader_id,role,active")
+      .in("role",["team_leader","asesora"])
+      .eq("active",true).order("full_name");
+    if(ur.error)throw ur.error;
+
+    const all=ur.data||[];
+    const leaders=all.filter(x=>x.role==="team_leader");
+    let advisors=all.filter(x=>x.role==="asesora");
+
+    if(profile.role==="team_leader"){
+      $("fteam").innerHTML=`<option value="${esc(me.id)}">${esc(profile.full_name||"Mi Team Leader")}</option>`;
+      $("fteam").value=me.id;
+      advisors=advisors.filter(x=>x.leader_id===me.id);
+      $("prospectAssignmentHelp").textContent="Puedes asignar el prospecto a una asesora de tu equipo.";
+    }else if(profile.role==="asesora"){
+      const myLeader=profile.leader_id||null;
+      const tl=leaders.find(x=>x.id===myLeader);
+      $("fteam").innerHTML=tl
+        ? `<option value="${esc(tl.id)}">${esc(tl.full_name)}</option>`
+        : '<option value="">Sin Team Leader</option>';
+      $("fteam").disabled=true;
+      $("fadv").innerHTML=`<option value="${esc(me.id)}">${esc(profile.full_name||"Yo")}</option>`;
+      $("fadv").value=me.id; $("fadv").disabled=true;
+      $("prospectAssignmentHelp").textContent="Este prospecto quedará asignado a tu usuario.";
+    }else{
+      $("fteam").innerHTML='<option value="">Sin Team Leader</option>'+
+        leaders.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
+      $("fadv").innerHTML='<option value="">Sin asesora</option>'+
+        advisors.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
+      $("prospectAssignmentHelp").textContent="El administrador puede seleccionar Team Leader y luego una asesora.";
+    }
+
+    if(id){
+      const r=await supabaseClient.from("prospects").select("*").eq("id",id).single();
+      if(r.error)throw r.error;
+      const x=r.data;
+      $("fn").value=x.name||""; $("fp").value=x.phone||""; $("fe").value=x.email||"";
+      $("fproj").value=uuid(x.project_id)?x.project_id:"";
+      if(profile.role!=="asesora") $("fteam").value=uuid(x.leader_id)?x.leader_id:"";
+      if(profile.role!=="asesora") $("fadv").value=uuid(x.advisor_id)?x.advisor_id:"";
+      $("fsrc").value=x.source||"Facebook Ads"; $("fgrade").value=x.grade||"A";
+      $("fstatus").value=x.status||"Nuevo"; $("fnote").value=x.note||"";
+    }
+
+    $("prospectModal").classList.add("show");
+  }catch(e){err("Prospecto",e)}
+}
+
 function closeProspectModal(){$("prospectModal").classList.remove("show");$("prospectForm").reset()}
 async function editProspect(id){await openProspectModal(id)}
 async function deleteProspect(id){if(!confirm("¿Eliminar este prospecto?"))return;try{const r=await supabaseClient.from("prospects").delete().eq("id",id);if(r.error)throw r.error;toast("Prospecto eliminado");await render()}catch(e){err("Eliminar prospecto",e)}}
-$("prospectForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("prospectSubmit");btn.disabled=true;try{let advisor=null;if(uuid($("fadv").value)){const r=await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",$("fadv").value).single();if(r.error)throw r.error;advisor=r.data}let projectId=null,projectName="";if(uuid($("fproj").value)){projectId=$("fproj").value;const r=await supabaseClient.from("projects").select("name").eq("id",projectId).single();if(r.error)throw r.error;projectName=r.data?.name||""}const payload={name:$("fn").value.trim(),phone:$("fp").value.trim(),email:$("fe").value.trim()||null,project_id:projectId,project_name:projectName,source:$("fsrc").value,advisor_id:advisor?.id||null,advisor_name:advisor?.full_name||"",leader_id:advisor?.leader_id||null,assignment_mode:$("fteam").value||"auto",grade:$("fgrade").value,status:$("fstatus").value,note:$("fnote").value.trim()||null};const id=$("editProspectId").value;let r=id?await supabaseClient.from("prospects").update(payload).eq("id",id):await supabaseClient.from("prospects").insert(payload);if(r.error)throw r.error;closeProspectModal();toast(id?"Prospecto actualizado":"Prospecto guardado");await render()}catch(e){err("Guardar prospecto",e)}finally{btn.disabled=false}});
+$("fteam").addEventListener("change",async ()=>{
+  try{
+    if(profile.role==="asesora")return;
+    const leaderId=$("fteam").value;
+    const r=await supabaseClient.from("profiles")
+      .select("id,full_name,leader_id")
+      .eq("role","asesora").eq("active",true).order("full_name");
+    if(r.error)throw r.error;
+    let advisors=r.data||[];
+    if(leaderId)advisors=advisors.filter(x=>x.leader_id===leaderId);
+    if(profile.role==="team_leader")advisors=advisors.filter(x=>x.leader_id===me.id);
+    const current=$("fadv").value;
+    $("fadv").innerHTML='<option value="">Sin asesora</option>'+
+      advisors.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
+    if(advisors.some(x=>x.id===current))$("fadv").value=current;
+  }catch(e){err("Carga de asesoras",e)}
+});
+
+$("prospectForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=$("prospectSubmit");btn.disabled=true;
+  try{
+    const role=profile?.role;
+    let leaderId=uuid($("fteam").value)?$("fteam").value:null;
+    let advisorId=uuid($("fadv").value)?$("fadv").value:null;
+
+    if(role==="asesora"){leaderId=uuid(profile.leader_id)?profile.leader_id:null;advisorId=me.id;}
+    if(role==="team_leader"){
+      leaderId=me.id;
+      if(advisorId){
+        const vr=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").eq("id",advisorId).single();
+        if(vr.error)throw vr.error;
+        if(vr.data.role!=="asesora"||vr.data.active===false||vr.data.leader_id!==me.id)
+          throw new Error("La asesora seleccionada no pertenece a tu equipo.");
+      }
+    }
+    if(role==="administrador"&&advisorId){
+      const vr=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").eq("id",advisorId).single();
+      if(vr.error)throw vr.error;
+      if(vr.data.role!=="asesora"||vr.data.active===false)throw new Error("La persona seleccionada no es una asesora activa.");
+      if(!leaderId&&uuid(vr.data.leader_id))leaderId=vr.data.leader_id;
+      if(leaderId&&uuid(vr.data.leader_id)&&vr.data.leader_id!==leaderId)
+        throw new Error("La asesora seleccionada pertenece a otro Team Leader.");
+    }
+
+    let advisor=null;
+    if(advisorId){
+      const r=await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",advisorId).single();
+      if(r.error)throw r.error;
+      advisor=r.data;if(uuid(advisor.leader_id))leaderId=advisor.leader_id;
+    }
+
+    let projectId=null,projectName="";
+    if(uuid($("fproj").value)){
+      projectId=$("fproj").value;
+      const r=await supabaseClient.from("projects").select("name").eq("id",projectId).single();
+      if(r.error)throw r.error;projectName=r.data?.name||"";
+    }
+
+    let leaderName="";
+    if(leaderId){
+      const r=await supabaseClient.from("profiles").select("full_name").eq("id",leaderId).single();
+      if(r.error)throw r.error;leaderName=r.data?.full_name||"";
+    }
+
+    const payload={
+      name:$("fn").value.trim(),phone:$("fp").value.trim(),email:$("fe").value.trim()||null,
+      project_id:projectId,project_name:projectName,source:$("fsrc").value,
+      advisor_id:advisor?.id||null,advisor_name:advisor?.full_name||"",
+      leader_id:leaderId,leader_name:leaderName,
+      assignment_mode:advisorId?"assigned":"unassigned",
+      grade:$("fgrade").value,status:$("fstatus").value,note:$("fnote").value.trim()||null
+    };
+    if(!payload.name||!payload.phone)throw new Error("Nombre y WhatsApp son obligatorios.");
+
+    const id=$("editProspectId").value;
+    const r=id
+      ? await supabaseClient.from("prospects").update(payload).eq("id",id)
+      : await supabaseClient.from("prospects").insert(payload);
+    if(r.error)throw r.error;
+
+    closeProspectModal();toast(id?"Prospecto actualizado":"Prospecto guardado");await render();
+  }catch(e){err("Guardar prospecto",e)}
+  finally{btn.disabled=false}
+});
+
 function newFollowup(prospectId){openFollowupModal(prospectId)}
 async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId||"";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("followupModal").classList.add("show")}
 function closeFollowupModal(){$("followupModal").classList.remove("show");$("followupForm").reset()}
