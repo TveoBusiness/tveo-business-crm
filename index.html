@@ -6,26 +6,26 @@
   <title>TVEO BUSINESS CRM</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{--primary:#111827;--accent:#b91c1c;--bg:#f3f4f6;--card:#fff;--muted:#6b7280;--border:#e5e7eb;--ok:#15803d;--danger:#b91c1c}
-    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#111827}
+    :root{--primary:#075bb5;--accent:#0b73d9;--bg:#f4f8fc;--card:#fff;--muted:#647b93;--border:#dbe8f4;--ok:#15803d;--danger:#c62828;--navy:#063b78}
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#f4f8fc,#eef6ff);color:#12304f}
     button,input,select,textarea{font:inherit}button{cursor:pointer}
     .hidden{display:none!important}.center{min-height:100vh;display:grid;place-items:center;padding:20px}
-    .login{width:min(430px,100%);background:#fff;border-radius:18px;padding:30px;box-shadow:0 15px 50px #0002}
-    .brand{text-align:center;font-weight:800;font-size:25px;letter-spacing:.5px}.brand span{color:var(--accent)}
+    .login{width:min(960px,100%);background:#fff;border-radius:22px;padding:42px;box-shadow:0 20px 60px #063b7820;border:1px solid var(--border)}
+    .brand{text-align:center;font-weight:800;font-size:29px;letter-spacing:.5px;color:var(--navy)}.brand span{color:var(--accent)}
     .muted{color:var(--muted);font-size:14px}.field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
     input,select,textarea{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:9px;background:#fff;outline:none}
     input:focus,select:focus,textarea:focus{border-color:#9ca3af;box-shadow:0 0 0 3px #00000008}textarea{min-height:90px;resize:vertical}
-    .btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700}.btn-primary{background:var(--primary);color:#fff}.btn-accent{background:var(--accent);color:#fff}
+    .btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700}.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--accent)}.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--primary)}
     .btn-light{background:#f3f4f6;color:#111827}.btn-danger{background:#fee2e2;color:#991b1b}.btn:disabled{opacity:.5;cursor:not-allowed}
-    .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.sidebar{background:#111827;color:#fff;padding:20px;position:sticky;top:0;height:100vh}
-    .side-brand{font-size:20px;font-weight:800;margin-bottom:25px}.side-brand span{color:#fca5a5}
-    .nav button{width:100%;border:0;background:transparent;color:#d1d5db;text-align:left;padding:11px;border-radius:8px;margin:3px 0}
-    .nav button:hover,.nav button.active{background:#ffffff12;color:#fff}.main{min-width:0}.top{background:#fff;border-bottom:1px solid var(--border);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .content{padding:22px}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat,.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px}.stat b{display:block;font-size:28px;margin-top:7px}
+    .app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.sidebar{background:linear-gradient(180deg,#063b78,#075bb5);color:#fff;padding:20px;position:sticky;top:0;height:100vh}
+    .side-brand{font-size:20px;font-weight:800;margin-bottom:25px}.side-brand span{color:#8ed0ff}
+    .company-profile{display:flex;align-items:center;gap:10px;padding:10px 4px 16px;margin-bottom:12px;border-bottom:1px solid #ffffff22}.company-profile small{opacity:.8}.company-avatar{width:44px;height:44px;border-radius:50%;background:#ffffff22;border:2px solid #fff;display:grid;place-items:center;overflow:hidden;flex:none}.company-avatar img{width:100%;height:100%;object-fit:cover}.nav button{width:100%;border:0;background:transparent;color:#d1d5db;text-align:left;padding:11px;border-radius:8px;margin:3px 0}
+    .nav button:hover,.nav button.active{background:#ffffff1f;color:#fff}.main{min-width:0}.top{background:#fff;border-bottom:1px solid var(--border);padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+    .content{padding:22px}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat,.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 7px 24px #12304f0b}.stat b{display:block;font-size:28px;margin-top:7px}
     .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap}.toolbar .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:11px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;font-size:14px}.table th{background:#f9fafb}
+    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:11px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;font-size:14px}.table th{background:#f3f8fd;color:#315675}
     .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;font-weight:700}.badge.ok{background:#dcfce7;color:#166534}.badge.red{background:#fee2e2;color:#991b1b}
-    .modal{position:fixed;inset:0;background:#0008;display:grid;place-items:center;padding:15px;z-index:20}.modal-box{background:#fff;border-radius:16px;width:min(720px,100%);max-height:92vh;overflow:auto;padding:20px}
+    .modal{position:fixed;inset:0;background:#063b7888;display:grid;place-items:center;padding:15px;z-index:20}.modal-box{background:#fff;border-radius:16px;width:min(720px,100%);max-height:92vh;overflow:auto;padding:20px}
     .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
     .empty{text-align:center;padding:30px;color:var(--muted)}.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:12px 16px;border-radius:10px;z-index:50;box-shadow:0 8px 30px #0003}
     @media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px}.nav{display:flex;overflow:auto;gap:5px}.nav button{width:auto;white-space:nowrap}.stats{grid-template-columns:1fr 1fr}}
@@ -51,7 +51,7 @@
 <div id="appView" class="app hidden">
   <aside class="sidebar">
     <div class="side-brand">TVEO <span>BUSINESS</span></div>
-    <div id="userBox" class="muted" style="color:#d1d5db;margin-bottom:18px"></div>
+    <div class="company-profile"><div id="companyAvatar" class="company-avatar">🏢</div><div><strong>TVEO Business</strong><br><small>Desarrolladora Inmobiliaria</small></div></div><div id="userBox" class="muted" style="color:#dbeeff;margin-bottom:18px"></div>
     <nav class="nav">
       <button data-section="dashboard">📊 Dashboard</button>
       <button data-section="leads">🎯 Leads</button>
@@ -103,6 +103,27 @@
       <section id="proyectos" class="section hidden">
         <div class="toolbar"><div><h2>Proyectos</h2><div class="muted">Proyectos inmobiliarios registrados.</div></div><button class="btn btn-accent" id="newProjectBtn">+ Nuevo proyecto</button></div>
         <div class="card table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Ubicación</th><th></th></tr></thead><tbody id="projectsBody"></tbody></table></div>
+      </section>
+
+      <section id="configuracion" class="section hidden">
+        <div class="toolbar"><div><h2>Configuración</h2><div class="muted">Personaliza la identidad visual de TVEO Business.</div></div></div>
+        <div class="grid" style="grid-template-columns:minmax(260px,340px) 1fr;align-items:start">
+          <div class="card" style="text-align:center">
+            <h3>Foto de perfil de la empresa</h3>
+            <div id="companyPhotoPreview" style="width:160px;height:160px;border-radius:50%;margin:18px auto;background:#eaf4ff;border:5px solid #d8ebff;display:grid;place-items:center;font-size:50px;color:#075bb5;overflow:hidden">🏢</div>
+            <input id="companyPhotoInput" type="file" accept="image/*">
+            <button class="btn btn-accent" style="margin-top:10px" onclick="saveCompanyPhoto()">Guardar foto</button>
+            <button class="btn btn-light" style="margin-top:8px" onclick="removeCompanyPhoto()">Quitar foto</button>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0;color:#063b78">TVEO Business CRM</h3>
+            <p class="muted">Sistema de gestión inmobiliaria</p>
+            <div style="background:#eef7ff;border:1px solid #cfe4f8;border-radius:10px;padding:13px;margin-top:15px">La foto se guarda en este navegador y se mostrará dentro del CRM. No modifica Supabase ni las tablas existentes.</div>
+            <div class="field"><label>Empresa</label><input value="TVEO Business" disabled></div>
+            <div class="field"><label>Rubro</label><input value="Desarrolladora Inmobiliaria" disabled></div>
+            <div class="field"><label>Colores del sistema</label><input value="Azul y blanco" disabled></div>
+          </div>
+        </div>
       </section>
 
       <section id="reportes" class="section hidden">
@@ -305,17 +326,20 @@ async function saveLead(ev,id){
 }
 
 function prospectForm(x={}){
-  const selectedLeader=x.leader_id|| (canAdvisor()?profile.leader_id:canLeader()?me.id:"");
-  const selectedAdvisor=x.advisor_id||(canAdvisor()?me.id:"");
+  let selectedLeader=x.leader_id||"";
+  let selectedAdvisor=x.advisor_id||"";
+  if(canAdvisor()){selectedLeader=profile.leader_id||"";selectedAdvisor=me.id;}
+  else if(canLeader()){selectedLeader=me.id;}
   const leaderDisabled=canAdvisor()||canLeader();
-  const advisorList=canAdvisor()?advisors().filter(p=>p.id===me.id):canLeader()?profilesForLeader(me.id):advisors();
+  const advisorDisabled=canAdvisor();
+  const advisorList=canAdvisor()?advisors().filter(p=>p.id===me.id):canLeader()?profilesForLeader(me.id):(selectedLeader?profilesForLeader(selectedLeader):advisors());
   return `<form id="entityForm" onsubmit="saveProspect(event,'${x.id||""}')"><div class="form-grid">
     <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
     <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
     <div class="field"><label>Email</label><input name="email" type="email" value="${esc(x.email)}"></div>
     <div class="field"><label>Proyecto</label><select name="project_id">${projectOptions(x.project_id)}</select></div>
     <div class="field"><label>Team Leader</label><select id="prosLeader" name="leader_id" ${leaderDisabled?"disabled":""}>${personOptions(leaders(),selectedLeader)}</select></div>
-    <div class="field"><label>Asesora</label><select id="prosAdvisor" name="advisor_id" ${canAdvisor()?"disabled":""}>${personOptions(advisorList,selectedAdvisor)}</select></div>
+    <div class="field"><label>Asesora</label><select id="prosAdvisor" name="advisor_id" ${advisorDisabled?"disabled":""}><option value="">Sin asesora</option>${personOptions(advisorList,selectedAdvisor)}</select></div>
     <div class="field"><label>Origen</label><select name="source">${sourcePros.map(v=>`<option ${v===(x.source||"Orgánico")?"selected":""}>${v}</option>`).join("")}</select></div>
     <div class="field"><label>Grado</label><select name="grade">${["A","B","C"].map(v=>`<option ${v===(x.grade||"A")?"selected":""}>${v}</option>`).join("")}</select></div>
     <div class="field"><label>Estado</label><select name="status">${statusPros.map(v=>`<option ${v===(x.status||"Nuevo")?"selected":""}>${v}</option>`).join("")}</select></div>
@@ -326,24 +350,41 @@ function prospectForm(x={}){
 function newProspect(){openModal("Nuevo prospecto",prospectForm({}));wireProspectAssignment()}
 function editProspect(id){const x=data.prospects.find(a=>a.id===id);openModal("Editar prospecto",prospectForm(x));wireProspectAssignment()}
 function wireProspectAssignment(){
-  const l=$("prosLeader"),a=$("prosAdvisor");if(!l||!a||canAdvisor()||canLeader())return;
-  l.onchange=()=>{a.innerHTML=personOptions(l.value?profilesForLeader(l.value):advisors(),a.value)}
+  const l=$("prosLeader"),a=$("prosAdvisor");
+  if(!l||!a||canAdvisor()||canLeader())return;
+  l.onchange=()=>{
+    const current=a.value||"";
+    const list=l.value?profilesForLeader(l.value):advisors();
+    a.innerHTML=`<option value="">Sin asesora</option>`+personOptions(list,list.some(p=>p.id===current)?current:"");
+  };
 }
 async function saveProspect(ev,id){
-  ev.preventDefault();const f=new FormData(ev.target);
-  let leader=f.get("leader_id")||null, advisor=f.get("advisor_id")||null;
-  if(canAdvisor()){leader=profile.leader_id||null;advisor=me.id}
-  if(canLeader()){leader=me.id;if(advisor && !profilesForLeader(me.id).some(p=>p.id===advisor)) {toast("La asesora no pertenece a tu equipo.",false);return;}}
-  const adv=data.profiles.find(p=>p.id===advisor), lead=data.profiles.find(p=>p.id===leader), proj=data.projects.find(p=>p.id===f.get("project_id"));
-  if(canAdmin() && !leader && adv?.leader_id) leader=adv.leader_id;
+  ev.preventDefault();
+  const f=new FormData(ev.target);
+  let leader=f.get("leader_id")||null;
+  let advisor=f.get("advisor_id")||null;
+  if(canAdvisor()){leader=profile.leader_id||null;advisor=me.id;}
+  if(canLeader()){
+    leader=me.id;
+    if(advisor && !profilesForLeader(me.id).some(p=>p.id===advisor)){toast("La asesora no pertenece a tu equipo.",false);return;}
+  }
+  let adv=data.profiles.find(p=>p.id===advisor);
+  if(canAdmin() && advisor){
+    if(!adv){toast("La asesora seleccionada no existe.",false);return;}
+    if(!leader)leader=adv.leader_id||null;
+    if(leader && adv.leader_id && adv.leader_id!==leader){toast("La asesora seleccionada no pertenece al Team Leader elegido.",false);return;}
+  }
+  const lead=data.profiles.find(p=>p.id===leader);
+  const proj=data.projects.find(p=>p.id===f.get("project_id"));
   const payload={name:f.get("name"),phone:f.get("phone"),email:f.get("email"),project_id:f.get("project_id")||null,project_name:proj?.name||null,
     leader_id:leader,advisor_id:advisor,leader_name:lead?.full_name||null,advisor_name:adv?.full_name||null,
     source:f.get("source"),grade:f.get("grade"),status:f.get("status"),note:f.get("note"),
     assignment_mode:canAdmin()?"admin":canLeader()?"team_leader":"asesora"};
   const q=id?supabaseClient.from("prospects").update(payload).eq("id",id):supabaseClient.from("prospects").insert(payload);
-  const {error}=await q;if(error){toast(errMsg(error),false);return;}closeModal();await loadProspects();renderAll();toast("Prospecto guardado correctamente.");
+  const {error}=await q;
+  if(error){toast(errMsg(error),false);return;}
+  closeModal();await loadProspects();renderAll();toast("Prospecto guardado correctamente.");
 }
-
 function followForm(x={}){
   return `<form id="entityForm" onsubmit="saveFollow(event,'${x.id||""}')"><div class="form-grid">
     <div class="field full"><label>Título *</label><input name="title" required value="${esc(x.title)}"></div>
@@ -364,32 +405,45 @@ async function toggleFollow(id,done){const {error}=await supabaseClient.from("fo
 async function deleteFollow(id){if(!confirm("¿Eliminar este seguimiento?"))return;const {error}=await supabaseClient.from("followups").delete().eq("id",id);if(error){toast(errMsg(error),false);return;}await loadFollowups();renderAll()}
 
 function memberForm(x={}){
+  const isNew=!x.id;
   return `<form id="entityForm" onsubmit="saveMember(event,'${x.id||""}')"><div class="form-grid">
     <div class="field"><label>Nombre completo *</label><input name="full_name" required value="${esc(x.full_name)}"></div>
-    <div class="field"><label>Correo</label><input name="email" type="email" value="${esc(x.email)}"></div>
+    <div class="field"><label>Correo *</label><input name="email" type="email" required value="${esc(x.email)}"></div>
     <div class="field"><label>Teléfono</label><input name="phone" value="${esc(x.phone)}"></div>
-    <div class="field"><label>Rol</label><select name="role">${["administrador","team_leader","asesora"].map(v=>`<option value="${v}" ${v===x.role?"selected":""}>${roleLabel(v)}</option>`).join("")}</select></div>
+    <div class="field"><label>Rol</label><select name="role">${["team_leader","asesora","administrador"].map(v=>`<option value="${v}" ${v===x.role?"selected":""}>${roleLabel(v)}</option>`).join("")}</select></div>
     <div class="field"><label>Team Leader</label><select name="leader_id"><option value="">Directo a Tveo</option>${personOptions(leaders(),x.leader_id)}</select></div>
+    <div class="field"><label>${isNew?"Contraseña inicial *":"Nueva contraseña (opcional)"}</label><input name="password" type="password" minlength="8" ${isNew?"required":""} placeholder="Mínimo 8 caracteres"></div>
     <div class="field"><label>Activo</label><select name="active"><option value="true" ${x.active!==false?"selected":""}>Sí</option><option value="false" ${x.active===false?"selected":""}>No</option></select></div>
-    <div class="full"><button class="btn btn-accent">Guardar perfil</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
+    <div class="full"><button class="btn btn-accent">${isNew?"Crear miembro":"Guardar perfil"}</button> <button type="button" class="btn btn-light" onclick="closeModal()">Cancelar</button></div>
   </div></form>`;
 }
 function newMember(){if(!canAdmin())return;openModal("Nuevo miembro",memberForm({active:true}))}
 function editMember(id){if(!canAdmin())return;openModal("Editar miembro",memberForm(data.profiles.find(x=>x.id===id)||{}))}
 async function saveMember(ev,id){
-  ev.preventDefault();const f=new FormData(ev.target);
+  ev.preventDefault();
+  const f=new FormData(ev.target),role=f.get("role"),password=String(f.get("password")||"");
+  const leader_id=role==="asesora"?(f.get("leader_id")||null):null;
   if(!id){
-    const payload={name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),role:f.get("role"),leader_id:f.get("leader_id")||null};
-    const {data:r,error}=await supabaseClient.functions.invoke(CONFIG.edgeFunction,{body:payload});
+    if(role==="administrador"){toast("La función actual no permite crear administradores desde el CRM.",false);return;}
+    if(password.length<8){toast("La contraseña debe tener al menos 8 caracteres.",false);return;}
+    const action=role==="team_leader"?"create_team_leader":"create_direct_advisor";
+    const {data:result,error}=await supabaseClient.functions.invoke(CONFIG.edgeFunction,{body:{action,full_name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),password}});
     if(error){toast(errMsg(error),false);return;}
-    closeModal();await loadBase();toast("Miembro creado.");
+    if(result?.error){toast(result.error,false);return;}
+    closeModal();await loadBase();toast("Miembro creado correctamente.");
   }else{
-    const payload={full_name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),role:f.get("role"),leader_id:f.get("leader_id")||null,active:f.get("active")==="true"};
+    const payload={full_name:f.get("full_name"),email:f.get("email"),phone:f.get("phone"),role,leader_id,active:f.get("active")==="true"};
     const {error}=await supabaseClient.from("profiles").update(payload).eq("id",id);
-    if(error){toast(errMsg(error),false);return;}closeModal();await loadBase();toast("Perfil actualizado.");
+    if(error){toast(errMsg(error),false);return;}
+    if(password){
+      if(password.length<8){toast("La nueva contraseña debe tener al menos 8 caracteres.",false);return;}
+      const {data:result,error:fnError}=await supabaseClient.functions.invoke(CONFIG.edgeFunction,{body:{action:"update_password",user_id:id,password}});
+      if(fnError){toast(errMsg(fnError),false);return;}
+      if(result?.error){toast(result.error,false);return;}
+    }
+    closeModal();await loadBase();toast(password?"Perfil y contraseña actualizados.":"Perfil actualizado.");
   }
 }
-
 function projectForm(x={}){
   return `<form id="entityForm" onsubmit="saveProject(event,'${x.id||""}')"><div class="form-grid">
     <div class="field"><label>Nombre *</label><input name="name" required value="${esc(x.name)}"></div>
@@ -410,7 +464,7 @@ function openSection(section){
   document.querySelectorAll(".section").forEach(x=>x.classList.add("hidden"));
   $(section).classList.remove("hidden");
   document.querySelectorAll(".nav button[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===section));
-  $("pageTitle").textContent=section.charAt(0).toUpperCase()+section.slice(1);
+  $("pageTitle").textContent=section==="configuracion"?"Configuración":section.charAt(0).toUpperCase()+section.slice(1);
 }
 
 $("loginForm").addEventListener("submit",e=>{e.preventDefault();signIn()});
@@ -440,8 +494,27 @@ async function updatePassword(ev){
   if(error){toast(errMsg(error),false);return;}closeModal();toast("Contraseña actualizada.");
 }
 
+
+function loadCompanyPhoto(){
+  const img=localStorage.getItem("tveo_company_photo");
+  const avatar=$("companyAvatar");
+  if(avatar) avatar.innerHTML=img?`<img src="${img}">`:"🏢";
+  const preview=$("companyPhotoPreview");
+  if(preview) preview.innerHTML=img?`<img src="${img}" style="width:100%;height:100%;object-fit:cover">`:"🏢";
+}
+function saveCompanyPhoto(){
+  const file=$("companyPhotoInput")?.files?.[0];
+  if(!file){toast("Selecciona una imagen primero.",false);return;}
+  const reader=new FileReader();
+  reader.onload=()=>{try{localStorage.setItem("tveo_company_photo",reader.result);loadCompanyPhoto();toast("Foto de empresa guardada.");}catch(e){toast("La imagen es demasiado grande para este navegador.",false);}};
+  reader.readAsDataURL(file);
+}
+function removeCompanyPhoto(){localStorage.removeItem("tveo_company_photo");loadCompanyPhoto();toast("Foto de empresa quitada.");}
+window.saveCompanyPhoto=saveCompanyPhoto;window.removeCompanyPhoto=removeCompanyPhoto;
+
 async function boot(){
   try{
+    loadCompanyPhoto();
     const ok=await loadProfile();
     if(!ok)return;
     hide("loginView");show("appView");openSection("dashboard");await loadBase();
