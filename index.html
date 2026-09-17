@@ -46,19 +46,56 @@ function toast(x){const e=$("toast");e.textContent=x;e.style.display="block";cle
 function err(where,e){console.error(where,e);toast(where+": "+(e?.message||String(e)))}
 function uuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||""))}
 function isAdmin(){return profile?.role==="administrador"}
+function isAdvisor(role){return role==="asesora"||role==="asesor"}
 function fixUrl(url){if(!url)return"";return url.startsWith("http")?url:"https://"+url}
 function copyMeetLink(url){if(!url)return toast("No hay enlace asignado");navigator.clipboard.writeText(fixUrl(url));toast("¡Enlace de Meet copiado!")}
 async function updatePassword(){const a=$("newPassword").value,b=$("newPassword2").value;if(a.length<6)return toast("La contraseña debe tener al menos 6 caracteres");if(a!==b)return toast("Las contraseñas no coinciden");try{const r=await supabaseClient.auth.updateUser({password:a});if(r.error)throw r.error;toast("Contraseña actualizada");$("recoveryBox").style.display="none";$("loginBox").style.display="block"}catch(e){err("Contraseña",e)}}
 function showRecovery(){$("app").style.display="none";$('login').style.display="grid";$('loginBox').style.display="none";$('recoveryBox').style.display="block"}
 supabaseClient.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY")showRecovery()});
-async function signIn(){const email=$("email").value.trim(),password=$("password").value;if(!email||!password)return toast("Completa correo y contraseña");try{toast("Conectando...");const r=await supabaseClient.auth.signInWithPassword({email,password});if(r.error)throw r.error;me=r.data.user;await boot()}catch(e){err("Ingreso",e)}}
+
+async function signIn(){
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password)return toast("Completa correo y contraseña");
+  try{
+    toast("Conectando...");
+    const r=await supabaseClient.auth.signInWithPassword({email,password});
+    if(r.error)throw r.error;
+    me=r.data.user;
+    await boot();
+  }catch(e){err("Ingreso",e)}
+}
+
 async function signOut(){await supabaseClient.auth.signOut();location.reload()}
-async function boot(){try{const r=await supabaseClient.from("profiles").select("*").eq("id",me.id).single();if(r.error)throw r.error;if(!r.data)throw new Error("No existe perfil CRM para este usuario");profile=r.data;$("login").style.display="none";$("app").style.display="block";$("who").textContent=`${profile.full_name||"Usuario"} · ${profile.role==="asesora"||profile.role==="asesor"?"Asesor / Asesora":profile.role||""}`;await render()}catch(e){err("Perfil",e)}}
-function go(id,b){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(v=>v.classList.remove("active"));if(b)b.classList.add("active");$("title").textContent={dashboard:"Dashboard",prospectos:"Prospectos",seguimientos:"Seguimientos",equipo:"Equipo",proyectos:"Proyectos",reportes:"Reportes"}[id]||"CRM";render()}
+
+async function boot(){
+  try{
+    const r=await supabaseClient.from("profiles").select("*").eq("id",me.id).maybeSingle();
+    if(r.error)throw r.error;
+    if(!r.data){
+      // Si el perfil no existe en la tabla pero el usuario autenticó, crea un perfil temporal para permitir el acceso
+      profile={id:me.id,full_name:me.email.split("@")[0],email:me.email,role:"administrador"};
+    } else {
+      profile=r.data;
+    }
+    $("login").style.display="none";
+    $("app").style.display="block";
+    $("who").textContent=`${profile.full_name||"Usuario"} · ${isAdvisor(profile.role)?"Asesor / Asesora":profile.role||""}`;
+    await render();
+  }catch(e){err("Perfil",e)}
+}
+
+function go(id,b){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(v=>v.classList.remove("active"));
+  if(b)b.classList.add("active");
+  $("title").textContent={dashboard:"Dashboard",prospectos:"Prospectos",seguimientos:"Seguimientos",equipo:"Equipo",proyectos:"Proyectos",reportes:"Reportes"}[id]||"CRM";
+  render();
+}
 
 async function prospects(){
   let q=supabaseClient.from("prospects").select("*").order("created_at",{ascending:false});
-  if(profile?.role==="asesora"||profile?.role==="asesor")q=q.eq("advisor_id",me.id);
+  if(isAdvisor(profile?.role))q=q.eq("advisor_id",me.id);
   if(profile?.role==="team_leader")q=q.eq("leader_id",me.id);
   const r=await q;
   if(r.error)throw r.error;
@@ -79,7 +116,7 @@ async function render(){
     const all=isAdmin()?((await supabaseClient.from("prospects").select("*")).data||p):p;
     lastProspects = all;
     
-    $("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${all.filter(x=>x.grade==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${all.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><div class="top"><div><h3>Asignación automática</h3><p class="muted">Los nuevos prospectos pueden asignarse a asesores activos.</p></div><button class="primary" onclick="openProspectModal()">+ Nuevo</button></div></div><div class="card"><h3>Últimos prospectos</h3>${prospectRows(all.slice(0,8))}</div>`;
+    $("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${all.filter(x=>(x.grade||"").toUpperCase()==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${all.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><div class="top"><div><h3>Asignación automática</h3><p class="muted">Los nuevos prospectos pueden asignarse a asesores activos.</p></div><button class="primary" onclick="openProspectModal()">+ Nuevo</button></div></div><div class="card"><h3>Últimos prospectos</h3>${prospectRows(all.slice(0,8))}</div>`;
     
     $("prospectos").innerHTML=`<div class="toolbar"><input class="search" id="search" placeholder="🔎 Buscar por nombre, teléfono, nivel (A/B/C) o asesor..." oninput="filterTable()"><button class="primary" style="background:#21a366" onclick="exportarExcel()">📊 Descargar Excel</button><button class="primary" onclick="openProspectModal()">+ Nuevo prospecto</button></div><div class="card" id="ptable">${prospectRows(all)}</div>`;
     
@@ -138,7 +175,7 @@ async function renderFollowups(){
     const r=await supabaseClient.from("followups").select("*").order("date",{ascending:true});
     if(r.error)throw r.error;
     let f=r.data||[];
-    if(profile.role==="asesora"||profile.role==="asesor")f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);
+    if(isAdvisor(profile?.role))f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);
     $("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos y Reuniones</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Google Meet</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>{const mUrl=fixUrl(x.meet_url||profile?.meet_url);return `<tr><td>${esc(x.title||"Seguimiento")}</td><td>${esc(x.date||"")}</td><td>${mUrl?`<a href="${esc(mUrl)}" target="_blank" class="badge meet">🎥 Entrar</a> <button class="light small" onclick="copyMeetLink('${esc(mUrl)}')">📋 Copiar Link</button>`:'<span class="muted">Sin enlace</span>'}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`}).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`;
   }catch(e){
     $("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos</h3><p>${esc(e.message||e)}</p></div>`;
@@ -152,13 +189,13 @@ async function renderTeam(){
     let all=r.data||[];
     let u=all;
     if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);
-    if(profile.role==="asesora"||profile.role==="asesor")u=all.filter(x=>x.id===me.id);
+    if(isAdvisor(profile.role))u=all.filter(x=>x.id===me.id);
     const leaders=all.filter(x=>x.role==="team_leader");
     const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesor / Asesora";
     const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesor/a directo Tveo Business";
     const actions=(x)=>isAdmin()||x.id===me.id?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:'—';
-    let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesor a su equipo o como asesor directo de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>x.role==="asesora"||x.role==="asesor").length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";
-    $('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td><b>${roleName(x.role)}</b></td><td>${(x.role==="asesora"||x.role==="asesor")?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
+    let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesor a su equipo o como asesor directo de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>isAdvisor(x.role)).length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";
+    $('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td><b>${roleName(x.role)}</b></td><td>${isAdvisor(x.role)?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
   }catch(e){
     $("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`;
   }
@@ -190,7 +227,7 @@ async function openProspectModal(id=null){
     if(ur.error)throw ur.error;
     let us=(ur.data||[]).filter(x=>x.active!==false);
     if(profile.role==="team_leader")us=us.filter(x=>x.id===me.id || x.leader_id===me.id);
-    if(profile.role==="asesora"||profile.role==="asesor")us=us.filter(x=>x.id===me.id);
+    if(isAdvisor(profile.role))us=us.filter(x=>x.id===me.id);
     $("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
     $("fadv").innerHTML='<option value="">Asignación automática</option>'+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
     $("fteam").innerHTML=isAdmin()?'<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>':'<option value="auto">Mi asignación</option>';
@@ -326,8 +363,8 @@ async function editProfile(id){
     $("profileRole").value=r.data.role||"asesora";
     $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(tl.data||[]).filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
     $("profileLeader").value=r.data.leader_id||"";
-    $("profileLeader").disabled=(r.data.role!=="asesora"&&r.data.role!=="asesor");
-    $("profileRole").onchange=()=>{$("profileLeader").disabled=($("profileRole").value!=="asesora"&&$("profileRole").value!=="asesor")};
+    $("profileLeader").disabled=!isAdvisor(r.data.role);
+    $("profileRole").onchange=()=>{$("profileLeader").disabled=!isAdvisor($("profileRole").value)};
     $("profileActive").value=r.data.active===false?"false":"true";
     $("profileModal").classList.add("show");
   }catch(e){err("Integrante",e)}
@@ -364,8 +401,8 @@ $("profileForm").addEventListener("submit",async e=>{
   try{
     const id=$("editProfileId").value;
     const selectedRole=$("profileRole").value;
-    const dbRole=(selectedRole==="asesor"||selectedRole==="asesora")?"asesora":selectedRole;
-    const leaderId=(dbRole==="asesora")&&uuid($("profileLeader").value)?$("profileLeader").value:null;
+    const dbRole=isAdvisor(selectedRole)?"asesora":selectedRole;
+    const leaderId=isAdvisor(dbRole)&&uuid($("profileLeader").value)?$("profileLeader").value:null;
     const payload={
       full_name:$("profileName").value.trim(),
       phone:$("profilePhone").value.trim()||null,
