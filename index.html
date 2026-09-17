@@ -65,6 +65,33 @@ await renderFollowups();await renderTeam();await renderProjects();renderReports(
 
 async function filterTable(){
   try{
+    const q = ($("search")?.value || "").toLowerCase().trim();
+    const p = (await prospects()).filter(x => {
+      const name = (x.name || "").toLowerCase();
+      const phone = (x.phone || "").toLowerCase();
+      const project = (x.project_name || "").toLowerCase();
+      const status = (x.status || "").toLowerCase();
+      const grade = (x.grade || "").toLowerCase();
+      const advisor = (x.advisor_name || "").toLowerCase();
+
+      // Si el usuario escribe exactamente "a", "b" o "c", filtra por Nivel exacto
+      if (q === "a" || q === "b" || q === "c") {
+        return grade === q;
+      }
+
+      // Para cualquier otro texto o nombre, realiza la búsqueda general
+      return name.includes(q) || 
+             phone.includes(q) || 
+             project.includes(q) || 
+             status.includes(q) || 
+             grade.includes(q) || 
+             advisor.includes(q);
+    });
+
+    $("ptable").innerHTML = prospectRows(p);
+  } catch(e) { err("Búsqueda", e); }
+}
+  try{
     const q=($("search")?.value||"").toLowerCase().trim();
     const p=(await prospects()).filter(x=>{
       const name=(x.name||"").toLowerCase();
