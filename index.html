@@ -202,8 +202,22 @@ button:disabled{opacity:.6;cursor:not-allowed}
       <div class="field"><label>Nombre</label><input id="profileName" required></div>
       <div class="field"><label>Teléfono</label><input id="profilePhone"></div>
       <div class="field"><label>Enlace de Google Meet (Sala Personal)</label><input id="profileMeet" placeholder="https://meet.google.com/xyz-abcd-efg"></div>
-      <div class="field"><label>Rol</label><select id="profileRole"><option value="administrador">Administrador</option><option value="team_leader">Team Leader</option><option value="asesor">Asesor</option><option value="asesora">Asesora</option></select></div>
-      <div class="field"><label>Team Leader</label><select id="profileLeader"><option value="">Asesor/a directo Tveo Business</option></select><small class="muted">Solo aplica a asesores.</small></div>
+      <div class="field"><label>Rol comercial</label>
+        <select id="profileRole">
+          <option value="administrador">Administrador</option>
+          <option value="team_leader">Team Leader</option>
+          <option value="asesora">Asesor / Asesora</option>
+        </select>
+      </div>
+      <div class="field" id="genderField">
+        <label>Sexo</label>
+        <select id="profileGender">
+          <option value="">Seleccionar</option>
+          <option value="male">Masculino → Asesor</option>
+          <option value="female">Femenino → Asesora</option>
+        </select>
+      </div>
+      <div class="field"><label>Team Leader</label><select id="profileLeader"><option value="">Asesor/a directo Tveo Business</option></select><small class="muted">Solo aplica a asesores/as.</small></div>
       <div class="field"><label>Activo</label><select id="profileActive"><option value="true">Sí</option><option value="false">No</option></select></div>
       <button class="primary" style="width:100%">Guardar cambios</button>
     </form>
@@ -230,6 +244,12 @@ function isAdmin(){return profile?.role==="administrador"}
 function isAdvisor(role){return role==="asesora"||role==="asesor"}
 function fixUrl(url){if(!url)return"";return url.startsWith("http")?url:"https://"+url}
 async function copyMeetLink(url){if(!url)return toast("No hay enlace asignado");try{await navigator.clipboard.writeText(fixUrl(url));toast("¡Enlace de Meet copiado!")}catch(e){toast("No se pudo copiar el enlace")}}
+function displayRole(x){
+  if(x?.role==="administrador")return "Administrador";
+  if(x?.role==="team_leader")return "Team Leader";
+  if(isAdvisor(x?.role))return x.gender==="male"?"Asesor":"Asesora";
+  return x?.role||"";
+}
 
 async function updatePassword(){
   const a=$("newPassword").value,b=$("newPassword2").value;
@@ -276,13 +296,13 @@ async function boot(){
     const r=await supabaseClient.from("profiles").select("*").eq("id",me.id).maybeSingle();
     if(r.error)throw r.error;
     if(!r.data){
-      profile={id:me.id,full_name:me.email?.split("@")[0]||"Usuario",email:me.email,role:"administrador"};
+      profile={id:me.id,full_name:me.email?.split("@")[0]||"Usuario",email:me.email,role:"administrador",gender:null};
     }else{
       profile=r.data;
     }
     $("login").style.display="none";
     $("app").style.display="block";
-    $("who").textContent=`${profile.full_name||"Usuario"} · ${isAdvisor(profile.role)?"Asesor / Asesora":profile.role||""}`;
+    $("who").textContent=`${profile.full_name||"Usuario"} · ${displayRole(profile)}`;
     await render();
   }catch(e){err("Perfil",e)}
 }
@@ -320,10 +340,16 @@ async function render(){
       ["dashboard","prospectos"].forEach(id=>$(id).innerHTML=`<div class="card"><h3>Error de datos</h3><p>${esc(e.message||e)}</p><button class="light" onclick="render()">↻ Reintentar</button></div>`);
       return;
     }
-    const all=isAdmin()?((await supabaseClient.from("prospects").select("*")).data||p):p;
+    let all=p;
+    if(isAdmin()){
+      const ar=await supabaseClient.from("prospects").select("*");
+      if(ar.error)throw ar.error;
+      all=ar.data||p;
+    }
+
     lastProspects=all;
 
-    $("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${all.filter(x=>(x.grade||"").toUpperCase()==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${all.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><div class="top"><div><h3>Asignación automática</h3><p class="muted">Los nuevos prospectos pueden asignarse a asesores activos.</p></div><button class="primary" onclick="openProspectModal()">+ Nuevo</button></div></div><div class="card"><h3>Últimos prospectos</h3>${prospectRows(all.slice(0,8))}</div>`;
+    $("dashboard").innerHTML=`<div class="stats"><div class="card"><span class="muted">Prospectos</span><div class="num">${all.length}</div></div><div class="card"><span class="muted">Clientes A</span><div class="num">${all.filter(x=>(x.grade||"").toUpperCase()==="A").length}</div></div><div class="card"><span class="muted">Reservas</span><div class="num">${all.filter(x=>x.status==="Reserva").length}</div></div><div class="card"><span class="muted">Ventas</span><div class="num">${all.filter(x=>x.status==="Venta").length}</div></div></div><div class="card"><div class="top"><div><h3>Asignación de prospectos</h3><p class="muted">${isAdmin()?"El Administrador puede asignar a Team Leaders o asesores.":profile.role==="team_leader"?"El Team Leader puede asignar a sus asesores.":"Los nuevos prospectos quedan asignados a ti."}</p></div><button class="primary" onclick="openProspectModal()">+ Nuevo</button></div></div><div class="card"><h3>Últimos prospectos</h3>${prospectRows(all.slice(0,8))}</div>`;
 
     $("prospectos").innerHTML=`<div class="toolbar"><input class="search" id="search" placeholder="🔎 Buscar por nombre, teléfono, nivel (A/B/C) o asesor..." oninput="filterTable()"><button class="primary" style="background:#21a366" onclick="exportarExcel()">📊 Descargar Excel</button><button class="primary" onclick="openProspectModal()">+ Nuevo prospecto</button></div><div class="card" id="ptable">${prospectRows(all)}</div>`;
 
@@ -371,23 +397,24 @@ async function renderFollowups(){
     if(r.error)throw r.error;
     let f=r.data||[];
     if(isAdvisor(profile?.role))f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);
+    if(profile?.role==="team_leader")f=f.filter(x=>x.user_id===me.id||x.leader_id===me.id||x.advisor_id===me.id);
     $("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos y Reuniones</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Google Meet</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>{const mUrl=fixUrl(x.meet_url||profile?.meet_url);return `<tr><td>${esc(x.title||"Seguimiento")}</td><td>${esc(x.date||"")}</td><td>${mUrl?`<a href="${esc(mUrl)}" target="_blank" class="badge meet">🎥 Entrar</a> <button class="light small" onclick="copyMeetLink('${esc(mUrl)}')">📋 Copiar Link</button>`:'<span class="muted">Sin enlace</span>'}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`}).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`;
   }catch(e){$("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos</h3><p>${esc(e.message||e)}</p></div>`}
 }
 
 async function renderTeam(){
   try{
-    const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url").order("role").order("full_name");
+    const r=await supabaseClient.from("profiles").select("id,full_name,email,role,gender,phone,active,leader_id,meet_url").order("role").order("full_name");
     if(r.error)throw r.error;
     let all=r.data||[],u=all;
     if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);
     if(isAdvisor(profile.role))u=all.filter(x=>x.id===me.id);
     const leaders=all.filter(x=>x.role==="team_leader");
-    const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesor / Asesora";
+    const roleName=x=>displayRole(x);
     const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesor/a directo Tveo Business";
     const actions=x=>isAdmin()||x.id===me.id?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:"—";
     let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesor a su equipo o como asesor directo de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>isAdvisor(x.role)).length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";
-    $("equipo").innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td><b>${roleName(x.role)}</b></td><td>${isAdvisor(x.role)?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
+    $("equipo").innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td><b>${esc(roleName(x))}</b></td><td>${isAdvisor(x.role)?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
   }catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}
 }
 
@@ -406,20 +433,41 @@ function renderReports(all){
   $("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>: ${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`;
 }
 
+async function getAssignableProfiles(){
+  const r=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,gender,active").in("role",["asesora","asesor","team_leader"]).order("full_name");
+  if(r.error)throw r.error;
+  let us=(r.data||[]).filter(x=>x.active!==false);
+
+  if(profile.role==="team_leader"){
+    us=us.filter(x=>x.id===me.id||x.leader_id===me.id);
+  }else if(isAdvisor(profile.role)){
+    us=us.filter(x=>x.id===me.id);
+  }
+  return us;
+}
+
 async function openProspectModal(id=null){
   try{
     const pr=await supabaseClient.from("projects").select("id,name").order("name");
     if(pr.error)throw pr.error;
-    const ur=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").in("role",["asesora","asesor","team_leader"]).order("full_name");
-    if(ur.error)throw ur.error;
-    let us=(ur.data||[]).filter(x=>x.active!==false);
-    if(profile.role==="team_leader")us=us.filter(x=>x.id===me.id||x.leader_id===me.id);
-    if(isAdvisor(profile.role))us=us.filter(x=>x.id===me.id);
+    const us=await getAssignableProfiles();
+
     $("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
-    $("fadv").innerHTML='<option value="">Asignación automática</option>'+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
-    $("fteam").innerHTML=isAdmin()?'<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>':'<option value="auto">Mi asignación</option>';
+
+    const automaticLabel=profile.role==="team_leader"?"Asignación automática a mi equipo":isAdvisor(profile.role)?"Asignarme a mí":"Asignación automática";
+    $("fadv").innerHTML=`<option value="">${automaticLabel}</option>`+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)} · ${esc(displayRole(x))}</option>`).join("");
+
+    if(isAdmin()){
+      $("fteam").innerHTML='<option value="auto">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option><option value="team">Por Team Leader</option>';
+    }else if(profile.role==="team_leader"){
+      $("fteam").innerHTML='<option value="team">Mi equipo</option>';
+    }else{
+      $("fteam").innerHTML='<option value="direct">Mi asignación</option>';
+    }
+
     $("prospectModalTitle").textContent=id?"Editar prospecto":"Nuevo prospecto";
     $("editProspectId").value=id||"";
+
     if(id){
       const r=await supabaseClient.from("prospects").select("*").eq("id",id).single();
       if(r.error)throw r.error;
@@ -438,7 +486,7 @@ async function openProspectModal(id=null){
       $("prospectForm").reset();
       $("fproj").value="";
       $("fadv").value="";
-      $("fteam").value="";
+      $("fteam").value=isAdmin()?"auto":profile.role==="team_leader"?"team":"direct";
     }
     $("prospectModal").classList.add("show");
   }catch(e){err("Prospecto",e)}
@@ -453,11 +501,22 @@ $("prospectForm").addEventListener("submit",async e=>{
   const btn=$("prospectSubmit");btn.disabled=true;
   try{
     let advisor=null;
-    if(uuid($("fadv").value)){
-      const r=await supabaseClient.from("profiles").select("id,full_name,leader_id").eq("id",$("fadv").value).single();
+    const selectedAdvisor=$("fadv").value;
+
+    if(uuid(selectedAdvisor)){
+      const r=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,gender,active").eq("id",selectedAdvisor).single();
       if(r.error)throw r.error;
       advisor=r.data;
+
+      if(advisor.active===false)throw new Error("El asesor seleccionado está inactivo.");
+      if(!isAdmin() && profile.role==="team_leader" && advisor.id!==me.id && advisor.leader_id!==me.id){
+        throw new Error("No puedes asignar este prospecto a un asesor que no pertenece a tu equipo.");
+      }
+      if(isAdvisor(profile.role) && advisor.id!==me.id){
+        throw new Error("Un asesor solo puede asignar sus propios prospectos.");
+      }
     }
+
     let projectId=null,projectName="";
     if(uuid($("fproj").value)){
       projectId=$("fproj").value;
@@ -465,18 +524,41 @@ $("prospectForm").addEventListener("submit",async e=>{
       if(r.error)throw r.error;
       projectName=r.data?.name||"";
     }
+
+    let advisorId=advisor?.id||null;
+    let advisorName=advisor?.full_name||"";
+    let leaderId=advisor?.leader_id||null;
+
+    if(!advisorId){
+      if(isAdvisor(profile.role)){
+        advisorId=me.id;
+        advisorName=profile.full_name||me.email||"";
+        leaderId=profile.leader_id||null;
+      }else if(profile.role==="team_leader"){
+        leaderId=me.id;
+        advisorId=null;
+        advisorName="";
+      }
+    }
+
     const payload={
       name:$("fn").value.trim(),phone:$("fp").value.trim(),email:$("fe").value.trim()||null,
       project_id:projectId,project_name:projectName,source:$("fsrc").value,
-      advisor_id:advisor?.id||null,advisor_name:advisor?.full_name||"",
-      leader_id:advisor?.id===me.id?me.id:(advisor?.leader_id||null),
+      advisor_id:advisorId,advisor_name:advisorName,
+      leader_id:leaderId,
       assignment_mode:$("fteam").value||"auto",grade:$("fgrade").value,status:$("fstatus").value,
       note:$("fnote").value.trim()||null
     };
+
+    if(!payload.name||!payload.phone)throw new Error("Nombre y WhatsApp son obligatorios.");
+
     const id=$("editProspectId").value;
     const r=id?await supabaseClient.from("prospects").update(payload).eq("id",id):await supabaseClient.from("prospects").insert(payload);
     if(r.error)throw r.error;
-    closeProspectModal();toast(id?"Prospecto actualizado":"Prospecto guardado");await render();
+
+    closeProspectModal();
+    toast(id?"Prospecto actualizado":"Prospecto guardado correctamente");
+    await render();
   }catch(e){err("Guardar prospecto",e)}finally{btn.disabled=false}
 });
 
@@ -493,7 +575,7 @@ function closeFollowupModal(){$("followupModal").classList.remove("show");$("fol
 $("followupForm").addEventListener("submit",async e=>{
   e.preventDefault();
   try{
-    const payload={title:$("fuTitle").value.trim(),date:$("fuDate").value,meet_url:fixUrl($("fuMeet").value.trim())||null,done:false};
+    const payload={title:$("fuTitle").value.trim(),date:$("fuDate").value,meet_url:fixUrl($("fuMeet").value.trim())||null,done:false,user_id:me.id};
     const pid=e.currentTarget.dataset.prospectId;
     if(pid&&uuid(pid))payload.prospect_id=pid;
     let r=await supabaseClient.from("followups").insert(payload);
@@ -541,23 +623,35 @@ async function deleteProject(id){if(!confirm("¿Eliminar este proyecto?"))return
 
 async function editProfile(id){
   try{
-    const r=await supabaseClient.from("profiles").select("id,full_name,phone,active,role,leader_id,meet_url").eq("id",id).single();
+    const r=await supabaseClient.from("profiles").select("id,full_name,phone,active,role,gender,leader_id,meet_url").eq("id",id).single();
     if(r.error)throw r.error;
     const x=r.data;
+
     $("editProfileId").value=x.id;
     $("profileName").value=x.full_name||"";
     $("profilePhone").value=x.phone||"";
     $("profileMeet").value=x.meet_url||"";
-    $("profileRole").value=x.role||"asesor";
+    $("profileRole").value=(x.role==="asesor"?"asesora":(x.role||"asesora"));
+    $("profileGender").value=x.gender||"";
     $("profileActive").value=x.active!==false?"true":"false";
+
+    actualizarCampoGenero();
 
     const lr=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");
     if(lr.error)throw lr.error;
-    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(lr.data||[]).map(l=>`<option value="${l.id}">${esc(l.full_name)}</option>`).join("");
+    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(lr.data||[]).map(l=>`<option value="${esc(l.id)}">${esc(l.full_name)}</option>`).join("");
     $("profileLeader").value=x.leader_id||"";
     $("profileModal").classList.add("show");
   }catch(e){err("Editar perfil",e)}
 }
+
+function actualizarCampoGenero(){
+  const isA=$("profileRole").value==="asesora";
+  $("genderField").style.display=isA?"block":"none";
+  $("profileLeader").parentElement.style.display=isA?"block":"none";
+}
+
+$("profileRole").addEventListener("change",actualizarCampoGenero);
 
 function closeProfileModal(){$("profileModal").classList.remove("show");$("profileForm").reset()}
 
@@ -565,14 +659,35 @@ $("profileForm").addEventListener("submit",async e=>{
   e.preventDefault();
   try{
     const id=$("editProfileId").value;
+    const role=$("profileRole").value;
+    const gender=role==="asesora"?($("profileGender").value||null):null;
+    const leaderId=role==="asesora"?($("profileLeader").value||null):null;
+
+    if(role==="asesora"&&!gender){
+      throw new Error("Selecciona si es Asesor o Asesora.");
+    }
+
     const payload={
-      full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()||null,
-      meet_url:fixUrl($("profileMeet").value.trim())||null,role:$("profileRole").value,
-      leader_id:$("profileLeader").value||null,active:$("profileActive").value==="true"
+      full_name:$("profileName").value.trim(),
+      phone:$("profilePhone").value.trim()||null,
+      meet_url:fixUrl($("profileMeet").value.trim())||null,
+      role,
+      gender,
+      leader_id:leaderId,
+      active:$("profileActive").value==="true"
     };
+
     const r=await supabaseClient.from("profiles").update(payload).eq("id",id);
     if(r.error)throw r.error;
-    closeProfileModal();toast("Integrante actualizado");await renderTeam();
+
+    if(id===me.id){
+      profile={...profile,...payload};
+      $("who").textContent=`${profile.full_name||"Usuario"} · ${displayRole(profile)}`;
+    }
+
+    closeProfileModal();
+    toast("Integrante actualizado");
+    await renderTeam();
   }catch(e){err("Guardar perfil",e)}
 });
 
