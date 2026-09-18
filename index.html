@@ -41,7 +41,7 @@ const CONFIG={url:"https://mfkdhrwtlmfdmuntsbav.supabase.co",key:"sb_publishable
 var supabaseClient=supabase.createClient(CONFIG.url,CONFIG.key);
 let me=null,profile=null,busy=false,lastProspects=[];
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const esc=s=>String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function toast(x){const e=$("toast");e.textContent=x;e.style.display="block";clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.style.display="none",4500)}
 function err(where,e){console.error(where,e);toast(where+": "+(e?.message||String(e)))}
 function uuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||""))}
@@ -78,7 +78,7 @@ async function boot(){
     }
     $("login").style.display="none";
     $("app").style.display="block";
-    $("who").textContent=`${profile.full_name||"Usuario"} · ${isAdvisor(profile.role)?"Asesor / Asesora":profile.role||""}`;
+    $("who").textContent=`${profile.full_name || "Usuario"} · ${isAdvisor(profile.role) ? "Asesor / Asesora" : profile.role || ""}`;
     await render();
   }catch(e){err("Perfil",e)}
 }
@@ -98,13 +98,13 @@ async function prospects(){
   if(profile?.role==="team_leader")q=q.eq("leader_id",me.id);
   const r=await q;
   if(r.error)throw r.error;
-  lastProspects=r.data||[];
+  lastProspects=r.data || [];
   return lastProspects;
 }
 
 function prospectRows(p){
   if(!p.length)return '<div class="empty">No hay prospectos encontrados.</div>';
-  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name\vert{}\vert{}"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade\vert{}\vert{}"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status\vert{}\vert{}"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
+  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email || "")}</div></td><td>${esc(x.project_name \vert{}\vert{} "Sin proyecto")}</td><td>${esc(x.advisor_name || "Sin asignar")}</td><td><span class="badge ${esc(x.grade \vert{}\vert{} "C")}">${esc(x.grade || "—")}</span></td><td><span class="badge blue">${esc(x.status \vert{}\vert{} "—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
 }
 
 async function render(){
@@ -152,7 +152,7 @@ function exportarExcel(){
   if(!lastProspects.length) return toast("No hay datos para exportar");
   let csv="\uFEFFFecha;Cliente;Telefono;Proyecto;Asesor / Asesora;Nivel;Estado\n";
   lastProspects.forEach(x=>{
-    csv+=`"${x.created_at?.slice(0,10)||""}";"${x.name||""}";"${x.phone||""}";"${x.project_name||""}";"${x.advisor_name||""}";"${x.grade||""}";"${x.status||""}"\n`;
+    csv+=`"${x.created_at?.slice(0,10) || ""}";"${x.name || ""}";"${x.phone || ""}";"${x.project_name || ""}";"${x.advisor_name || ""}";"${x.grade || ""}";"${x.status || ""}"\n`;
   });
   const link=document.createElement("a");
   link.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));
@@ -164,9 +164,9 @@ async function renderFollowups(){
   try{
     const r=await supabaseClient.from("followups").select("*").order("date",{ascending:true});
     if(r.error)throw r.error;
-    let f=r.data||[];
-    if(isAdvisor(profile?.role))f=f.filter(x=>x.user_id===me.id||x.advisor_id===me.id);
-    $("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos y Reuniones</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Google Meet</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>{const mUrl=fixUrl(x.meet_url||profile?.meet_url);return `<tr><td>${esc(x.title||"Seguimiento")}</td><td>${esc(x.date||"")}</td><td>${mUrl?`<a href="${esc(mUrl)}" target="_blank" class="badge meet">🎥 Entrar</a> <button class="light small" onclick="copyMeetLink('${esc(mUrl)}')">📋 Copiar Link</button>`:'<span class="muted">Sin enlace</span>'}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`}).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`;
+    let f=r.data || [];
+    if(isAdvisor(profile?.role))f=f.filter(x=>x.user_id===me.id || x.advisor_id===me.id);
+    $("seguimientos").innerHTML=`<div class="toolbar"><button class="primary" onclick="openFollowupModal()">+ Nuevo seguimiento</button></div><div class="card"><h3>Seguimientos y Reuniones</h3>${f.length?`<div class="tablewrap"><table class="table"><tr><th>Título</th><th>Fecha</th><th>Google Meet</th><th>Estado</th><th>Acciones</th></tr>${f.map(x=>{const mUrl=fixUrl(x.meet_url || profile?.meet_url);return `<tr><td>${esc(x.title || "Seguimiento")}</td><td>${esc(x.date || "")}</td><td>${mUrl?`<a href="${esc(mUrl)}" target="_blank" class="badge meet">🎥 Entrar</a> <button class="light small" onclick="copyMeetLink('${esc(mUrl)}')">📋 Copiar Link</button>`:'<span class="muted">Sin enlace</span>'}</td><td>${x.done?'<span class="badge">Completado</span>':'<span class="badge blue">Pendiente</span>'}</td><td><div class="actions">${!x.done?`<button class="light" onclick="completeFollowup('${x.id}')">✓ Completar</button>`:""}${isAdmin()?`<button class="danger" onclick="deleteFollowup('${x.id}')">🗑️</button>`:""}</div></td></tr>`}).join("")}</table></div>`:'<div class="empty">No hay seguimientos.</div>'}</div>`;
   }catch(e){
     $("seguimientos").innerHTML=`<div class="card"><h3>Seguimientos</h3><p>${esc(e.message||e)}</p></div>`;
   }
@@ -176,16 +176,16 @@ async function renderTeam(){
   try{
     const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url").order("role").order("full_name");
     if(r.error)throw r.error;
-    let all=r.data||[];
+    let all=r.data || [];
     let u=all;
-    if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id||x.leader_id===me.id);
+    if(profile.role==="team_leader")u=all.filter(x=>x.id===me.id || x.leader_id===me.id);
     if(isAdvisor(profile.role))u=all.filter(x=>x.id===me.id);
     const leaders=all.filter(x=>x.role==="team_leader");
     const roleName=x=>x==="administrador"?"Administrador":x==="team_leader"?"Team Leader":"Asesor / Asesora";
-    const leaderName=id=>leaders.find(x=>x.id===id)?.full_name||"Asesor/a directo Tveo Business";
+    const leaderName=id=>leaders.find(x=>x.id===id)?.full_name || "Asesor/a directo Tveo Business";
     const actions=(x)=>isAdmin()||x.id===me.id?`<button class="light" onclick="editProfile('${x.id}')">✏️ Editar</button>`:'—';
     let extra=isAdmin()?`<div class="card" style="margin-bottom:12px"><div class="top"><div><h3>Jerarquía comercial</h3><p class="muted">Administra Team Leaders y asigna cada asesor a su equipo o como asesor directo de Tveo Business.</p><p><b>Team Leaders:</b> ${leaders.length} · <b>Asesores:</b> ${all.filter(x=>isAdvisor(x.role)).length}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Asesor Directo Tveo</button></div></div></div>`:"";
-    $('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone||"")}</div></td><td>${esc(x.email||"")}</td><td><b>${roleName(x.role)}</b></td><td>${isAdvisor(x.role)?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
+    $('equipo').innerHTML=extra+`<div class="card"><div class="top"><h3>Equipo y Salas de Reunión</h3><span class="muted">${u.length} integrante(s)</span></div>${u.length?`<div class="tablewrap"><table class="table"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Team Leader</th><th>Sala Virtual</th><th>Acciones</th></tr>${u.map(x=>`<tr><td><b>${esc(x.full_name)}</b><div class="muted">${esc(x.phone || "")}</div></td><td>${esc(x.email || "")}</td><td><b>${roleName(x.role)}</b></td><td>${isAdvisor(x.role)?esc(leaderName(x.leader_id)):"—"}</td><td>${x.meet_url?`<a href="${esc(fixUrl(x.meet_url))}" target="_blank" class="badge meet">🎥 Entrar</a>`:'<span class="muted">No configurada</span>'}</td><td>${actions(x)}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay integrantes.</div>'}</div>`;
   }catch(e){
     $("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`;
   }
@@ -195,8 +195,8 @@ async function renderProjects(){
   try{
     const r=await supabaseClient.from("projects").select("*").order("name");
     if(r.error)throw r.error;
-    const p=r.data||[];
-    $("proyectos").innerHTML=`<div class="toolbar">${isAdmin()?'<button class="primary" onclick="openProjectModal()">+ Nuevo proyecto</button>':''}</div><div class="card"><h3>Proyectos</h3>${p.length?`<div class="tablewrap"><table class="table"><tr><th>Proyecto</th><th>Ubicación</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.location||"")}</td><td>${isAdmin()?`<div class="actions"><button class="light" onclick="editProject('${x.id}')">✏️ Editar</button><button class="danger" onclick="deleteProject('${x.id}')">🗑️</button></div>`:'—'}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay proyectos registrados.</div>'}</div>`;
+    const p=r.data || [];
+    $("proyectos").innerHTML=`<div class="toolbar">${isAdmin()?'<button class="primary" onclick="openProjectModal()">+ Nuevo proyecto</button>':''}</div><div class="card"><h3>Proyectos</h3>${p.length?`<div class="tablewrap"><table class="table"><tr><th>Proyecto</th><th>Ubicación</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.location || "")}</td><td>${isAdmin()?`<div class="actions"><button class="light" onclick="editProject('${x.id}')">✏️ Editar</button><button class="danger" onclick="deleteProject('${x.id}')">🗑️</button></div>`:'—'}</td></tr>`).join("")}</table></div>`:'<div class="empty">No hay proyectos registrados.</div>'}</div>`;
   }catch(e){
     $("proyectos").innerHTML=`<div class="card"><h3>Proyectos</h3><p>${esc(e.message||e)}</p></div>`;
   }
@@ -205,7 +205,7 @@ async function renderProjects(){
 function renderReports(all){
   const total=all.length,ventas=all.filter(x=>x.status==="Venta").length;
   const grouped={};
-  all.forEach(x=>grouped[x.status||"Sin estado"]=(grouped[x.status||"Sin estado"]||0)+1);
+  all.forEach(x=>grouped[x.status || "Sin estado"]=(grouped[x.status || "Sin estado"]||0)+1);
   $("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>:${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`;
 }
 
@@ -215,28 +215,28 @@ async function openProspectModal(id=null){
     if(pr.error)throw pr.error;
     const ur=await supabaseClient.from("profiles").select("id,full_name,leader_id,role,active").in("role",["asesora","asesor","team_leader"]).order("full_name");
     if(ur.error)throw ur.error;
-    let us=(ur.data||[]).filter(x=>x.active!==false);
+    let us=(ur.data || []).filter(x=>x.active!==false);
     if(profile.role==="team_leader")us=us.filter(x=>x.id===me.id || x.leader_id===me.id);
     if(isAdvisor(profile.role))us=us.filter(x=>x.id===me.id);
-    $("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
+    $("fproj").innerHTML='<option value="">Sin proyecto</option>'+(pr.data || []).map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
     $("fadv").innerHTML='<option value="">Asignación automática</option>'+us.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
     $("fteam").innerHTML=isAdmin()?'<option value="">Automático (todos los asesores)</option><option value="direct">Asesores directos Tveo</option>':'<option value="auto">Mi asignación</option>';
     $("prospectModalTitle").textContent=id?'Editar prospecto':'Nuevo prospecto';
-    $("editProspectId").value=id||"";
+    $("editProspectId").value=id || "";
     if(id){
       const r=await supabaseClient.from("prospects").select("*").eq("id",id).single();
       if(r.error)throw r.error;
       const x=r.data;
-      $("fn").value=x.name||"";
-      $("fp").value=x.phone||"";
-      $("fe").value=x.email||"";
+      $("fn").value=x.name || "";
+      $("fp").value=x.phone || "";
+      $("fe").value=x.email || "";
       $("fproj").value=uuid(x.project_id)?x.project_id:"";
       $("fadv").value=uuid(x.advisor_id)?x.advisor_id:"";
-      $("fteam").value=x.assignment_mode||"auto";
-      $("fsrc").value=x.source||"Facebook Ads";
-      $("fgrade").value=x.grade||"A";
-      $("fstatus").value=x.status||"Nuevo";
-      $("fnote").value=x.note||"";
+      $("fteam").value=x.assignment_mode || "auto";
+      $("fsrc").value=x.source || "Facebook Ads";
+      $("fgrade").value=x.grade || "A";
+      $("fstatus").value=x.status || "Nuevo";
+      $("fnote").value=x.note || "";
     }else{
       $("prospectForm").reset();
       $("fproj").value="";
@@ -267,22 +267,22 @@ $("prospectForm").addEventListener("submit",async e=>{
       projectId=$("fproj").value;
       const r=await supabaseClient.from("projects").select("name").eq("id",projectId).single();
       if(r.error)throw r.error;
-      projectName=r.data?.name||"";
+      projectName=r.data?.name || "";
     }
     const payload={
       name:$("fn").value.trim(),
       phone:$("fp").value.trim(),
-      email:$("fe").value.trim()||null,
+      email:$("fe").value.trim() || null,
       project_id:projectId,
       project_name:projectName,
       source:$("fsrc").value,
-      advisor_id:advisor?.id||null,
-      advisor_name:advisor?.full_name||"",
-      leader_id:advisor?.id===me.id?me.id:(advisor?.leader_id||null),
-      assignment_mode:$("fteam").value||"auto",
+      advisor_id:advisor?.id || null,
+      advisor_name:advisor?.full_name || "",
+      leader_id:advisor?.id===me.id?me.id:(advisor?.leader_id || null),
+      assignment_mode:$("fteam").value || "auto",
       grade:$("fgrade").value,
       status:$("fstatus").value,
-      note:$("fnote").value.trim()||null
+      note:$("fnote").value.trim() || null
     };
     const id=$("editProspectId").value;
     let r=id?await supabaseClient.from("prospects").update(payload).eq("id",id):await supabaseClient.from("prospects").insert(payload);
@@ -294,13 +294,13 @@ $("prospectForm").addEventListener("submit",async e=>{
 });
 
 function newFollowup(prospectId){openFollowupModal(prospectId)}
-async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId||"";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("fuMeet").value=profile?.meet_url\vert{}\vert{}"";$("followupModal").classList.add("show")}
+async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId || "";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("fuMeet").value=profile?.meet_url \vert{}\vert{} "";$("followupModal").classList.add("show")}
 function closeFollowupModal(){$("followupModal").classList.remove("show");$("followupForm").reset()}
 
 $("followupForm").addEventListener("submit",async e=>{
   e.preventDefault();
   try{
-    const payload={title:$("fuTitle").value.trim(),date:$("fuDate").value,meet_url:fixUrl($("fuMeet").value.trim())||null,done:false};
+    const payload={title:$("fuTitle").value.trim(),date:$("fuDate").value,meet_url:fixUrl($("fuMeet").value.trim()) || null,done:false};
     const pid=e.currentTarget.dataset.prospectId;
     if(pid&&uuid(pid))payload.prospect_id=pid;
     let r=await supabaseClient.from("followups").insert(payload);
@@ -320,8 +320,8 @@ $("followupForm").addEventListener("submit",async e=>{
 async function completeFollowup(id){try{const r=await supabaseClient.from("followups").update({done:true}).eq("id",id);if(r.error)throw r.error;toast("Seguimiento completado");await renderFollowups()}catch(e){err("Completar seguimiento",e)}}
 async function deleteFollowup(id){if(!confirm("¿Eliminar este seguimiento?"))return;try{const r=await supabaseClient.from("followups").delete().eq("id",id);if(r.error)throw r.error;toast("Seguimiento eliminado");await renderFollowups()}catch(e){err("Eliminar seguimiento",e)}}
 
-function openProjectModal(id=null){$("projectForm").reset();$("editProjectId").value=id||"";$("projectModalTitle").textContent=id?'Editar proyecto':'Nuevo proyecto';if(id)loadProject(id);$("projectModal").classList.add("show")}
-async function loadProject(id){try{const r=await supabaseClient.from("projects").select("id,name,location").eq("id",id).single();if(r.error)throw r.error;$("projectName").value=r.data.name\vert{}\vert{}"";$("projectLocation").value=r.data.location||""}catch(e){err("Proyecto",e)}}
+function openProjectModal(id=null){$("projectForm").reset();$("editProjectId").value=id || "";$("projectModalTitle").textContent=id?'Editar proyecto':'Nuevo proyecto';if(id)loadProject(id);$("projectModal").classList.add("show")}
+async function loadProject(id){try{const r=await supabaseClient.from("projects").select("id,name,location").eq("id",id).single();if(r.error)throw r.error;$("projectName").value=r.data.name \vert{}\vert{} "";$("projectLocation").value=r.data.location || ""}catch(e){err("Proyecto",e)}}
 function closeProjectModal(){$("projectModal").classList.remove("show");$("projectForm").reset()}
 async function editProject(id){openProjectModal(id)}
 
@@ -329,7 +329,7 @@ $("projectForm").addEventListener("submit",async e=>{
   e.preventDefault();
   try{
     const id=$("editProjectId").value;
-    const payload={name:$("projectName").value.trim(),location:$("projectLocation").value.trim()||null};
+    const payload={name:$("projectName").value.trim(),location:$("projectLocation").value.trim() || null};
     const r=id?await supabaseClient.from("projects").update(payload).eq("id",id):await supabaseClient.from("projects").insert(payload);
     if(r.error)throw r.error;
     closeProjectModal();
@@ -390,14 +390,14 @@ async function editProfile(id){
     if(r.error)throw r.error;
     const x=r.data;
     $("editProfileId").value=x.id;
-    $("profileName").value=x.full_name||"";
-    $("profilePhone").value=x.phone||"";
-    $("profileMeet").value=x.meet_url||"";
-    $("profileRole").value=x.role||"asesor";
+    $("profileName").value=x.full_name || "";
+    $("profilePhone").value=x.phone || "";
+    $("profileMeet").value=x.meet_url || "";
+    $("profileRole").value=x.role || "asesor";
     $("profileActive").value=String(x.active!==false);
     const ur=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");
-    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(ur.data||[]).map(l=>`<option value="${l.id}">${esc(l.full_name)}</option>`).join("");
-    $("profileLeader").value=x.leader_id||"";
+    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(ur.data || []).map(l=>`<option value="${l.id}">${esc(l.full_name)}</option>`).join("");
+    $("profileLeader").value=x.leader_id || "";
     $("profileModal").classList.add("show");
   }catch(e){err("Editar perfil",e)}
 }
@@ -410,10 +410,10 @@ $("profileForm").addEventListener("submit",async e=>{
     const id=$("editProfileId").value;
     const payload={
       full_name:$("profileName").value.trim(),
-      phone:$("profilePhone").value.trim()||null,
-      meet_url:fixUrl($("profileMeet").value.trim())||null,
+      phone:$("profilePhone").value.trim() || null,
+      meet_url:fixUrl($("profileMeet").value.trim()) || null,
       role:$("profileRole").value,
-      leader_id:$("profileLeader").value||null,
+      leader_id:$("profileLeader").value || null,
       active:$("profileActive").value==="true"
     };
     const r=await supabaseClient.from("profiles").update(payload).eq("id",id);
