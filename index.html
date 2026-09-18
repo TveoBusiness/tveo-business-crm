@@ -72,7 +72,6 @@ async function boot(){
     const r=await supabaseClient.from("profiles").select("*").eq("id",me.id).maybeSingle();
     if(r.error)throw r.error;
     if(!r.data){
-      // Si el perfil no existe en la tabla pero el usuario autenticó, crea un perfil temporal para permitir el acceso
       profile={id:me.id,full_name:me.email.split("@")[0],email:me.email,role:"administrador"};
     } else {
       profile=r.data;
@@ -105,7 +104,7 @@ async function prospects(){
 
 function prospectRows(p){
   if(!p.length)return '<div class="empty">No hay prospectos encontrados.</div>';
-  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
+  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name\vert{}\vert{}"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade\vert{}\vert{}"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status\vert{}\vert{}"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
 }
 
 async function render(){
@@ -216,7 +215,7 @@ function renderReports(all){
   const total=all.length,ventas=all.filter(x=>x.status==="Venta").length;
   const grouped={};
   all.forEach(x=>grouped[x.status||"Sin estado"]=(grouped[x.status||"Sin estado"]||0)+1);
-  $("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>: ${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`;
+  $("reportes").innerHTML=`<div class="card"><h3>Resumen comercial</h3><div class="kpi"><span class="badge blue">Total: ${total}</span><span class="badge">Contactados: ${all.filter(x=>x.status!=="Nuevo").length}</span><span class="badge A">Ventas: ${ventas}</span><span class="badge B">Conversión: ${total?((ventas/total)*100).toFixed(1):0}%</span></div></div><div class="card"><h3>Prospectos por estado</h3>${Object.keys(grouped).length?Object.entries(grouped).map(([k,v])=>`<p><b>${esc(k)}</b>:${v}</p>`).join(""):'<div class="empty">Sin datos.</div>'}</div>`;
 }
 
 async function openProspectModal(id=null){
@@ -304,7 +303,7 @@ $("prospectForm").addEventListener("submit",async e=>{
 });
 
 function newFollowup(prospectId){openFollowupModal(prospectId)}
-async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId||"";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("fuMeet").value=profile?.meet_url||"";$("followupModal").classList.add("show")}
+async function openFollowupModal(prospectId=null){$("followupForm").dataset.prospectId=prospectId||"";$("fuTitle").value="";$("fuDate").value=new Date().toISOString().slice(0,10);$("fuMeet").value=profile?.meet_url\vert{}\vert{}"";$("followupModal").classList.add("show")}
 function closeFollowupModal(){$("followupModal").classList.remove("show");$("followupForm").reset()}
 
 $("followupForm").addEventListener("submit",async e=>{
@@ -331,7 +330,7 @@ async function completeFollowup(id){try{const r=await supabaseClient.from("follo
 async function deleteFollowup(id){if(!confirm("¿Eliminar este seguimiento?"))return;try{const r=await supabaseClient.from("followups").delete().eq("id",id);if(r.error)throw r.error;toast("Seguimiento eliminado");await renderFollowups()}catch(e){err("Eliminar seguimiento",e)}}
 
 function openProjectModal(id=null){$("projectForm").reset();$("editProjectId").value=id||"";$("projectModalTitle").textContent=id?'Editar proyecto':'Nuevo proyecto';if(id)loadProject(id);$("projectModal").classList.add("show")}
-async function loadProject(id){try{const r=await supabaseClient.from("projects").select("id,name,location").eq("id",id).single();if(r.error)throw r.error;$("projectName").value=r.data.name||"";$("projectLocation").value=r.data.location||""}catch(e){err("Proyecto",e)}}
+async function loadProject(id){try{const r=await supabaseClient.from("projects").select("id,name,location").eq("id",id).single();if(r.error)throw r.error;$("projectName").value=r.data.name\vert{}\vert{}"";$("projectLocation").value=r.data.location||""}catch(e){err("Proyecto",e)}}
 function closeProjectModal(){$("projectModal").classList.remove("show");$("projectForm").reset()}
 async function editProject(id){openProjectModal(id)}
 
@@ -354,45 +353,20 @@ async function editProfile(id){
   try{
     const r=await supabaseClient.from("profiles").select("id,full_name,phone,active,role,leader_id,meet_url").eq("id",id).single();
     if(r.error)throw r.error;
-    const tl=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");
-    if(tl.error)throw tl.error;
-    $("editProfileId").value=id;
-    $("profileName").value=r.data.full_name||"";
-    $("profilePhone").value=r.data.phone||"";
-    $("profileMeet").value=r.data.meet_url||"";
-    $("profileRole").value=r.data.role||"asesora";
-    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(tl.data||[]).filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.full_name)}</option>`).join("");
-    $("profileLeader").value=r.data.leader_id||"";
-    $("profileLeader").disabled=!isAdvisor(r.data.role);
-    $("profileRole").onchange=()=>{$("profileLeader").disabled=!isAdvisor($("profileRole").value)};
-    $("profileActive").value=r.data.active===false?"false":"true";
+    const x=r.data;
+    $("editProfileId").value=x.id;
+    $("profileName").value=x.full_name||"";
+    $("profilePhone").value=x.phone||"";
+    $("profileMeet").value=x.meet_url||"";
+    $("profileRole").value=x.role||"asesor";
+    $("profileActive.value").value=x.active!==false?"true":"false";
+    
+    const lr=await supabaseClient.from("profiles").select("id,full_name").eq("role","team_leader").order("full_name");
+    $("profileLeader").innerHTML='<option value="">Asesor/a directo Tveo Business</option>'+(lr.data||[]).map(l=>`<option value="${l.id}">${esc(l.full_name)}</option>`).join("");
+    $("profileLeader").value=x.leader_id||"";
     $("profileModal").classList.add("show");
-  }catch(e){err("Integrante",e)}
+  }catch(e){err("Editar perfil",e)}
 }
-
-function openNewMemberModal(role){if(!isAdmin())return toast("Solo el administrador puede crear integrantes");$("newMemberRole").value=role;$("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Nuevo Asesor Directo Tveo";$("newMemberForm").reset();$("newMemberRole").value=role;$("newMemberModal").classList.add("show")}
-function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
-
-$("newMemberForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const btn=e.currentTarget.querySelector("button[type=submit],button.primary");
-  if(btn)btn.disabled=true;
-  try{
-    const role=$("newMemberRole").value;
-    const name=$("newMemberName").value.trim();
-    const email=$("newMemberEmail").value.trim().toLowerCase();
-    const phone=$("newMemberPhone").value.trim()||null;
-    if(!name||!email)return toast("Completa nombre y correo");
-    const action=role==="team_leader"?"create_team_leader":"create_direct_advisor";
-    toast("Creando cuenta...");
-    const r=await supabaseClient.functions.invoke("smooth-service",{body:{action,name,email,phone}});
-    if(r.error)throw r.error;
-    if(r.data?.error)throw new Error(r.data.error);
-    closeNewMemberModal();
-    toast(role==="team_leader"?"Team Leader creado. Se envió la invitación por correo.":"Asesor directo creado. Se envió la invitación por correo.");
-    await renderTeam();
-  }catch(e){console.error("Crear integrante",e);toast("No se pudo crear: "+(e?.message||String(e)))}finally{if(btn)btn.disabled=false}
-});
 
 function closeProfileModal(){$("profileModal").classList.remove("show");$("profileForm").reset()}
 
@@ -400,27 +374,48 @@ $("profileForm").addEventListener("submit",async e=>{
   e.preventDefault();
   try{
     const id=$("editProfileId").value;
-    const selectedRole=$("profileRole").value;
-    const dbRole=isAdvisor(selectedRole)?"asesora":selectedRole;
-    const leaderId=isAdvisor(dbRole)&&uuid($("profileLeader").value)?$("profileLeader").value:null;
     const payload={
       full_name:$("profileName").value.trim(),
       phone:$("profilePhone").value.trim()||null,
       meet_url:fixUrl($("profileMeet").value.trim())||null,
-      active:$("profileActive").value==="true",
-      role:dbRole,
-      leader_id:leaderId
+      role:$("profileRole").value,
+      leader_id:$("profileLeader").value||null,
+      active:$("profileActive").value==="true"
     };
-    if(id===me.id&&dbRole!==profile.role)return toast("No cambies el rol de tu propio usuario aquí");
     const r=await supabaseClient.from("profiles").update(payload).eq("id",id);
     if(r.error)throw r.error;
     closeProfileModal();
     toast("Integrante actualizado");
     await renderTeam();
-  }catch(e){err("Guardar integrante",e)}
+  }catch(e){err("Guardar perfil",e)}
 });
 
-supabaseClient.auth.getSession().then(async r=>{if(r.error)return err("Sesión",r.error);if(r.data.session){me=r.data.session.user;await boot()}}).catch(e=>err("Sesión",e));
+function openNewMemberModal(role){
+  $("newMemberForm").reset();
+  $("newMemberRole").value=role;
+  $("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Asesor Directo Tveo";
+  $("newMemberModal").classList.add("show");
+}
+function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
+
+$("newMemberForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const name=$("newMemberName").value.trim();
+  const email=$("newMemberEmail").value.trim();
+  const phone=$("newMemberPhone").value.trim();
+  const role=$("newMemberRole").value;
+  try{
+    const payload={full_name:name,email,phone,role,active:true};
+    if(role==="asesor"||role==="asesora"){
+      payload.leader_id=null;
+    }
+    const r=await supabaseClient.from("profiles").insert(payload);
+    if(r.error)throw r.error;
+    closeNewMemberModal();
+    toast("Integrante registrado correctamente");
+    await renderTeam();
+  }catch(e){err("Crear integrante",e)}
+});
 </script>
 </body>
 </html>
