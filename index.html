@@ -142,7 +142,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
         <div class="field"><label>Proyecto</label><select id="fproj"></select></div>
         <div class="field"><label>Equipo de asignación</label><select id="fteam"></select></div>
         <div class="field"><label>Origen</label><select id="fsrc"><option>Facebook Ads</option><option>Instagram Ads</option><option>TikTok</option><option>WhatsApp</option><option>Página web</option><option>Referido</option><option>Orgánico</option></select></div>
-        <div class="field"><label>Asesor / Asesora</label><select id="fadv"></select></div>
+        <div class="field"><label id="fadvLabel">Asesor</label><select id="fadv"></select></div>
         <div class="field"><label>Clasificación (Nivel)</label><select id="fgrade"><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></div>
         <div class="field"><label>Estado</label><select id="fstatus"><option>Nuevo</option><option>Contactado</option><option>Interesado</option><option>Visita programada</option><option>Reserva</option><option>Venta</option><option>No responde</option><option>No interesado</option></select></div>
         <div class="field full"><label>Nota</label><textarea id="fnote"></textarea></div>
@@ -185,6 +185,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
         <div class="field"><label>Nombre *</label><input id="newMemberName" required></div>
         <div class="field"><label>Correo de acceso *</label><input id="newMemberEmail" type="email" required autocomplete="off"></div>
         <div class="field"><label>Teléfono</label><input id="newMemberPhone" autocomplete="off"></div>
+        <div class="field" id="newMemberGenderField" style="display:none"><label>Sexo</label><select id="newMemberGender"><option value="">Seleccionar</option><option value="male">Masculino → Asesor</option><option value="female">Femenino → Asesora</option></select></div>
         <div class="field"><label>Contraseña inicial *</label><input id="newMemberPassword" type="password" minlength="6" required autocomplete="new-password"></div>
         <div class="field"><label>Repetir contraseña *</label><input id="newMemberPassword2" type="password" minlength="6" required autocomplete="new-password"></div>
       </div>
@@ -206,7 +207,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
         <select id="profileRole">
           <option value="administrador">Administrador</option>
           <option value="team_leader">Team Leader</option>
-          <option value="asesora">Asesor / Asesora</option>
+          <option value="asesora">Asesor</option>
         </select>
       </div>
       <div class="field" id="genderField">
@@ -247,8 +248,18 @@ async function copyMeetLink(url){if(!url)return toast("No hay enlace asignado");
 function displayRole(x){
   if(x?.role==="administrador")return "Administrador";
   if(x?.role==="team_leader")return "Team Leader";
-  if(isAdvisor(x?.role))return x.gender==="male"?"Asesor":"Asesora";
+  if(isAdvisor(x?.role))return x.gender==="male"?"Asesor":x.gender==="female"?"Asesora":"Sin género";
   return x?.role||"";
+}
+
+function commercialLabel(x=profile){
+  if(x?.gender==="male")return "Asesor";
+  if(x?.gender==="female")return "Asesora";
+  return "Asesor";
+}
+function updateCommercialLabels(){
+  const label=$("fadvLabel");
+  if(label)label.textContent=commercialLabel();
 }
 
 async function updatePassword(){
@@ -303,6 +314,7 @@ async function boot(){
     $("login").style.display="none";
     $("app").style.display="block";
     $("who").textContent=`${profile.full_name||"Usuario"} · ${displayRole(profile)}`;
+    updateCommercialLabels();
     await render();
   }catch(e){err("Perfil",e)}
 }
@@ -328,7 +340,7 @@ async function prospects(){
 
 function prospectRows(p){
   if(!p.length)return '<div class="empty">No hay prospectos encontrados.</div>';
-  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
+  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
 }
 
 async function render(){
@@ -380,7 +392,7 @@ async function filterTable(){
 
 function exportarExcel(){
   if(!lastProspects.length)return toast("No hay datos para exportar");
-  let csv="\uFEFFFecha;Cliente;Telefono;Proyecto;Asesor / Asesora;Nivel;Estado\n";
+  let csv="\uFEFFFecha;Cliente;Telefono;Proyecto;Asesor;Nivel;Estado\n";
   lastProspects.forEach(x=>{
     csv+=`"${String(x.created_at?.slice(0,10)||"").replace(/"/g,'""')}";"${String(x.name||"").replace(/"/g,'""')}";"${String(x.phone||"").replace(/"/g,'""')}";"${String(x.project_name||"").replace(/"/g,'""')}";"${String(x.advisor_name||"").replace(/"/g,'""')}";"${String(x.grade||"").replace(/"/g,'""')}";"${String(x.status||"").replace(/"/g,'""')}"\n`;
   });
@@ -651,7 +663,10 @@ function actualizarCampoGenero(){
   $("profileLeader").parentElement.style.display=isA?"block":"none";
 }
 
-$("profileRole").addEventListener("change",actualizarCampoGenero);
+$("profileRole").addEventListener("change",()=>{
+  actualizarCampoGenero();
+  if($("profileRole").value!=="asesora")$("profileGender").value="";
+});
 
 function closeProfileModal(){$("profileModal").classList.remove("show");$("profileForm").reset()}
 
@@ -694,13 +709,15 @@ $("profileForm").addEventListener("submit",async e=>{
 function openNewMemberModal(role){
   $("newMemberForm").reset();
   $("newMemberRole").value=role;
-  $("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Asesor Directo Tveo";
+  $("newMemberTitle").textContent=role==="team_leader"?"Nuevo Team Leader":"Nuevo Asesor";
+  $("newMemberGenderField").style.display=role==="asesora"?"block":"none";
+  $("newMemberGender").value="";
   $("newMemberModal").classList.add("show");
 }
 function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
 
 /* Crear usuario mediante la Edge Function desplegada en Supabase. */
-async function createAuthUserViaFunction({name,email,password,phone,role}){
+async function createAuthUserViaFunction({name,email,password,phone,role,gender}){
   const functionUrl=CONFIG.url+"/functions/v1/clever-processor";
   const sessionResult=await supabaseClient.auth.getSession();
   if(sessionResult.error)throw sessionResult.error;
@@ -720,6 +737,7 @@ async function createAuthUserViaFunction({name,email,password,phone,role}){
       fullName:name,
       phone,
       role,
+      gender:role==="asesora"?gender:null,
       leaderId:null
     })
   });
@@ -744,16 +762,18 @@ $("newMemberForm").addEventListener("submit",async e=>{
   const password=$("newMemberPassword").value;
   const password2=$("newMemberPassword2").value;
   const role=$("newMemberRole").value;
+  const gender=role==="asesora"?$("newMemberGender").value:null;
 
   if(!name){btn.disabled=false;return toast("El nombre es obligatorio")}
   if(!email){btn.disabled=false;return toast("El correo es obligatorio")}
   if(password.length<6){btn.disabled=false;return toast("La contraseña debe tener al menos 6 caracteres")}
   if(password!==password2){btn.disabled=false;return toast("Las contraseñas no coinciden")}
+  if(role==="asesora"&&!gender){btn.disabled=false;return toast("Selecciona si es Asesor o Asesora")}
 
   try{
     if(!isAdmin())throw new Error("Solo el Administrador puede crear nuevos integrantes.");
 
-    const result=await createAuthUserViaFunction({name,email,password,phone,role});
+    const result=await createAuthUserViaFunction({name,email,password,phone,role,gender});
 
     if(!result?.ok){
       throw new Error(result?.error||"No se pudo crear la cuenta.");
