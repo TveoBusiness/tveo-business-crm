@@ -352,3 +352,4 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelect
 (async function init(){try{const r=await supabaseClient.auth.getSession();if(r.error)throw r.error;const session=r.data.session;if(session){me=session.user;await boot()}}catch(e){console.error("Inicialización",e)}})();
 </script>
 </body>
+</html>
