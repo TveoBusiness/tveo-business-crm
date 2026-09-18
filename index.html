@@ -222,7 +222,7 @@ const supabaseClient=window.supabase.createClient(CONFIG.url,CONFIG.key);
 let me=null,profile=null,busy=false,lastProspects=[];
 
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]||m));
 function toast(x){const e=$("toast");e.textContent=x;e.style.display="block";clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.style.display="none",4500)}
 function err(where,e){console.error(where,e);toast(where+": "+(e?.message||String(e)))}
 function uuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v||""))}
@@ -308,7 +308,7 @@ async function prospects(){
 
 function prospectRows(p){
   if(!p.length)return '<div class="empty">No hay prospectos encontrados.</div>';
-  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name || "Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
+  return `<div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Asesor / Asesora</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr>${p.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">📱 ${esc(x.phone)}</div><div class="muted">${esc(x.email||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td>${esc(x.advisor_name||"Sin asignar")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td><span class="badge blue">${esc(x.status||"—")}</span></td><td><div class="actions"><button class="light" onclick="editProspect('${x.id}')">✏️ Editar</button><button class="light" onclick="newFollowup('${x.id}')">📅 Seguimiento</button>${isAdmin()?`<button class="danger" onclick="deleteProspect('${x.id}')">🗑️</button>`:""}</div></td></tr>`).join("")}</table></div>`;
 }
 
 async function render(){
@@ -584,15 +584,9 @@ function openNewMemberModal(role){
 }
 function closeNewMemberModal(){$("newMemberModal").classList.remove("show");$("newMemberForm").reset()}
 
-/*
-  IMPORTANTE:
-  El navegador NO puede usar la service_role key para crear usuarios de Auth.
-  Este formulario intenta primero usar una Edge Function configurada para
-  creación administrativa. Si todavía no existe/configurada, mostrará un
-  mensaje claro en lugar de crear un perfil sin cuenta de acceso.
-*/
+/* Crear usuario mediante la Edge Function desplegada en Supabase. */
 async function createAuthUserViaFunction({name,email,password,phone,role}){
-  const functionUrl=CONFIG.url+"/functions/v1/create-user";
+  const functionUrl=CONFIG.url+"/functions/v1/clever-processor";
   const sessionResult=await supabaseClient.auth.getSession();
   if(sessionResult.error)throw sessionResult.error;
   const token=sessionResult.data.session?.access_token;
@@ -605,12 +599,23 @@ async function createAuthUserViaFunction({name,email,password,phone,role}){
       "Authorization":"Bearer "+token,
       "apikey":CONFIG.key
     },
-    body:JSON.stringify({full_name:name,email,password,phone,role})
+    body:JSON.stringify({
+      email,
+      password,
+      fullName:name,
+      phone,
+      role,
+      leaderId:null
+    })
   });
 
+  const raw=await response.text();
   let data={};
-  try{data=await response.json()}catch(_){}
-  if(!response.ok)throw new Error(data.error||data.message||"La función de creación de usuarios no está disponible.");
+  try{data=raw?JSON.parse(raw):{}}catch(_){}
+
+  if(!response.ok||data.ok===false){
+    throw new Error(data.error||data.message||`Error de Edge Function (HTTP ${response.status})`);
+  }
   return data;
 }
 
@@ -625,6 +630,8 @@ $("newMemberForm").addEventListener("submit",async e=>{
   const password2=$("newMemberPassword2").value;
   const role=$("newMemberRole").value;
 
+  if(!name){btn.disabled=false;return toast("El nombre es obligatorio")}
+  if(!email){btn.disabled=false;return toast("El correo es obligatorio")}
   if(password.length<6){btn.disabled=false;return toast("La contraseña debe tener al menos 6 caracteres")}
   if(password!==password2){btn.disabled=false;return toast("Las contraseñas no coinciden")}
 
@@ -633,15 +640,8 @@ $("newMemberForm").addEventListener("submit",async e=>{
 
     const result=await createAuthUserViaFunction({name,email,password,phone,role});
 
-    /*
-      La Edge Function idealmente crea Auth + profiles.
-      Si devuelve user_id pero no creó el perfil, intentamos completar el perfil.
-    */
-    const userId=result.user_id||result.id||result.user?.id||null;
-    if(userId){
-      const profilePayload={id:userId,full_name:name,email,phone:phone||null,role,active:true,leader_id:null};
-      const pr=await supabaseClient.from("profiles").upsert(profilePayload,{onConflict:"id"});
-      if(pr.error)throw pr.error;
+    if(!result?.ok){
+      throw new Error(result?.error||"No se pudo crear la cuenta.");
     }
 
     closeNewMemberModal();
