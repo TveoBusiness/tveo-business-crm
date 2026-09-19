@@ -173,6 +173,17 @@ function normalizePhone(value){
 async function findDuplicateProspect(phone,currentId=""){
   const normalized=normalizePhone(phone);
   if(normalized.length<8)return null;
+
+  /* Primero consulta la función segura de Supabase para poder identificar
+     al responsable aunque las políticas RLS oculten el registro. */
+  const rpc=await supabaseClient.rpc("get_prospect_by_phone",{p_phone:phone});
+  if(!rpc.error && Array.isArray(rpc.data) && rpc.data.length){
+    const x=rpc.data[0];
+    if(currentId && String(x.id)===String(currentId))return null;
+    return x;
+  }
+
+  /* Respaldo: consulta directa cuando el registro es visible para el usuario. */
   const r=await supabaseClient.from("prospects")
     .select("id,name,phone,advisor_name,leader_id,advisor_id")
     .limit(5000);
@@ -322,7 +333,17 @@ if(duplicate)throw new Error(duplicateMessage(duplicate));
 const r=id
   ?await supabaseClient.from("prospects").update(payload).eq("id",id)
   :await supabaseClient.from("prospects").insert(payload);
-if(r.error)throw r.error;
+
+if(r.error){
+  /* 23505 = violación del índice UNIQUE por teléfono.
+     Esto cubre también dos usuarios guardando el mismo número al mismo tiempo. */
+  if(r.error.code==="23505"){
+    const existing=await findDuplicateProspect(payload.phone,id);
+    if(existing)throw new Error(duplicateMessage(existing));
+    throw new Error("🚫 PROSPECTO YA REGISTRADO\n\nEste número de WhatsApp ya existe en el CRM y no puede registrarse nuevamente.");
+  }
+  throw r.error;
+}
 closeProspectModal();
 toast(id?"Prospecto actualizado":"Prospecto guardado correctamente");
 await render()
