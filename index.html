@@ -5,75 +5,460 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b3d91">
 <meta name="mobile-web-app-capable" content="yes">
+
 <title>Tveo Business CRM</title>
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f4f7fb;color:#162033;font-family:Arial,sans-serif}
-button,input,select,textarea{font:inherit}
-button{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}
-.primary{background:#1565c0;color:#fff}
-.light{background:#eaf0f8;color:#17365f}
-.danger{background:#fee2e2;color:#991b1b}
-.meet{background:#ea4335;color:#fff}
-.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,#0b3d91,#102b52);padding:20px}
-.box{background:#fff;border-radius:20px;padding:26px;width:min(520px,100%);box-shadow:0 20px 60px #0004}
-.logo{font-weight:900;color:#0b3d91;font-size:24px}
-.muted{font-size:12px;color:#6b7280}
-.field{margin:11px 0}
-.field label{display:block;font-size:12px;font-weight:700;color:#657086;margin-bottom:5px}
-.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #dbe2ec;border-radius:9px;background:#fff}
-.field textarea{min-height:80px}
-.app{display:none}
-.side{position:fixed;inset:0 auto 0 0;width:240px;background:#0b1f3a;color:#fff;padding:20px;z-index:20}
-.brand{font-weight:900;font-size:21px;margin-bottom:22px}
-.nav button{display:block;width:100%;text-align:left;background:transparent;color:#dbeafe;margin:3px 0}
-.nav button.active{background:#17365f}
-.main{margin-left:240px;padding:24px;max-width:1450px}
-.view{display:none}
-.view.active{display:block}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card{background:#fff;border:1px solid #e6ebf2;border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 2px 9px #0000000b}
-.num{font-size:28px;font-weight:900}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.search{padding:11px;border:1px solid #dbe2ec;border-radius:9px;flex:1;min-width:180px}
-.tablewrap{overflow:auto}
-.table{width:100%;border-collapse:collapse;min-width:760px}
-.table th,.table td{padding:10px 7px;border-bottom:1px solid #e8edf3;text-align:left;font-size:13px;vertical-align:top}
-.badge{display:inline-block;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:900}
-.A{background:#dcfce7;color:#166534}
-.B{background:#fef3c7;color:#92400e}
-.C{background:#eef0f3;color:#4b5563}
-.blue{background:#e8f0fe;color:#174ea6}
-.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;padding:12px;z-index:50}
-.modal.show{display:flex}
-.modal .box{max-height:94vh;overflow:auto;width:100%;max-width:720px;margin:auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.full{grid-column:1/-1}
-.toast{position:fixed;right:15px;bottom:15px;background:#162033;color:#fff;padding:12px;border-radius:10px;display:none;z-index:100;max-width:min(520px,90vw)}
-.logout{position:absolute;bottom:18px;left:20px;right:20px;background:#17365f;color:#fff}
-.empty{padding:20px;text-align:center;color:#6b7280}
-.small{font-size:11px}
-.actions{display:flex;gap:5px;flex-wrap:wrap}
-.kpi{display:flex;gap:8px;flex-wrap:wrap}
-.kpi .badge{font-size:11px}
+
+body{
+margin:0;
+background:#f4f7fb;
+color:#162033;
+font-family:Arial,sans-serif
+}
+
+button,input,select,textarea{
+font:inherit
+}
+
+button{
+border:0;
+border-radius:10px;
+padding:10px 13px;
+font-weight:700;
+cursor:pointer
+}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed
+}
+
+.primary{
+background:#1565c0;
+color:#fff
+}
+
+.light{
+background:#eaf0f8;
+color:#17365f
+}
+
+.danger{
+background:#fee2e2;
+color:#991b1b
+}
+
+.meet{
+background:#ea4335;
+color:#fff
+}
+
+.login{
+min-height:100vh;
+display:grid;
+place-items:center;
+background:linear-gradient(145deg,#0b3d91,#102b52);
+padding:20px
+}
+
+.box{
+background:#fff;
+border-radius:20px;
+padding:26px;
+width:min(520px,100%);
+box-shadow:0 20px 60px #0004
+}
+
+.logo{
+font-weight:900;
+color:#0b3d91;
+font-size:24px
+}
+
+.muted{
+font-size:12px;
+color:#6b7280
+}
+
+.field{
+margin:11px 0
+}
+
+.field label{
+display:block;
+font-size:12px;
+font-weight:700;
+color:#657086;
+margin-bottom:5px
+}
+
+.field input,
+.field select,
+.field textarea{
+width:100%;
+padding:11px;
+border:1px solid #dbe2ec;
+border-radius:9px;
+background:#fff
+}
+
+.field textarea{
+min-height:80px
+}
+
+.app{
+display:none
+}
+
+.side{
+position:fixed;
+inset:0 auto 0 0;
+width:240px;
+background:#0b1f3a;
+color:#fff;
+padding:20px;
+z-index:20
+}
+
+.brand{
+font-weight:900;
+font-size:21px;
+margin-bottom:22px
+}
+
+.brand span{
+font-weight:700
+}
+
+.nav button{
+display:block;
+width:100%;
+text-align:left;
+background:transparent;
+color:#dbeafe;
+margin:3px 0
+}
+
+.nav button.active{
+background:#17365f
+}
+
+.main{
+margin-left:240px;
+padding:24px;
+max-width:1450px
+}
+
+.view{
+display:none
+}
+
+.view.active{
+display:block
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px
+}
+
+.card{
+background:#fff;
+border:1px solid #e6ebf2;
+border-radius:15px;
+padding:16px;
+margin:12px 0;
+box-shadow:0 2px 9px #0000000b
+}
+
+.num{
+font-size:28px;
+font-weight:900
+}
+
+.toolbar{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+align-items:center
+}
+
+.search{
+padding:11px;
+border:1px solid #dbe2ec;
+border-radius:9px;
+flex:1;
+min-width:180px
+}
+
+.tablewrap{
+overflow:auto
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+min-width:760px
+}
+
+.table th,
+.table td{
+padding:10px 7px;
+border-bottom:1px solid #e8edf3;
+text-align:left;
+font-size:13px;
+vertical-align:top
+}
+
+.badge{
+display:inline-block;
+border-radius:20px;
+padding:4px 8px;
+font-size:10px;
+font-weight:900
+}
+
+.A{
+background:#dcfce7;
+color:#166534
+}
+
+.B{
+background:#fef3c7;
+color:#92400e
+}
+
+.C{
+background:#eef0f3;
+color:#4b5563
+}
+
+.blue{
+background:#e8f0fe;
+color:#174ea6
+}
+
+.green{
+background:#dcfce7;
+color:#166534
+}
+
+.orange{
+background:#fff7ed;
+color:#c2410c
+}
+
+.purple{
+background:#f3e8ff;
+color:#7e22ce
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+align-items:center;
+padding:12px;
+z-index:50
+}
+
+.modal.show{
+display:flex
+}
+
+.modal .box{
+max-height:94vh;
+overflow:auto;
+width:100%;
+max-width:720px;
+margin:auto
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.full{
+grid-column:1/-1
+}
+
+.toast{
+position:fixed;
+right:15px;
+bottom:15px;
+background:#162033;
+color:#fff;
+padding:12px;
+border-radius:10px;
+display:none;
+z-index:100;
+max-width:min(520px,90vw)
+}
+
+.logout{
+position:absolute;
+bottom:18px;
+left:20px;
+right:20px;
+background:#17365f;
+color:#fff
+}
+
+.empty{
+padding:20px;
+text-align:center;
+color:#6b7280
+}
+
+.small{
+font-size:11px
+}
+
+.actions{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+.kpi{
+display:flex;
+gap:8px;
+flex-wrap:wrap
+}
+
+.kpi .badge{
+font-size:11px
+}
+
+.gosen-header{
+background:linear-gradient(135deg,#0b3d91,#1565c0);
+color:#fff;
+border-radius:16px;
+padding:20px;
+margin-bottom:14px
+}
+
+.gosen-header h2{
+margin:0 0 5px
+}
+
+.gosen-header p{
+margin:0;
+opacity:.9;
+font-size:13px
+}
+
+.gosen-card{
+border:1px solid #dbeafe;
+background:#fff
+}
+
+.readonly{
+background:#f8fafc!important;
+color:#64748b
+}
+
+.partner-label{
+font-size:11px;
+font-weight:700;
+color:#64748b;
+margin-top:5px
+}
 
 @media(max-width:800px){
-.side{top:auto;bottom:0;left:0;right:0;width:100%;height:66px;padding:6px 8px;box-shadow:0 -3px 15px #0002}
-.brand,.logout{display:none}
-.nav{display:flex;width:100%;justify-content:space-around;gap:2px}
-.nav button{margin:0;padding:7px 5px;text-align:center;border-radius:9px;font-size:18px;line-height:1}
-.nav button span{display:block;font-size:9px;margin-top:2px}
-.main{margin-left:0;padding:12px 12px 82px}
-.main h1{font-size:22px;margin:5px 0 0}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.stats{grid-template-columns:1fr 1fr}
-.grid{grid-template-columns:1fr}
-.full{grid-column:auto}
-.modal{padding:0;align-items:end}
-.modal .box{border-radius:20px 20px 0 0;max-height:92vh}
-.primary{min-height:44px}
-.field input,.field select,.field textarea{min-height:44px}
+
+.side{
+top:auto;
+bottom:0;
+left:0;
+right:0;
+width:100%;
+height:66px;
+padding:6px 8px;
+box-shadow:0 -3px 15px #0002
+}
+
+.brand,
+.logout{
+display:none
+}
+
+.nav{
+display:flex;
+width:100%;
+justify-content:space-around;
+gap:2px
+}
+
+.nav button{
+margin:0;
+padding:7px 5px;
+text-align:center;
+border-radius:9px;
+font-size:18px;
+line-height:1
+}
+
+.nav button span{
+display:block;
+font-size:9px;
+margin-top:2px
+}
+
+.main{
+margin-left:0;
+padding:12px 12px 82px
+}
+
+.main h1{
+font-size:22px;
+margin:5px 0 0
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.grid{
+grid-template-columns:1fr
+}
+
+.full{
+grid-column:auto
+}
+
+.modal{
+padding:0;
+align-items:end
+}
+
+.modal .box{
+border-radius:20px 20px 0 0;
+max-height:92vh
+}
+
+.primary{
+min-height:44px
+}
+
+.field input,
+.field select,
+.field textarea{
+min-height:44px
+}
 }
 </style>
 
@@ -82,7 +467,9 @@ button{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:poin
 
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- =========================================================
+LOGIN
+========================================================= -->
 
 <div id="login" class="login">
 
@@ -107,7 +494,9 @@ button{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:poin
 Ingresar
 </button>
 
-<p class="muted">Sesión conectada a Supabase.</p>
+<p class="muted">
+Sesión conectada a Supabase.
+</p>
 
 </div>
 
@@ -137,7 +526,9 @@ Guardar nueva contraseña
 </div>
 
 
-<!-- ================= APP ================= -->
+<!-- =========================================================
+APP
+========================================================= -->
 
 <div id="app" class="app">
 
@@ -149,33 +540,48 @@ TVEO <span>BUSINESS</span>
 
 <nav class="nav">
 
-<button class="active" onclick="go('dashboard',this)">
+<button
+id="navDashboard"
+class="active"
+onclick="go('dashboard',this)">
 📊 <span>Dashboard</span>
 </button>
 
-<button onclick="go('prospectos',this)">
+<button
+id="navProspectos"
+onclick="go('prospectos',this)">
 👥 <span>Prospectos</span>
 </button>
 
-<button onclick="go('seguimientos',this)">
+<button
+id="navSeguimientos"
+onclick="go('seguimientos',this)">
 📅 <span>Seguimientos</span>
 </button>
 
-<button onclick="go('equipo',this)">
+<button
+id="navEquipo"
+onclick="go('equipo',this)">
 👩‍💼 <span>Equipo</span>
 </button>
 
-<button onclick="go('proyectos',this)">
+<button
+id="navProyectos"
+onclick="go('proyectos',this)">
 🏗️ <span>Proyectos</span>
 </button>
 
-<button onclick="go('reportes',this)">
+<button
+id="navReportes"
+onclick="go('reportes',this)">
 📈 <span>Reportes</span>
 </button>
 
 </nav>
 
-<button class="logout" onclick="signOut()">Salir</button>
+<button class="logout" onclick="signOut()">
+Salir
+</button>
 
 </aside>
 
@@ -191,10 +597,15 @@ TVEO <span>BUSINESS</span>
 </div>
 
 <section id="dashboard" class="view active"></section>
+
 <section id="prospectos" class="view"></section>
+
 <section id="seguimientos" class="view"></section>
+
 <section id="equipo" class="view"></section>
+
 <section id="proyectos" class="view"></section>
+
 <section id="reportes" class="view"></section>
 
 </main>
@@ -202,7 +613,9 @@ TVEO <span>BUSINESS</span>
 </div>
 
 
-<!-- ================= PROSPECTO ================= -->
+<!-- =========================================================
+PROSPECTO
+========================================================= -->
 
 <div id="prospectModal" class="modal">
 
@@ -210,9 +623,13 @@ TVEO <span>BUSINESS</span>
 
 <div class="top">
 
-<h2 id="prospectModalTitle">Nuevo prospecto</h2>
+<h2 id="prospectModalTitle">
+Nuevo prospecto
+</h2>
 
-<button class="light" onclick="closeProspectModal()">✕</button>
+<button class="light" onclick="closeProspectModal()">
+✕
+</button>
 
 </div>
 
@@ -242,7 +659,7 @@ TVEO <span>BUSINESS</span>
 <select id="fproj"></select>
 </div>
 
-<div class="field">
+<div class="field" id="teamField">
 <label>Equipo de asignación</label>
 <select id="fteam"></select>
 </div>
@@ -251,6 +668,7 @@ TVEO <span>BUSINESS</span>
 <label>Origen</label>
 
 <select id="fsrc">
+
 <option>Facebook Ads</option>
 <option>Instagram Ads</option>
 <option>TikTok</option>
@@ -258,30 +676,39 @@ TVEO <span>BUSINESS</span>
 <option>Página web</option>
 <option>Referido</option>
 <option>Orgánico</option>
+
 </select>
 
 </div>
 
-<div class="field">
+<div class="field" id="advisorField">
+
 <label>Asesor / Asesora</label>
+
 <select id="fadv"></select>
+
 </div>
 
 <div class="field">
+
 <label>Clasificación (Nivel)</label>
 
 <select id="fgrade">
+
 <option>A</option>
 <option>B</option>
 <option>C</option>
+
 </select>
 
 </div>
 
 <div class="field">
+
 <label>Estado</label>
 
 <select id="fstatus">
+
 <option>Nuevo</option>
 <option>Contactado</option>
 <option>Interesado</option>
@@ -290,6 +717,7 @@ TVEO <span>BUSINESS</span>
 <option>Venta</option>
 <option>No responde</option>
 <option>No interesado</option>
+
 </select>
 
 </div>
@@ -304,8 +732,13 @@ TVEO <span>BUSINESS</span>
 
 </div>
 
-<button class="primary" id="prospectSubmit" style="width:100%;margin-top:8px">
+<button
+class="primary"
+id="prospectSubmit"
+style="width:100%;margin-top:8px">
+
 Guardar prospecto
+
 </button>
 
 </form>
@@ -315,7 +748,9 @@ Guardar prospecto
 </div>
 
 
-<!-- ================= SEGUIMIENTO ================= -->
+<!-- =========================================================
+SEGUIMIENTO
+========================================================= -->
 
 <div id="followupModal" class="modal">
 
@@ -325,29 +760,52 @@ Guardar prospecto
 
 <h2>Nuevo seguimiento</h2>
 
-<button class="light" onclick="closeFollowupModal()">✕</button>
+<button class="light" onclick="closeFollowupModal()">
+✕
+</button>
 
 </div>
 
 <form id="followupForm">
 
 <div class="field">
+
 <label>Título *</label>
-<input id="fuTitle" required placeholder="Reunión de presentación / Llamada">
+
+<input
+id="fuTitle"
+required
+placeholder="Reunión de presentación / Llamada">
+
 </div>
 
 <div class="field">
+
 <label>Fecha *</label>
-<input id="fuDate" type="date" required>
+
+<input
+id="fuDate"
+type="date"
+required>
+
 </div>
 
 <div class="field">
+
 <label>Enlace Google Meet / Sala Virtual</label>
-<input id="fuMeet" placeholder="https://meet.google.com/xyz-abcd-efg">
+
+<input
+id="fuMeet"
+placeholder="https://meet.google.com/xyz-abcd-efg">
+
 </div>
 
-<button class="primary" style="width:100%">
+<button
+class="primary"
+style="width:100%">
+
 Guardar seguimiento
+
 </button>
 
 </form>
@@ -357,7 +815,9 @@ Guardar seguimiento
 </div>
 
 
-<!-- ================= PROYECTO ================= -->
+<!-- =========================================================
+PROYECTO
+========================================================= -->
 
 <div id="projectModal" class="modal">
 
@@ -365,28 +825,49 @@ Guardar seguimiento
 
 <div class="top">
 
-<h2 id="projectModalTitle">Nuevo proyecto</h2>
+<h2 id="projectModalTitle">
+Nuevo proyecto
+</h2>
 
-<button class="light" onclick="closeProjectModal()">✕</button>
+<button
+class="light"
+onclick="closeProjectModal()">
+✕
+</button>
 
 </div>
 
 <form id="projectForm">
 
-<input id="editProjectId" type="hidden">
+<input
+id="editProjectId"
+type="hidden">
 
 <div class="field">
+
 <label>Nombre *</label>
-<input id="projectName" required>
+
+<input
+id="projectName"
+required>
+
 </div>
 
 <div class="field">
+
 <label>Ubicación</label>
-<input id="projectLocation">
+
+<input
+id="projectLocation">
+
 </div>
 
-<button class="primary" style="width:100%">
+<button
+class="primary"
+style="width:100%">
+
 Guardar proyecto
+
 </button>
 
 </form>
@@ -396,7 +877,9 @@ Guardar proyecto
 </div>
 
 
-<!-- ================= NUEVO INTEGRANTE ================= -->
+<!-- =========================================================
+NUEVO INTEGRANTE
+========================================================= -->
 
 <div id="newMemberModal" class="modal">
 
@@ -404,38 +887,67 @@ Guardar proyecto
 
 <div class="top">
 
-<h2 id="newMemberTitle">Nuevo integrante</h2>
+<h2 id="newMemberTitle">
+Nuevo integrante
+</h2>
 
-<button class="light" onclick="closeNewMemberModal()">✕</button>
+<button
+class="light"
+onclick="closeNewMemberModal()">
+✕
+</button>
 
 </div>
 
 <form id="newMemberForm">
 
-<input id="newMemberRole" type="hidden">
+<input
+id="newMemberRole"
+type="hidden">
 
 <div class="field">
+
 <label>Nombre *</label>
-<input id="newMemberName" required>
+
+<input
+id="newMemberName"
+required>
+
 </div>
 
 <div class="field">
+
 <label>Correo de acceso *</label>
-<input id="newMemberEmail" type="email" required>
+
+<input
+id="newMemberEmail"
+type="email"
+required>
+
 </div>
 
 <div class="field">
+
 <label>Teléfono</label>
-<input id="newMemberPhone">
+
+<input
+id="newMemberPhone">
+
 </div>
 
 <p class="muted" style="font-size:13px">
+
 La cuenta de acceso se creará de forma segura.
 No ingreses contraseñas aquí.
+
 </p>
 
-<button class="primary" style="width:100%">
+<button
+class="primary"
+style="width:100%">
+
 Continuar
+
 </button>
 
 </form>
@@ -445,7 +957,9 @@ Continuar
 </div>
 
 
-<!-- ================= PERFIL ================= -->
+<!-- =========================================================
+PERFIL
+========================================================= -->
 
 <div id="profileModal" class="modal">
 
@@ -455,36 +969,66 @@ Continuar
 
 <h2>Editar integrante</h2>
 
-<button type="button" class="light" onclick="closeProfileModal()">
+<button
+type="button"
+class="light"
+onclick="closeProfileModal()">
+
 ✕
+
 </button>
 
 </div>
 
 <form id="profileForm">
 
-<input id="editProfileId" type="hidden">
+<input
+id="editProfileId"
+type="hidden">
 
 <div class="field">
-<label for="profileName">Nombre</label>
-<input id="profileName" type="text" required>
+
+<label for="profileName">
+Nombre
+</label>
+
+<input
+id="profileName"
+type="text"
+required>
+
 </div>
 
 <div class="field">
-<label for="profilePhone">Teléfono</label>
-<input id="profilePhone" type="text">
+
+<label for="profilePhone">
+Teléfono
+</label>
+
+<input
+id="profilePhone"
+type="text">
+
 </div>
 
 <div class="field">
+
 <label for="profileMeet">
 Enlace de Google Meet (Sala Personal)
 </label>
-<input id="profileMeet" type="url"
+
+<input
+id="profileMeet"
+type="url"
 placeholder="https://meet.google.com/xyz-abcd-efg">
+
 </div>
 
 <div class="field">
-<label for="profileRole">Rol</label>
+
+<label for="profileRole">
+Rol
+</label>
 
 <select id="profileRole">
 
@@ -500,6 +1044,10 @@ Team Leader
 Asesor / Asesora
 </option>
 
+<option value="gosen">
+Gosen S.R.L.
+</option>
+
 </select>
 
 </div>
@@ -512,9 +1060,17 @@ Tipo de asesor
 
 <select id="profileGender">
 
-<option value="">Seleccionar</option>
-<option value="male">Asesor</option>
-<option value="female">Asesora</option>
+<option value="">
+Seleccionar
+</option>
+
+<option value="male">
+Asesor
+</option>
+
+<option value="female">
+Asesora
+</option>
 
 </select>
 
@@ -552,15 +1108,25 @@ Activo
 
 <select id="profileActive">
 
-<option value="true">Sí</option>
-<option value="false">No</option>
+<option value="true">
+Sí
+</option>
+
+<option value="false">
+No
+</option>
 
 </select>
 
 </div>
 
-<button type="submit" class="primary" style="width:100%">
+<button
+type="submit"
+class="primary"
+style="width:100%">
+
 Guardar cambios
+
 </button>
 
 </form>
@@ -576,11 +1142,19 @@ Guardar cambios
 <script>
 
 /* =========================================================
-   CONFIGURACIÓN SUPABASE
+CONFIGURACIÓN SUPABASE
 ========================================================= */
 
 const CONFIG={
 url:"https://mfkdhrwtlmfdmuntsbav.supabase.co",
+
+/*
+IMPORTANTE:
+Esta es tu clave pública de Supabase.
+Si al reemplazar el archivo utilizas otra,
+colócala aquí.
+*/
+
 key:"sb_publishable_ddzIlLZE4Eoo3RyNkozzzw_RF0a1WAp"
 };
 
@@ -591,7 +1165,7 @@ CONFIG.key
 
 
 /* =========================================================
-   VARIABLES
+VARIABLES
 ========================================================= */
 
 let me=null;
@@ -601,7 +1175,7 @@ let lastProspects=[];
 
 
 /* =========================================================
-   HELPERS
+HELPERS
 ========================================================= */
 
 const $=id=>document.getElementById(id);
@@ -617,11 +1191,13 @@ m=>({
 }[m])
 );
 
+
 function toast(x){
 
 const e=$("toast");
 
 e.textContent=x;
+
 e.style.display="block";
 
 clearTimeout(window.__toast);
@@ -633,6 +1209,7 @@ window.__toast=setTimeout(
 
 }
 
+
 function err(where,e){
 
 console.error(where,e);
@@ -643,6 +1220,7 @@ where+": "+(e?.message||String(e))
 
 }
 
+
 function uuid(v){
 
 return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -650,11 +1228,13 @@ return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}
 
 }
 
+
 function isAdmin(){
 
 return profile?.role==="administrador";
 
 }
+
 
 function isTeamLeader(){
 
@@ -662,11 +1242,20 @@ return profile?.role==="team_leader";
 
 }
 
+
 function isAdvisor(){
 
 return profile?.role==="asesora";
 
 }
+
+
+function isGosen(){
+
+return profile?.role==="gosen";
+
+}
+
 
 function fixUrl(url){
 
@@ -677,6 +1266,7 @@ return url.startsWith("http")
 :"https://"+url;
 
 }
+
 
 function copyMeetLink(url){
 
@@ -693,7 +1283,7 @@ toast("¡Enlace de Meet copiado!");
 
 
 /* =========================================================
-   LOGIN
+LOGIN
 ========================================================= */
 
 async function signIn(){
@@ -703,13 +1293,16 @@ const email=$("email").value.trim();
 const password=$("password").value;
 
 if(!email||!password)
-return toast("Completa correo y contraseña");
+return toast(
+"Completa correo y contraseña"
+);
 
 try{
 
 toast("Conectando...");
 
-const r=await supabaseClient.auth.signInWithPassword({
+const r=
+await supabaseClient.auth.signInWithPassword({
 email,
 password
 });
@@ -740,14 +1333,15 @@ location.reload();
 
 
 /* =========================================================
-   INICIO
+INICIO
 ========================================================= */
 
 async function boot(){
 
 try{
 
-const r=await supabaseClient
+const r=
+await supabaseClient
 .from("profiles")
 .select("*")
 .eq("id",me.id)
@@ -770,6 +1364,14 @@ $("app").style.display="block";
 $("who").textContent=
 `${profile.full_name||"Usuario"} · ${profile.role||""}`;
 
+
+/*
+Si es Gosen:
+configuramos su panel restringido.
+*/
+
+configurarPanelGosen();
+
 await render();
 
 }catch(e){
@@ -782,20 +1384,90 @@ err("Perfil",e);
 
 
 /* =========================================================
-   NAVEGACIÓN
+CONFIGURAR PANEL GOSEN
+========================================================= */
+
+function configurarPanelGosen(){
+
+if(!isGosen())
+return;
+
+
+/*
+Gosen solamente verá:
+Dashboard
+Prospectos
+*/
+
+const ocultar=[
+"navSeguimientos",
+"navEquipo",
+"navProyectos",
+"navReportes"
+];
+
+ocultar.forEach(id=>{
+
+const el=$(id);
+
+if(el)
+el.style.display="none";
+
+});
+
+
+/*
+Dashboard inicial
+*/
+
+const dash=$("navDashboard");
+
+if(dash)
+dash.style.display="block";
+
+
+const pros=$("navProspectos");
+
+if(pros)
+pros.style.display="block";
+
+}
+
+
+/* =========================================================
+NAVEGACIÓN
 ========================================================= */
 
 function go(id,b){
 
+if(isGosen()){
+
+if(
+id!=="dashboard" &&
+id!=="prospectos"
+){
+
+id="dashboard";
+
+b=$("navDashboard");
+
+}
+
+}
+
 document
 .querySelectorAll(".view")
-.forEach(v=>v.classList.remove("active"));
+.forEach(v=>
+v.classList.remove("active")
+);
 
 $(id).classList.add("active");
 
 document
 .querySelectorAll(".nav button")
-.forEach(v=>v.classList.remove("active"));
+.forEach(v=>
+v.classList.remove("active")
+);
 
 if(b)
 b.classList.add("active");
@@ -815,35 +1487,41 @@ render();
 
 
 /* =========================================================
-   PROSPECTOS
+PROSPECTOS
 ========================================================= */
 
 async function prospects(){
 
-let q=supabaseClient
+let q=
+supabaseClient
 .from("prospects")
 .select("*")
-.order("created_at",{ascending:false});
+.order(
+"created_at",
+{ascending:false}
+);
 
 
 /*
-=========================================================
-CORRECCIÓN PRINCIPAL
-=========================================================
-
-Team Leader:
-solamente ve prospectos cuyo leader_id sea su propio ID.
-
-Asesora:
-solamente ve prospectos cuyo advisor_id sea su propio ID.
-
-Administrador:
-ve todos.
-
-=========================================================
+GOSEN:
+solamente sus prospectos.
 */
 
-if(profile?.role==="asesora"){
+if(isGosen()){
+
+q=q.eq(
+"partner_id",
+profile.partner_id
+);
+
+}
+
+
+/*
+ASESORA
+*/
+
+if(isAdvisor()){
 
 q=q.eq(
 "advisor_id",
@@ -852,7 +1530,12 @@ me.id
 
 }
 
-if(profile?.role==="team_leader"){
+
+/*
+TEAM LEADER
+*/
+
+if(isTeamLeader()){
 
 q=q.eq(
 "leader_id",
@@ -875,7 +1558,7 @@ return lastProspects;
 
 
 /* =========================================================
-   FILAS DE PROSPECTOS
+FILAS PROSPECTOS INTERNOS
 ========================================================= */
 
 function prospectRows(p){
@@ -884,17 +1567,20 @@ if(!p.length)
 return '<div class="empty">No hay prospectos.</div>';
 
 return `
+
 <div class="tablewrap">
 
 <table class="table">
 
 <tr>
+
 <th>Cliente</th>
 <th>Proyecto</th>
 <th>Asesor / Asesora</th>
 <th>Nivel</th>
 <th>Estado</th>
 <th>Acciones</th>
+
 </tr>
 
 ${p.map(x=>`
@@ -902,11 +1588,13 @@ ${p.map(x=>`
 <tr>
 
 <td>
+
 <b>${esc(x.name)}</b>
 
 <div class="muted">
 📱 ${esc(x.phone)}
 </div>
+
 </td>
 
 <td>
@@ -940,22 +1628,30 @@ ${esc(x.status||"—")}
 <button
 class="light"
 onclick="editProspect('${x.id}')">
+
 ✏️ Editar
+
 </button>
 
 <button
 class="light"
 onclick="newFollowup('${x.id}')">
+
 📅 Seguimiento
+
 </button>
 
 ${isAdmin()
 ?`
+
 <button
 class="danger"
 onclick="deleteProspect('${x.id}')">
+
 🗑️
+
 </button>
+
 `
 :""}
 
@@ -970,18 +1666,331 @@ onclick="deleteProspect('${x.id}')">
 </table>
 
 </div>
+
 `;
 
 }
 
 
 /* =========================================================
-   RENDER PRINCIPAL
+FILAS GOSEN
+========================================================= */
+
+function prospectRowsGosen(p){
+
+if(!p.length){
+
+return `
+
+<div class="empty">
+
+Aún no has registrado prospectos referidos.
+
+<br><br>
+
+Registra tu primer prospecto con el botón
+<strong>+ Registrar prospecto</strong>.
+
+</div>
+
+`;
+
+}
+
+
+return `
+
+<div class="tablewrap">
+
+<table class="table">
+
+<tr>
+
+<th>Cliente</th>
+<th>Proyecto</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Asesor asignado</th>
+
+</tr>
+
+${p.map(x=>`
+
+<tr>
+
+<td>
+
+<b>${esc(x.name)}</b>
+
+<div class="muted">
+📱 ${esc(x.phone)}
+</div>
+
+${x.email
+?`<div class="muted">✉️ ${esc(x.email)}</div>`
+:""}
+
+</td>
+
+<td>
+
+${esc(
+x.project_name||
+"Sin proyecto"
+)}
+
+</td>
+
+<td>
+
+${esc(
+x.created_at
+?.slice(0,10)||
+""
+)}
+
+</td>
+
+<td>
+
+<span class="badge ${
+x.status==="Venta"
+?"A":
+x.status==="Nuevo"
+?"blue":
+"orange"
+}">
+
+${esc(x.status||"Nuevo")}
+
+</span>
+
+</td>
+
+<td>
+
+${x.advisor_name
+?`
+
+<b>
+${esc(x.advisor_name)}
+</b>
+
+`
+:`
+
+<span class="muted">
+Pendiente de asignación
+</span>
+
+`}
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+PANEL GOSEN
+========================================================= */
+
+function renderGosen(all){
+
+const nuevos=
+all.filter(x=>
+x.status==="Nuevo"
+).length;
+
+const contactados=
+all.filter(x=>
+x.status==="Contactado" ||
+x.status==="Interesado" ||
+x.status==="Visita programada"
+).length;
+
+const ventas=
+all.filter(x=>
+x.status==="Venta"
+).length;
+
+
+$("dashboard").innerHTML=`
+
+<div class="gosen-header">
+
+<h2>
+🤝 Gosen S.R.L.
+</h2>
+
+<p>
+Panel de referidos · TVEO Business
+</p>
+
+</div>
+
+
+<div class="stats">
+
+<div class="card">
+
+<span class="muted">
+Referidos registrados
+</span>
+
+<div class="num">
+${all.length}
+</div>
+
+</div>
+
+
+<div class="card">
+
+<span class="muted">
+Pendientes
+</span>
+
+<div class="num">
+${nuevos}
+</div>
+
+</div>
+
+
+<div class="card">
+
+<span class="muted">
+En gestión
+</span>
+
+<div class="num">
+${contactados}
+</div>
+
+</div>
+
+
+<div class="card">
+
+<span class="muted">
+Ventas
+</span>
+
+<div class="num">
+${ventas}
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card gosen-card">
+
+<div class="top">
+
+<div>
+
+<h3>
+Mis prospectos referidos
+</h3>
+
+<p class="muted">
+Aquí puedes consultar el avance de los clientes que has referido a TVEO Business.
+</p>
+
+</div>
+
+<button
+class="primary"
+onclick="openProspectModal()">
+
++ Registrar prospecto
+
+</button>
+
+</div>
+
+${prospectRowsGosen(all)}
+
+</div>
+
+`;
+
+
+$("prospectos").innerHTML=`
+
+<div class="gosen-header">
+
+<h2>
+Registro de prospectos
+</h2>
+
+<p>
+Envía un nuevo cliente referido directamente a Administración de TVEO Business.
+</p>
+
+</div>
+
+
+<div class="toolbar">
+
+<input
+class="search"
+id="search"
+placeholder="🔎 Buscar prospecto..."
+oninput="filterTable()">
+
+<button
+class="primary"
+onclick="openProspectModal()">
+
++ Registrar prospecto
+
+</button>
+
+</div>
+
+
+<div class="card gosen-card" id="ptable">
+
+${prospectRowsGosen(all)}
+
+</div>
+
+`;
+
+
+/*
+Las demás pantallas quedan vacías.
+*/
+
+$("seguimientos").innerHTML="";
+$("equipo").innerHTML="";
+$("proyectos").innerHTML="";
+$("reportes").innerHTML="";
+
+}
+
+
+/* =========================================================
+RENDER PRINCIPAL
 ========================================================= */
 
 async function render(){
 
-if(busy)return;
+if(busy)
+return;
 
 busy=true;
 
@@ -999,15 +2008,19 @@ p=await prospects();
 .forEach(id=>{
 
 $(id).innerHTML=`
+
 <div class="card">
 
-<h3>Error de datos</h3>
+<h3>
+Error de datos
+</h3>
 
 <p>
 ${esc(e.message||e)}
 </p>
 
 </div>
+
 `;
 
 });
@@ -1018,24 +2031,37 @@ return;
 
 
 /*
-Administrador:
-todos.
-
-Team Leader:
-solo sus prospectos.
-
-Asesora:
-solo sus prospectos.
+GOSEN:
+no ejecutamos las funciones del CRM interno.
 */
 
+if(isGosen()){
+
+renderGosen(p);
+
+return;
+
+}
+
+
 let all=p;
+
+
+/*
+ADMIN:
+todos los prospectos.
+*/
 
 if(isAdmin()){
 
 const r=
 await supabaseClient
 .from("prospects")
-.select("*");
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
 
 if(!r.error)
 all=r.data||p;
@@ -1043,7 +2069,9 @@ all=r.data||p;
 }
 
 
-/* DASHBOARD */
+/* =========================================================
+DASHBOARD
+========================================================= */
 
 $("dashboard").innerHTML=`
 
@@ -1069,7 +2097,9 @@ Clientes A
 </span>
 
 <div class="num">
-${all.filter(x=>x.grade==="A").length}
+${all.filter(
+x=>x.grade==="A"
+).length}
 </div>
 
 </div>
@@ -1082,7 +2112,9 @@ Reservas
 </span>
 
 <div class="num">
-${all.filter(x=>x.status==="Reserva").length}
+${all.filter(
+x=>x.status==="Reserva"
+).length}
 </div>
 
 </div>
@@ -1095,7 +2127,9 @@ Ventas
 </span>
 
 <div class="num">
-${all.filter(x=>x.status==="Venta").length}
+${all.filter(
+x=>x.status==="Venta"
+).length}
 </div>
 
 </div>
@@ -1109,14 +2143,18 @@ ${all.filter(x=>x.status==="Venta").length}
 Últimos prospectos
 </h3>
 
-${prospectRows(all.slice(0,8))}
+${prospectRows(
+all.slice(0,8)
+)}
 
 </div>
 
 `;
 
 
-/* PROSPECTOS */
+/* =========================================================
+PROSPECTOS
+========================================================= */
 
 $("prospectos").innerHTML=`
 
@@ -1128,22 +2166,31 @@ id="search"
 placeholder="🔎 Buscar por nombre, teléfono, nivel (A/B/C) o asesor..."
 oninput="filterTable()">
 
+
 <button
 class="primary"
 style="background:#21a366"
 onclick="exportarExcel()">
+
 📊 Descargar Excel
+
 </button>
+
 
 <button
 class="primary"
 onclick="openProspectModal()">
+
 + Nuevo prospecto
+
 </button>
 
 </div>
 
-<div class="card" id="ptable">
+
+<div
+class="card"
+id="ptable">
 
 ${prospectRows(all)}
 
@@ -1160,7 +2207,6 @@ await renderProjects();
 
 renderReports(all);
 
-
 }finally{
 
 busy=false;
@@ -1171,7 +2217,7 @@ busy=false;
 
 
 /* =========================================================
-   BÚSQUEDA
+BÚSQUEDA
 ========================================================= */
 
 async function filterTable(){
@@ -1183,21 +2229,29 @@ const q=
 .toLowerCase()
 .trim();
 
+
 const p=
 (await prospects())
 .filter(x=>{
 
-const name=(x.name||"").toLowerCase();
+const name=
+(x.name||"").toLowerCase();
 
-const phone=(x.phone||"").toLowerCase();
+const phone=
+(x.phone||"").toLowerCase();
 
-const project=(x.project_name||"").toLowerCase();
+const project=
+(x.project_name||"").toLowerCase();
 
-const status=(x.status||"").toLowerCase();
+const status=
+(x.status||"").toLowerCase();
 
-const grade=(x.grade||"").toLowerCase();
+const grade=
+(x.grade||"").toLowerCase();
 
-const advisor=(x.advisor_name||"").toLowerCase();
+const advisor=
+(x.advisor_name||"").toLowerCase();
+
 
 return
 name.includes(q)||
@@ -1209,12 +2263,25 @@ advisor.includes(q);
 
 });
 
+
+if(isGosen()){
+
+$("ptable").innerHTML=
+prospectRowsGosen(p);
+
+}else{
+
 $("ptable").innerHTML=
 prospectRows(p);
 
+}
+
 }catch(e){
 
-err("Búsqueda",e);
+err(
+"Búsqueda",
+e
+);
 
 }
 
@@ -1222,16 +2289,20 @@ err("Búsqueda",e);
 
 
 /* =========================================================
-   EXPORTAR
+EXPORTAR
 ========================================================= */
 
 function exportarExcel(){
 
 if(!lastProspects.length)
-return toast("No hay datos para exportar");
+return toast(
+"No hay datos para exportar"
+);
+
 
 let csv=
 "\uFEFFFecha;Cliente;Telefono;Proyecto;Asesor;Nivel;Estado\n";
+
 
 lastProspects.forEach(x=>{
 
@@ -1246,7 +2317,10 @@ csv+=
 
 });
 
-const link=document.createElement("a");
+
+const link=
+document.createElement("a");
+
 
 link.href=
 URL.createObjectURL(
@@ -1258,8 +2332,12 @@ type:"text/csv;charset=utf-8;"
 )
 );
 
+
 link.download=
-`Reporte_Prospectos_${new Date().toISOString().slice(0,10)}.csv`;
+`Reporte_Prospectos_${new Date()
+.toISOString()
+.slice(0,10)}.csv`;
+
 
 link.click();
 
@@ -1267,10 +2345,14 @@ link.click();
 
 
 /* =========================================================
-   SEGUIMIENTOS
+SEGUIMIENTOS
 ========================================================= */
 
 async function renderFollowups(){
+
+if(isGosen())
+return;
+
 
 try{
 
@@ -1278,10 +2360,14 @@ const r=
 await supabaseClient
 .from("followups")
 .select("*")
-.order("date",{ascending:true});
+.order(
+"date",
+{ascending:true}
+);
 
 if(r.error)
 throw r.error;
+
 
 let f=r.data||[];
 
@@ -1289,18 +2375,13 @@ let f=r.data||[];
 if(profile.role==="asesora"){
 
 f=f.filter(
-x=>x.user_id===me.id||
+x=>
+x.user_id===me.id||
 x.advisor_id===me.id
 );
 
 }
 
-
-/*
-Team Leader:
-mostramos seguimientos relacionados con su
-equipo o creados por ella.
-*/
 
 if(profile.role==="team_leader"){
 
@@ -1308,12 +2389,18 @@ const team=
 await supabaseClient
 .from("profiles")
 .select("id")
-.eq("leader_id",me.id);
+.eq(
+"leader_id",
+me.id
+);
 
 const teamIds=
-(team.data||[]).map(x=>x.id);
+(team.data||[])
+.map(x=>x.id);
 
-f=f.filter(x=>
+
+f=f.filter(
+x=>
 x.user_id===me.id||
 x.advisor_id===me.id||
 teamIds.includes(x.advisor_id)
@@ -1329,7 +2416,9 @@ $("seguimientos").innerHTML=`
 <button
 class="primary"
 onclick="openFollowupModal()">
+
 + Nuevo seguimiento
+
 </button>
 
 </div>
@@ -1358,6 +2447,7 @@ ${f.length
 
 </tr>
 
+
 ${f.map(x=>{
 
 const mUrl=
@@ -1366,17 +2456,26 @@ x.meet_url||
 profile?.meet_url
 );
 
+
 return `
 
 <tr>
 
 <td>
-${esc(x.title||"Seguimiento")}
+${esc(
+x.title||
+"Seguimiento"
+)}
 </td>
 
+
 <td>
-${esc(x.date||"")}
+${esc(
+x.date||
+""
+)}
 </td>
+
 
 <td>
 
@@ -1387,13 +2486,18 @@ ${mUrl
 href="${esc(mUrl)}"
 target="_blank"
 class="badge meet">
+
 🎥 Entrar
+
 </a>
+
 
 <button
 class="light small"
 onclick="copyMeetLink('${esc(mUrl)}')">
+
 📋 Copiar Link
+
 </button>
 
 `
@@ -1403,14 +2507,18 @@ onclick="copyMeetLink('${esc(mUrl)}')">
 
 </td>
 
+
 <td>
 
 ${x.done
-?'<span class="badge">Completado</span>'
-:'<span class="badge blue">Pendiente</span>'
+?
+'<span class="badge">Completado</span>'
+:
+'<span class="badge blue">Pendiente</span>'
 }
 
 </td>
+
 
 <td>
 
@@ -1422,11 +2530,14 @@ ${!x.done
 <button
 class="light"
 onclick="completeFollowup('${x.id}')">
+
 ✓ Completar
+
 </button>
 
 `
 :""}
+
 
 ${isAdmin()
 ?`
@@ -1434,7 +2545,9 @@ ${isAdmin()
 <button
 class="danger"
 onclick="deleteFollowup('${x.id}')">
+
 🗑️
+
 </button>
 
 `
@@ -1455,7 +2568,8 @@ onclick="deleteFollowup('${x.id}')">
 </div>
 
 `
-:'<div class="empty">No hay seguimientos.</div>'
+:
+'<div class="empty">No hay seguimientos.</div>'
 }
 
 </div>
@@ -1468,7 +2582,9 @@ $("seguimientos").innerHTML=`
 
 <div class="card">
 
-<h3>Seguimientos</h3>
+<h3>
+Seguimientos
+</h3>
 
 <p>
 ${esc(e.message||e)}
@@ -1484,10 +2600,14 @@ ${esc(e.message||e)}
 
 
 /* =========================================================
-   EQUIPO
+EQUIPO
 ========================================================= */
 
 async function renderTeam(){
+
+if(isGosen())
+return;
+
 
 try{
 
@@ -1500,21 +2620,26 @@ await supabaseClient
 .order("role")
 .order("full_name");
 
+
 if(r.error)
 throw r.error;
+
 
 let all=r.data||[];
 
 let u=all;
 
+
 if(profile.role==="team_leader"){
 
 u=all.filter(
-x=>x.id===me.id||
+x=>
+x.id===me.id||
 x.leader_id===me.id
 );
 
 }
+
 
 if(profile.role==="asesora"){
 
@@ -1524,10 +2649,12 @@ x=>x.id===me.id
 
 }
 
+
 const leaders=
 all.filter(
 x=>x.role==="team_leader"
 );
+
 
 const roleName=x=>
 
@@ -1539,6 +2666,9 @@ x==="team_leader"
 :
 x==="asesora"
 ?"Asesora"
+:
+x==="gosen"
+?"Gosen S.R.L."
 :
 "Asesor";
 
@@ -1559,7 +2689,9 @@ isAdmin()||x.id===me.id
 <button
 class="light"
 onclick="editProfile('${x.id}')">
+
 ✏️ Editar
+
 </button>
 
 `
@@ -1618,21 +2750,27 @@ ${esc(x.phone||"")}
 
 </td>
 
+
 <td>
 ${esc(x.email||"")}
 </td>
+
 
 <td>
 ${roleName(x.role)}
 </td>
 
+
 <td>
 
 ${x.role==="asesora"
-?esc(leaderName(x.leader_id))
+?esc(
+leaderName(x.leader_id)
+)
 :"—"}
 
 </td>
+
 
 <td>
 
@@ -1640,17 +2778,23 @@ ${x.meet_url
 ?`
 
 <a
-href="${esc(fixUrl(x.meet_url))}"
+href="${esc(
+fixUrl(x.meet_url)
+)}"
 target="_blank"
 class="badge meet">
+
 🎥 Entrar
+
 </a>
 
 `
-:'<span class="muted">No configurada</span>'
+:
+'<span class="muted">No configurada</span>'
 }
 
 </td>
+
 
 <td>
 ${actions(x)}
@@ -1665,7 +2809,8 @@ ${actions(x)}
 </div>
 
 `
-:'<div class="empty">No hay integrantes.</div>'
+:
+'<div class="empty">No hay integrantes.</div>'
 }
 
 </div>
@@ -1678,7 +2823,9 @@ $("equipo").innerHTML=`
 
 <div class="card">
 
-<h3>Equipo</h3>
+<h3>
+Equipo
+</h3>
 
 <p>
 ${esc(e.message||e)}
@@ -1694,10 +2841,14 @@ ${esc(e.message||e)}
 
 
 /* =========================================================
-   PROYECTOS
+PROYECTOS
 ========================================================= */
 
 async function renderProjects(){
+
+if(isGosen())
+return;
+
 
 try{
 
@@ -1707,10 +2858,13 @@ await supabaseClient
 .select("*")
 .order("name");
 
+
 if(r.error)
 throw r.error;
 
+
 const p=r.data||[];
+
 
 $("proyectos").innerHTML=`
 
@@ -1722,7 +2876,9 @@ ${isAdmin()
 <button
 class="primary"
 onclick="openProjectModal()">
+
 + Nuevo proyecto
+
 </button>
 
 `
@@ -1733,7 +2889,10 @@ onclick="openProjectModal()">
 
 <div class="card">
 
-<h3>Proyectos</h3>
+<h3>
+Proyectos
+</h3>
+
 
 ${p.length
 ?`
@@ -1756,12 +2915,16 @@ ${p.map(x=>`
 <tr>
 
 <td>
-<b>${esc(x.name)}</b>
+<b>
+${esc(x.name)}
+</b>
 </td>
+
 
 <td>
 ${esc(x.location||"")}
 </td>
+
 
 <td>
 
@@ -1773,19 +2936,24 @@ ${isAdmin()
 <button
 class="light"
 onclick="editProject('${x.id}')">
+
 ✏️ Editar
+
 </button>
+
 
 <button
 class="danger"
 onclick="deleteProject('${x.id}')">
+
 🗑️
+
 </button>
 
 </div>
 
 `
-:'—'}
+:"—"}
 
 </td>
 
@@ -1798,7 +2966,8 @@ onclick="deleteProject('${x.id}')">
 </div>
 
 `
-:'<div class="empty">No hay proyectos.</div>'
+:
+'<div class="empty">No hay proyectos.</div>'
 }
 
 </div>
@@ -1811,7 +2980,9 @@ $("proyectos").innerHTML=`
 
 <div class="card">
 
-<h3>Proyectos</h3>
+<h3>
+Proyectos
+</h3>
 
 <p>
 ${esc(e.message||e)}
@@ -1827,24 +2998,37 @@ ${esc(e.message||e)}
 
 
 /* =========================================================
-   REPORTES
+REPORTES
 ========================================================= */
 
 function renderReports(all){
 
+if(isGosen())
+return;
+
+
 const total=all.length;
+
 
 const ventas=
 all.filter(
 x=>x.status==="Venta"
 ).length;
 
+
 const grouped={};
+
 
 all.forEach(x=>{
 
-grouped[x.status||"Sin estado"]=
-(grouped[x.status||"Sin estado"]||0)+1;
+grouped[
+x.status||"Sin estado"
+]=
+(
+grouped[
+x.status||"Sin estado"
+]||0
+)+1;
 
 });
 
@@ -1857,19 +3041,30 @@ $("reportes").innerHTML=`
 Resumen comercial
 </h3>
 
+
 <div class="kpi">
 
 <span class="badge blue">
+
 Total: ${total}
+
 </span>
+
 
 <span class="badge">
+
 Contactados:
-${all.filter(x=>x.status!=="Nuevo").length}
+${all.filter(
+x=>x.status!=="Nuevo"
+).length}
+
 </span>
 
+
 <span class="badge A">
+
 Ventas: ${ventas}
+
 </span>
 
 </div>
@@ -1884,7 +3079,8 @@ Prospectos por estado
 </h3>
 
 ${Object.entries(grouped)
-.map(([k,v])=>
+.map(
+([k,v])=>
 `<p><b>${esc(k)}</b>: ${v}</p>`
 )
 .join("")}
@@ -1897,18 +3093,149 @@ ${Object.entries(grouped)
 
 
 /* =========================================================
-   ABRIR MODAL PROSPECTO
+ABRIR MODAL PROSPECTO
 ========================================================= */
 
 async function openProspectModal(id=null){
 
 try{
 
+/*
+=========================================================
+GOSEN
+=========================================================
+
+IMPORTANTE:
+
+Gosen no intenta consultar perfiles de
+asesores / Team Leaders.
+
+Esto evita problemas con RLS.
+
+*/
+
+if(isGosen()){
+
+if(id){
+
+toast(
+"Gosen solo puede registrar nuevos prospectos."
+);
+
+return;
+
+}
+
+
 const pr=
 await supabaseClient
 .from("projects")
 .select("id,name")
 .order("name");
+
+
+if(pr.error)
+throw pr.error;
+
+
+$("fproj").innerHTML=
+'<option value="">Sin proyecto</option>'+
+(pr.data||[])
+.map(x=>
+`<option value="${esc(x.id)}">
+${esc(x.name)}
+</option>`
+)
+.join("");
+
+
+$("fteam").innerHTML=`
+<option value="gosen">
+Referido Gosen S.R.L.
+</option>
+`;
+
+
+$("fadv").innerHTML=`
+<option value="">
+Pendiente de asignación
+</option>
+`;
+
+
+$("fsrc").value="Referido";
+
+$("fgrade").value="C";
+
+$("fstatus").value="Nuevo";
+
+
+$("fteam").disabled=true;
+
+$("fadv").disabled=true;
+
+$("fsrc").disabled=true;
+
+$("fgrade").disabled=true;
+
+$("fstatus").disabled=true;
+
+
+$("teamField").style.display="block";
+
+$("advisorField").style.display="block";
+
+
+$("prospectModalTitle").textContent=
+"Registrar prospecto referido";
+
+
+$("editProspectId").value="";
+
+
+$("fn").value="";
+$("fp").value="";
+$("fe").value="";
+$("fnote").value="";
+
+
+$("prospectModal")
+.classList.add("show");
+
+return;
+
+}
+
+
+/*
+=========================================================
+CRM INTERNO
+=========================================================
+*/
+
+
+$("fteam").disabled=false;
+
+$("fadv").disabled=false;
+
+$("fsrc").disabled=false;
+
+$("fgrade").disabled=false;
+
+$("fstatus").disabled=false;
+
+
+$("teamField").style.display="block";
+
+$("advisorField").style.display="block";
+
+
+const pr=
+await supabaseClient
+.from("projects")
+.select("id,name")
+.order("name");
+
 
 if(pr.error)
 throw pr.error;
@@ -1926,40 +3253,36 @@ await supabaseClient
 )
 .order("full_name");
 
+
 if(ur.error)
 throw ur.error;
 
 
-let us=(ur.data||[])
-.filter(x=>x.active!==false);
+let us=
+(ur.data||[])
+.filter(
+x=>x.active!==false
+);
 
 
 /*
-=========================================================
-SEGURIDAD DE ASIGNACIÓN POR EQUIPO
-=========================================================
-
-Administrador:
-puede ver asesores y Team Leaders.
-
-Team Leader:
-solo puede seleccionar:
-- ella misma
-- asesores pertenecientes a ella.
-
-Asesora:
-solo puede seleccionarse a ella misma.
-=========================================================
+TEAM LEADER
 */
 
 if(profile.role==="team_leader"){
 
 us=us.filter(
-x=>x.id===me.id||
+x=>
+x.id===me.id||
 x.leader_id===me.id
 );
 
 }
+
+
+/*
+ASESORA
+*/
 
 if(profile.role==="asesora"){
 
@@ -1990,6 +3313,7 @@ let label=x.full_name;
 if(x.role==="team_leader")
 label+=" · Team Leader";
 
+
 return `
 <option value="${esc(x.id)}">
 ${esc(label)}
@@ -1999,13 +3323,10 @@ ${esc(label)}
 }).join("");
 
 
-/*
-Equipo de asignación
-*/
-
 if(isAdmin()){
 
 $("fteam").innerHTML=`
+
 <option value="">
 Automático
 </option>
@@ -2013,22 +3334,27 @@ Automático
 <option value="direct">
 Asesores directos
 </option>
+
 `;
 
 }else if(isTeamLeader()){
 
 $("fteam").innerHTML=`
+
 <option value="auto">
 Mi equipo
 </option>
+
 `;
 
 }else{
 
 $("fteam").innerHTML=`
+
 <option value="auto">
 Mi asignación
 </option>
+
 `;
 
 }
@@ -2039,7 +3365,9 @@ id
 ?"Editar prospecto"
 :"Nuevo prospecto";
 
-$("editProspectId").value=id||"";
+
+$("editProspectId").value=
+id||"";
 
 
 if(id){
@@ -2051,40 +3379,54 @@ await supabaseClient
 .eq("id",id)
 .single();
 
+
 if(r.error)
 throw r.error;
 
+
 const x=r.data;
 
+
 $("fn").value=x.name||"";
+
 $("fp").value=x.phone||"";
+
 $("fe").value=x.email||"";
+
 
 $("fproj").value=
 uuid(x.project_id)
 ?x.project_id
 :"";
 
+
 $("fadv").value=
 uuid(x.advisor_id)
 ?x.advisor_id
 :"";
 
+
 $("fteam").value=
 x.assignment_mode||
-(isTeamLeader()?"auto":"");
+(isTeamLeader()
+?"auto"
+:"");
+
 
 $("fsrc").value=
 x.source||
 "Facebook Ads";
 
+
 $("fgrade").value=
 x.grade||
 "A";
 
+
 $("fstatus").value=
 x.status||
 "Nuevo";
+
 
 $("fnote").value=
 x.note||
@@ -2098,6 +3440,7 @@ $("fproj").value="";
 
 $("fadv").value="";
 
+
 $("fteam").value=
 isTeamLeader()
 ?"auto"
@@ -2105,12 +3448,16 @@ isTeamLeader()
 
 }
 
+
 $("prospectModal")
 .classList.add("show");
 
 }catch(e){
 
-err("Prospecto",e);
+err(
+"Prospecto",
+e
+);
 
 }
 
@@ -2124,10 +3471,21 @@ $("prospectModal")
 
 $("prospectForm").reset();
 
+$("fteam").disabled=false;
+$("fadv").disabled=false;
+$("fsrc").disabled=false;
+$("fgrade").disabled=false;
+$("fstatus").disabled=false;
+
 }
 
 
 async function editProspect(id){
+
+if(isGosen())
+return toast(
+"Los referidos no pueden ser editados desde este panel."
+);
 
 await openProspectModal(id);
 
@@ -2135,13 +3493,22 @@ await openProspectModal(id);
 
 
 /* =========================================================
-   ELIMINAR PROSPECTO
+ELIMINAR PROSPECTO
 ========================================================= */
 
 async function deleteProspect(id){
 
-if(!confirm("¿Eliminar este prospecto?"))
+if(!isAdmin())
+return toast(
+"Solo el administrador puede eliminar prospectos."
+);
+
+
+if(!confirm(
+"¿Eliminar este prospecto?"
+))
 return;
+
 
 try{
 
@@ -2151,16 +3518,24 @@ await supabaseClient
 .delete()
 .eq("id",id);
 
+
 if(r.error)
 throw r.error;
 
-toast("Prospecto eliminado");
+
+toast(
+"Prospecto eliminado"
+);
+
 
 await render();
 
 }catch(e){
 
-err("Eliminar prospecto",e);
+err(
+"Eliminar prospecto",
+e
+);
 
 }
 
@@ -2168,60 +3543,43 @@ err("Eliminar prospecto",e);
 
 
 /* =========================================================
-   GUARDAR PROSPECTO
+GUARDAR PROSPECTO
 ========================================================= */
 
 $("prospectForm")
-.addEventListener("submit",async e=>{
+.addEventListener(
+"submit",
+async e=>{
 
 e.preventDefault();
+
 
 const btn=$("prospectSubmit");
 
 btn.disabled=true;
 
+
 try{
 
-/*
----------------------------------------------------------
-1. BUSCAR ASESORA / TEAM LEADER SELECCIONADA
----------------------------------------------------------
-*/
-
-let advisor=null;
-
-if(uuid($("fadv").value)){
-
-const r=
-await supabaseClient
-.from("profiles")
-.select(
-"id,full_name,leader_id,role,active"
-)
-.eq("id",$("fadv").value)
-.single();
-
-if(r.error)
-throw r.error;
-
-advisor=r.data;
-
-}
-
 
 /*
----------------------------------------------------------
-2. BUSCAR PROYECTO
----------------------------------------------------------
+=========================================================
+GOSEN
+=========================================================
 */
 
-let projectId=null;
+if(isGosen()){
+
+const projectId=
+uuid($("fproj").value)
+?$("fproj").value
+:null;
+
 
 let projectName="";
 
-if(uuid($("fproj").value)){
 
-projectId=$("fproj").value;
+if(projectId){
 
 const r=
 await supabaseClient
@@ -2230,8 +3588,10 @@ await supabaseClient
 .eq("id",projectId)
 .single();
 
+
 if(r.error)
 throw r.error;
+
 
 projectName=
 r.data?.name||
@@ -2241,59 +3601,191 @@ r.data?.name||
 
 
 /*
-=========================================================
-3. CORRECCIÓN PRINCIPAL DEL CRM
-=========================================================
+Payload especial Gosen.
 
-ANTES:
+Debe coincidir con RLS:
+
+is_gosen()
+partner_id = my_partner_id()
+source = Referido
+advisor_id IS NULL
+leader_id IS NULL
+status = Nuevo
+*/
+
+const payloadGosen={
+
+name:
+$("fn").value.trim(),
+
+phone:
+$("fp").value.trim(),
+
+email:
+$("fe").value.trim()||
+null,
+
+project_id:
+projectId,
+
+project_name:
+projectName,
+
+source:
+"Referido",
+
+partner_id:
+profile.partner_id,
+
+advisor_id:
+null,
+
+advisor_name:
+"",
 
 leader_id:
-advisor?.id===me.id
-?me.id
-:(advisor?.leader_id||null)
+null,
 
-PROBLEMA:
+assignment_mode:
+"gosen",
 
-Si una Team Leader creaba un prospecto
-sin seleccionar asesora:
+grade:
+"C",
 
-advisor = null
+status:
+"Nuevo",
 
-Por lo tanto:
+note:
+$("fnote").value.trim()||
+null
 
-leader_id = null
+};
 
-El administrador lo veía,
-pero la Team Leader no.
 
-AHORA:
+if(!payloadGosen.name)
+throw new Error(
+"Ingresa el nombre del prospecto."
+);
 
-Si la persona que crea es Team Leader
-y no selecciona asesora,
-se asigna automáticamente:
 
-leader_id = me.id
+if(!payloadGosen.phone)
+throw new Error(
+"Ingresa el número de WhatsApp."
+);
 
+
+if(!uuid(payloadGosen.partner_id))
+throw new Error(
+"Tu usuario Gosen no tiene un partner_id configurado."
+);
+
+
+const r=
+await supabaseClient
+.from("prospects")
+.insert(payloadGosen);
+
+
+if(r.error)
+throw r.error;
+
+
+closeProspectModal();
+
+
+toast(
+"Prospecto referido enviado correctamente a TVEO Business."
+);
+
+
+await render();
+
+return;
+
+}
+
+
+/*
 =========================================================
+CRM INTERNO
+=========================================================
+*/
+
+
+let advisor=null;
+
+
+if(uuid($("fadv").value)){
+
+const r=
+await supabaseClient
+.from("profiles")
+.select(
+"id,full_name,leader_id,role,active"
+)
+.eq(
+"id",
+$("fadv").value
+)
+.single();
+
+
+if(r.error)
+throw r.error;
+
+
+advisor=r.data;
+
+}
+
+
+/*
+PROYECTO
+*/
+
+let projectId=null;
+
+let projectName="";
+
+
+if(uuid($("fproj").value)){
+
+projectId=$("fproj").value;
+
+
+const r=
+await supabaseClient
+.from("projects")
+.select("name")
+.eq("id",projectId)
+.single();
+
+
+if(r.error)
+throw r.error;
+
+
+projectName=
+r.data?.name||
+"";
+
+}
+
+
+/*
+LEADER
 */
 
 let leaderId=null;
 
 
 /*
-CASO A
-Team Leader creando prospecto
+TEAM LEADER
 */
 
-if(profile?.role==="team_leader"){
-
-/*
-Si seleccionó una asesora de su equipo:
-usar el Team Leader de esa asesora.
-
-Si no seleccionó asesora:
-usar la propia Team Leader.
-*/
+if(
+profile?.role==="team_leader"
+){
 
 leaderId=
 advisor?.leader_id||
@@ -2303,25 +3795,21 @@ me.id;
 
 
 /*
-CASO B
-Administrador asignando una persona
+ADMIN
 */
 
-else if(profile?.role==="administrador"){
+else if(
+profile?.role==="administrador"
+){
 
 if(advisor){
 
-/*
-Si seleccionó una asesora:
-guardar su Team Leader.
+if(
+advisor.role==="team_leader"
+){
 
-Si seleccionó una Team Leader:
-esa misma persona queda como leader.
-*/
-
-if(advisor.role==="team_leader"){
-
-leaderId=advisor.id;
+leaderId=
+advisor.id;
 
 }else{
 
@@ -2337,20 +3825,12 @@ null;
 
 
 /*
-CASO C
-Asesora creando prospecto
+ASESORA
 */
 
-else if(profile?.role==="asesora"){
-
-/*
-La asesora queda como responsable
-del prospecto.
-
-Su Team Leader se obtiene
-desde su perfil actual.
-
-*/
+else if(
+profile?.role==="asesora"
+){
 
 leaderId=
 profile.leader_id||
@@ -2360,23 +3840,13 @@ null;
 
 
 /*
----------------------------------------------------------
-4. DETERMINAR ADVISOR
----------------------------------------------------------
-
-Si una Team Leader crea directamente
-para ella misma, también podemos guardar
-su ID como advisor_id.
-
-Esto permite identificar claramente
-quién está llevando personalmente
-el prospecto.
----------------------------------------------------------
+ADVISOR
 */
 
 let advisorId=
 advisor?.id||
 null;
+
 
 let advisorName=
 advisor?.full_name||
@@ -2384,8 +3854,7 @@ advisor?.full_name||
 
 
 /*
-Si Team Leader no seleccionó asesora,
-ella misma será responsable directa.
+TEAM LEADER DIRECTO
 */
 
 if(
@@ -2403,8 +3872,7 @@ profile.full_name||
 
 
 /*
-Si Asesora crea directamente,
-ella misma queda asignada.
+ASESORA DIRECTA
 */
 
 if(
@@ -2422,9 +3890,7 @@ profile.full_name||
 
 
 /*
----------------------------------------------------------
-5. PAYLOAD FINAL
----------------------------------------------------------
+PAYLOAD
 */
 
 const payload={
@@ -2447,6 +3913,9 @@ projectName,
 
 source:
 $("fsrc").value,
+
+partner_id:
+null,
 
 advisor_id:
 advisorId,
@@ -2474,16 +3943,12 @@ null
 };
 
 
-/*
----------------------------------------------------------
-6. GUARDAR / ACTUALIZAR
----------------------------------------------------------
-*/
-
 const id=
 $("editProspectId").value;
 
+
 let r;
+
 
 if(id){
 
@@ -2502,25 +3967,25 @@ await supabaseClient
 
 }
 
+
 if(r.error)
 throw r.error;
 
 
-/*
----------------------------------------------------------
-7. CERRAR Y ACTUALIZAR
----------------------------------------------------------
-*/
-
 closeProspectModal();
+
 
 toast(
 id
-?"Prospecto actualizado"
-:"Prospecto guardado correctamente"
+?
+"Prospecto actualizado"
+:
+"Prospecto guardado correctamente"
 );
 
+
 await render();
+
 
 }catch(e){
 
@@ -2539,33 +4004,46 @@ btn.disabled=false;
 
 
 /* =========================================================
-   SEGUIMIENTOS
+SEGUIMIENTOS
 ========================================================= */
 
 function newFollowup(prospectId){
+
+if(isGosen())
+return;
 
 openFollowupModal(prospectId);
 
 }
 
 
-async function openFollowupModal(prospectId=null){
+async function openFollowupModal(
+prospectId=null
+){
+
+if(isGosen())
+return;
+
 
 $("followupForm")
 .dataset.prospectId=
 prospectId||
 "";
 
+
 $("fuTitle").value="";
+
 
 $("fuDate").value=
 new Date()
 .toISOString()
 .slice(0,10);
 
+
 $("fuMeet").value=
 profile?.meet_url||
 "";
+
 
 $("followupModal")
 .classList.add("show");
@@ -2584,9 +4062,12 @@ $("followupForm").reset();
 
 
 $("followupForm")
-.addEventListener("submit",async e=>{
+.addEventListener(
+"submit",
+async e=>{
 
 e.preventDefault();
+
 
 try{
 
@@ -2606,31 +4087,24 @@ done:false
 
 };
 
+
 const pid=
 e.currentTarget.dataset.prospectId;
+
 
 if(pid&&uuid(pid))
 payload.prospect_id=pid;
 
 
-/*
-Guardar quién creó el seguimiento.
-*/
-
 payload.user_id=me.id;
 
-
-/*
-Si el usuario actual es Team Leader,
-guardamos también su ID como advisor
-cuando corresponda.
-*/
 
 if(profile.role==="asesora"){
 
 payload.advisor_id=me.id;
 
 }
+
 
 if(profile.role==="team_leader"){
 
@@ -2644,14 +4118,21 @@ await supabaseClient
 .from("followups")
 .insert(payload);
 
+
 if(r.error)
 throw r.error;
 
+
 closeFollowupModal();
 
-toast("Seguimiento guardado");
+
+toast(
+"Seguimiento guardado"
+);
+
 
 await renderFollowups();
+
 
 }catch(e){
 
@@ -2666,7 +4147,7 @@ e
 
 
 /* =========================================================
-   COMPLETAR SEGUIMIENTO
+COMPLETAR SEGUIMIENTO
 ========================================================= */
 
 async function completeFollowup(id){
@@ -2681,10 +4162,15 @@ done:true
 })
 .eq("id",id);
 
+
 if(r.error)
 throw r.error;
 
-toast("Seguimiento completado");
+
+toast(
+"Seguimiento completado"
+);
+
 
 await renderFollowups();
 
@@ -2701,13 +4187,20 @@ e
 
 
 /* =========================================================
-   ELIMINAR SEGUIMIENTO
+ELIMINAR SEGUIMIENTO
 ========================================================= */
 
 async function deleteFollowup(id){
 
-if(!confirm("¿Eliminar este seguimiento?"))
+if(!isAdmin())
 return;
+
+
+if(!confirm(
+"¿Eliminar este seguimiento?"
+))
+return;
+
 
 try{
 
@@ -2717,10 +4210,15 @@ await supabaseClient
 .delete()
 .eq("id",id);
 
+
 if(r.error)
 throw r.error;
 
-toast("Seguimiento eliminado");
+
+toast(
+"Seguimiento eliminado"
+);
+
 
 await renderFollowups();
 
@@ -2737,7 +4235,7 @@ e
 
 
 /* =========================================================
-   EDICIÓN DE INTEGRANTES
+EDICIÓN DE INTEGRANTES
 ========================================================= */
 
 function actualizarCampoGenero(){
@@ -2745,11 +4243,14 @@ function actualizarCampoGenero(){
 const role=
 $("profileRole").value;
 
+
 const field=
 $("genderField");
 
+
 if(!field)
 return;
+
 
 if(role==="asesora"){
 
@@ -2774,10 +4275,11 @@ const r=
 await supabaseClient
 .from("profiles")
 .select(
-"id,full_name,phone,active,role,gender,leader_id,meet_url"
+"id,full_name,phone,active,role,gender,leader_id,meet_url,partner_id"
 )
 .eq("id",id)
 .single();
+
 
 if(r.error)
 throw r.error;
@@ -2791,6 +4293,7 @@ await supabaseClient
 .eq("active",true)
 .order("full_name");
 
+
 if(tl.error)
 throw tl.error;
 
@@ -2798,25 +4301,31 @@ throw tl.error;
 $("editProfileId").value=
 r.data.id;
 
+
 $("profileName").value=
 r.data.full_name||
 "";
+
 
 $("profilePhone").value=
 r.data.phone||
 "";
 
+
 $("profileMeet").value=
 r.data.meet_url||
 "";
+
 
 $("profileRole").value=
 r.data.role||
 "asesora";
 
+
 $("profileGender").value=
 r.data.gender||
 "";
+
 
 $("profileActive").value=
 r.data.active===false
@@ -2824,11 +4333,12 @@ r.data.active===false
 :"true";
 
 
-$("profileLeader").innerHTML=
-`
+$("profileLeader").innerHTML=`
+
 <option value="">
 Asesor/a directo Tveo Business
 </option>
+
 `+
 (tl.data||[])
 .filter(x=>x.id!==id)
@@ -2846,7 +4356,20 @@ $("profileLeader").value=
 r.data.leader_id||
 "";
 
+
 actualizarCampoGenero();
+
+
+/*
+Gosen no utiliza Team Leader.
+*/
+
+if(r.data.role==="gosen"){
+
+$("profileLeader").value="";
+
+}
+
 
 $("profileModal")
 .classList.add("show");
@@ -2881,27 +4404,38 @@ actualizarCampoGenero
 
 
 $("profileForm")
-.addEventListener("submit",async e=>{
+.addEventListener(
+"submit",
+async e=>{
 
 e.preventDefault();
+
 
 try{
 
 const id=
 $("editProfileId").value;
 
+
 const role=
 $("profileRole").value;
 
+
 const gender=
 role==="asesora"
-?($("profileGender").value||null)
+?
+(
+$("profileGender").value||
+null
+)
 :null;
+
 
 const leaderId=
 role==="asesora"&&
 uuid($("profileLeader").value)
-?$("profileLeader").value
+?
+$("profileLeader").value
 :null;
 
 
@@ -2939,6 +4473,7 @@ await supabaseClient
 .update(payload)
 .eq("id",id);
 
+
 if(r.error)
 throw r.error;
 
@@ -2955,11 +4490,14 @@ profile={
 
 closeProfileModal();
 
+
 toast(
 "Integrante actualizado correctamente"
 );
 
+
 await render();
+
 
 }catch(e){
 
@@ -2974,25 +4512,38 @@ e
 
 
 /* =========================================================
-   PROYECTOS
+PROYECTOS
 ========================================================= */
 
 function openProjectModal(id=null){
 
+if(!isAdmin())
+return toast(
+"Solo el administrador puede gestionar proyectos."
+);
+
+
 $("projectModalTitle").textContent=
 id
-?"Editar proyecto"
-:"Nuevo proyecto";
+?
+"Editar proyecto"
+:
+"Nuevo proyecto";
+
 
 $("editProjectId").value=
 id||
 "";
 
+
 $("projectName").value="";
+
 $("projectLocation").value="";
+
 
 if(id)
 loadProject(id);
+
 
 $("projectModal")
 .classList.add("show");
@@ -3011,12 +4562,15 @@ await supabaseClient
 .eq("id",id)
 .single();
 
+
 if(r.error)
 throw r.error;
+
 
 $("projectName").value=
 r.data.name||
 "";
+
 
 $("projectLocation").value=
 r.data.location||
@@ -3045,32 +4599,41 @@ $("projectForm").reset();
 
 
 $("projectForm")
-.addEventListener("submit",async e=>{
+.addEventListener(
+"submit",
+async e=>{
 
 e.preventDefault();
+
 
 if(!isAdmin())
 return toast(
 "Solo el administrador puede gestionar proyectos"
 );
 
+
 try{
 
 const id=
 $("editProjectId").value;
 
+
 const payload={
 
 name:
-$("projectName").value.trim(),
+$("projectName")
+.value.trim(),
 
 location:
-$("projectLocation").value.trim()||
+$("projectLocation")
+.value.trim()||
 null
 
 };
 
+
 let r;
+
 
 if(id){
 
@@ -3089,18 +4652,25 @@ await supabaseClient
 
 }
 
+
 if(r.error)
 throw r.error;
 
+
 closeProjectModal();
+
 
 toast(
 id
-?"Proyecto actualizado"
-:"Proyecto creado"
+?
+"Proyecto actualizado"
+:
+"Proyecto creado"
 );
 
+
 await render();
+
 
 }catch(e){
 
@@ -3116,6 +4686,9 @@ e
 
 async function editProject(id){
 
+if(!isAdmin())
+return;
+
 openProjectModal(id);
 
 }
@@ -3126,8 +4699,12 @@ async function deleteProject(id){
 if(!isAdmin())
 return;
 
-if(!confirm("¿Eliminar este proyecto?"))
+
+if(!confirm(
+"¿Eliminar este proyecto?"
+))
 return;
+
 
 try{
 
@@ -3137,10 +4714,15 @@ await supabaseClient
 .delete()
 .eq("id",id);
 
+
 if(r.error)
 throw r.error;
 
-toast("Proyecto eliminado");
+
+toast(
+"Proyecto eliminado"
+);
+
 
 await render();
 
@@ -3157,7 +4739,7 @@ e
 
 
 /* =========================================================
-   NUEVO INTEGRANTE
+NUEVO INTEGRANTE
 ========================================================= */
 
 function closeNewMemberModal(){
@@ -3171,7 +4753,65 @@ $("newMemberForm").reset();
 
 
 /* =========================================================
-   SESIÓN AUTOMÁTICA
+ACTUALIZAR PASSWORD
+========================================================= */
+
+async function updatePassword(){
+
+const p1=
+$("newPassword").value;
+
+const p2=
+$("newPassword2").value;
+
+
+if(!p1||p1.length<6)
+return toast(
+"La contraseña debe tener al menos 6 caracteres."
+);
+
+
+if(p1!==p2)
+return toast(
+"Las contraseñas no coinciden."
+);
+
+
+try{
+
+const r=
+await supabaseClient.auth.updateUser({
+password:p1
+});
+
+
+if(r.error)
+throw r.error;
+
+
+toast(
+"Contraseña actualizada correctamente."
+);
+
+
+$("newPassword").value="";
+$("newPassword2").value="";
+
+
+}catch(e){
+
+err(
+"Contraseña",
+e
+);
+
+}
+
+}
+
+
+/* =========================================================
+SESIÓN AUTOMÁTICA
 ========================================================= */
 
 supabaseClient.auth
@@ -3184,6 +4824,7 @@ return err(
 r.error
 );
 
+
 if(r.data.session){
 
 me=
@@ -3195,7 +4836,10 @@ await boot();
 
 })
 .catch(e=>
-err("Sesión",e)
+err(
+"Sesión",
+e
+)
 );
 
 </script>
