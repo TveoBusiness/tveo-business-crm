@@ -460,6 +460,16 @@ min-height:44px
 min-height:44px
 }
 }
+
+/* TVEO BUSINESS MODERN UI V2 */
+:root{--tv1:#0b3d91;--tv2:#1565c0;--ink:#12213a;--muted:#6b7890;--line:#e5eaf2;--shadow:0 10px 30px rgba(15,35,70,.07)}
+body{background:linear-gradient(180deg,#f7f9fc,#f2f5fa);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.side{width:258px;background:linear-gradient(180deg,#081d38,#0b2b50);padding:22px 16px;box-shadow:8px 0 30px rgba(6,28,55,.08)}
+.brand{padding:8px 12px 20px;font-size:22px}.nav button{border-radius:13px;padding:12px 13px;color:#dce9f8;transition:.18s;margin:4px 0}.nav button:hover{background:rgba(255,255,255,.08);transform:translateX(2px)}.nav button.active{background:linear-gradient(90deg,rgba(21,101,192,.95),rgba(21,101,192,.55));box-shadow:0 8px 18px #0002;color:#fff}
+.logout{left:16px;right:16px;border-radius:12px;background:rgba(255,255,255,.08)}.main{margin-left:258px;max-width:none;padding:28px 32px 40px}.main>.top{padding:0 2px 18px;border-bottom:1px solid var(--line);margin-bottom:20px}.main h1{font-size:28px;letter-spacing:-.5px}.card{border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin:14px 0}.stats{gap:16px}.num{font-size:31px}.tablewrap{border:1px solid var(--line);border-radius:14px;background:#fff}.table th{background:#f7f9fc;color:#64718a;font-size:11px;text-transform:uppercase;letter-spacing:.5px}.table td,.table th{padding:13px 11px}.table tr:last-child td{border-bottom:0}.badge{padding:5px 9px;border-radius:999px}button{border-radius:11px;transition:.16s}button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px #142d5017}.primary{background:linear-gradient(135deg,#1565c0,#0b3d91);box-shadow:0 6px 15px #1565c02e}.light{background:#f2f5fa;border:1px solid #e1e7f0}.field input,.field select,.field textarea,.search{border-color:#dfe6ef}.field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:none;border-color:#76a8df;box-shadow:0 0 0 4px #1565c014}
+.team-shell{display:grid;gap:18px}.team-hero{background:linear-gradient(135deg,#081d38,#1565c0);color:#fff;border-radius:22px;padding:24px;box-shadow:0 16px 35px #0b3d912e;display:flex;justify-content:space-between;gap:20px;align-items:center}.team-hero h2{margin:0 0 6px;font-size:24px}.team-hero p{margin:0;color:#dbeafe;font-size:13px}.team-hero-kpi{display:flex;gap:10px;flex-wrap:wrap}.team-kpi{min-width:90px;padding:12px 14px;border:1px solid #ffffff29;background:#ffffff17;border-radius:14px;text-align:center}.team-kpi b{display:block;font-size:22px}.team-kpi span{font-size:10px;color:#dbeafe}.leader-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}.leader-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}.leader-head{padding:18px 20px;background:linear-gradient(180deg,#f9fbff,#eef4fb);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:13px}.avatar{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#0b3d91,#3c8dde);color:#fff;font-weight:900;font-size:17px;flex:none}.avatar.small{width:38px;height:38px;border-radius:12px;font-size:14px}.member-meta{min-width:0;flex:1}.member-meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-meta span{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-count{background:#e8f0fe;color:#174ea6;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}.advisor-list{padding:10px}.advisor-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;transition:.16s}.advisor-row:hover{background:#f6f9fd}.advisor-info{flex:1;min-width:0}.advisor-info b{display:block;font-size:13px}.advisor-info span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.advisor-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.production{display:grid;gap:16px}.production-back{display:flex;justify-content:space-between;align-items:center;gap:10px}.production-profile{display:flex;align-items:center;gap:13px}.production-title{font-size:21px;font-weight:900}.production-sub{font-size:12px;color:var(--muted);margin-top:3px}.production-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.production-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}.production-kpi span{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.5px}.production-kpi b{display:block;font-size:27px;margin-top:5px}.production-kpi small{color:var(--muted)}.section-label{font-size:12px;font-weight:900;color:#52617a;text-transform:uppercase;letter-spacing:.6px;margin:4px 0}
+@media(max-width:1000px){.production-kpis{grid-template-columns:1fr 1fr}.team-hero{align-items:flex-start;flex-direction:column}}@media(max-width:800px){.side{width:100%;height:70px;padding:6px 8px}.main{margin-left:0;padding:14px 12px 86px}.team-hero{padding:18px;border-radius:18px}.leader-grid{grid-template-columns:1fr}.production-kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.team-kpi{min-width:78px}.team-hero-kpi{width:100%}}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2604,241 +2614,23 @@ EQUIPO
 ========================================================= */
 
 async function renderTeam(){
-
-if(isGosen())
-return;
-
-
+if(isGosen())return;
 try{
-
-const r=
-await supabaseClient
-.from("profiles")
-.select(
-"id,full_name,email,role,phone,active,leader_id,meet_url,gender"
-)
-.order("role")
-.order("full_name");
-
-
-if(r.error)
-throw r.error;
-
-
-let all=r.data||[];
-
-let u=all;
-
-
-if(profile.role==="team_leader"){
-
-u=all.filter(
-x=>
-x.id===me.id||
-x.leader_id===me.id
-);
-
-}
-
-
-if(profile.role==="asesora"){
-
-u=all.filter(
-x=>x.id===me.id
-);
-
-}
-
-
-const leaders=
-all.filter(
-x=>x.role==="team_leader"
-);
-
-
-const roleName=x=>
-
-x==="administrador"
-?"Administrador"
-:
-x==="team_leader"
-?"Team Leader"
-:
-x==="asesora"
-?"Asesora"
-:
-x==="gosen"
-?"Gosen S.R.L."
-:
-"Asesor";
-
-
-const leaderName=id=>
-
-leaders.find(
-x=>x.id===id
-)?.full_name||
-"Asesor/a directo Tveo";
-
-
-const actions=x=>
-
-isAdmin()||x.id===me.id
-?`
-
-<button
-class="light"
-onclick="editProfile('${x.id}')">
-
-✏️ Editar
-
-</button>
-
-`
-:'—';
-
-
-$("equipo").innerHTML=`
-
-<div class="card">
-
-<div class="top">
-
-<h3>
-Equipo y Salas de Reunión
-</h3>
-
-<span class="muted">
-${u.length} integrante(s)
-</span>
-
-</div>
-
-
-${u.length
-?`
-
-<div class="tablewrap">
-
-<table class="table">
-
-<tr>
-
-<th>Nombre</th>
-<th>Correo</th>
-<th>Rol</th>
-<th>Team Leader</th>
-<th>Sala Virtual</th>
-<th>Acciones</th>
-
-</tr>
-
-
-${u.map(x=>`
-
-<tr>
-
-<td>
-
-<b>
-${esc(x.full_name)}
-</b>
-
-<div class="muted">
-${esc(x.phone||"")}
-</div>
-
-</td>
-
-
-<td>
-${esc(x.email||"")}
-</td>
-
-
-<td>
-${roleName(x.role)}
-</td>
-
-
-<td>
-
-${x.role==="asesora"
-?esc(
-leaderName(x.leader_id)
-)
-:"—"}
-
-</td>
-
-
-<td>
-
-${x.meet_url
-?`
-
-<a
-href="${esc(
-fixUrl(x.meet_url)
-)}"
-target="_blank"
-class="badge meet">
-
-🎥 Entrar
-
-</a>
-
-`
-:
-'<span class="muted">No configurada</span>'
-}
-
-</td>
-
-
-<td>
-${actions(x)}
-</td>
-
-</tr>
-
-`).join("")}
-
-</table>
-
-</div>
-
-`
-:
-'<div class="empty">No hay integrantes.</div>'
-}
-
-</div>
-
-`;
-
-}catch(e){
-
-$("equipo").innerHTML=`
-
-<div class="card">
-
-<h3>
-Equipo
-</h3>
-
-<p>
-${esc(e.message||e)}
-</p>
-
-</div>
-
-`;
-
-}
-
-}
-
+const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url,gender").order("full_name");
+if(r.error)throw r.error;
+const all=r.data||[];
+let visible=all;if(isTeamLeader())visible=all.filter(x=>x.id===me.id||x.leader_id===me.id);if(isAdvisor())visible=all.filter(x=>x.id===me.id);
+const leaders=visible.filter(x=>x.role==="team_leader"), advisors=visible.filter(x=>x.role==="asesora"), admins=visible.filter(x=>x.role==="administrador");
+const initials=n=>String(n||"T").split(/\s+/).filter(Boolean).slice(0,2).map(v=>v[0]).join("").toUpperCase();
+const teamOf=l=>advisors.filter(x=>x.leader_id===l.id), direct=advisors.filter(x=>!x.leader_id);
+if(isAdvisor())return renderAdvisorProduction(advisors[0]||profile);
+const advisorRow=ad=>`<div class="advisor-row"><div class="avatar small">${esc(initials(ad.full_name))}</div><div class="advisor-info"><b>${esc(ad.full_name)}</b><span>${ad.gender==="male"?"Asesor":"Asesora"} · ${ad.active===false?"Inactivo":"Activo"}</span></div><div class="advisor-actions">${ad.meet_url?`<a href="${esc(fixUrl(ad.meet_url))}" target="_blank" class="badge meet">🎥 Meet</a>`:""}<button class="primary" onclick="viewAdvisorProduction('${ad.id}')">📊 Producción</button>${isAdmin()||ad.id===me.id?`<button class="light" onclick="editProfile('${ad.id}')">✏️</button>`:""}</div></div>`;
+$("equipo").innerHTML=`<div class="team-shell"><div class="team-hero"><div><h2>Equipo comercial</h2><p>Organización por Team Leader y asesores. Selecciona un asesor para consultar su producción.</p></div><div class="team-hero-kpi"><div class="team-kpi"><b>${leaders.length}</b><span>Team Leaders</span></div><div class="team-kpi"><b>${advisors.length}</b><span>Asesores</span></div><div class="team-kpi"><b>${visible.filter(x=>x.active!==false).length}</b><span>Activos</span></div></div></div>${isAdmin()?`<div class="toolbar"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Nuevo asesor</button></div>`:""}<div class="leader-grid">${leaders.map(l=>{const m=teamOf(l);return `<article class="leader-card"><div class="leader-head"><div class="avatar">${esc(initials(l.full_name))}</div><div class="member-meta"><b>${esc(l.full_name)}</b><span>${esc(l.email||"")} · ${esc(l.phone||"Sin teléfono")}</span></div><span class="member-count">${m.length} asesor${m.length===1?"":"es"}</span></div><div class="advisor-list">${m.length?m.map(advisorRow).join(""):"<div class='empty'>Este Team Leader todavía no tiene asesores asignados.</div>"}</div></article>`}).join("")}${direct.length?`<article class="leader-card"><div class="leader-head"><div class="avatar">TV</div><div class="member-meta"><b>Asesores directos TVEO Business</b><span>Sin Team Leader asignado</span></div><span class="member-count">${direct.length}</span></div><div class="advisor-list">${direct.map(advisorRow).join("")}</div></article>`:""}</div>${admins.length?`<div class="card"><div class="section-label">Administración</div>${admins.map(a=>`<div class="advisor-row"><div class="avatar small">${esc(initials(a.full_name))}</div><div class="advisor-info"><b>${esc(a.full_name)}</b><span>${esc(a.email||"")} · Administrador</span></div>${isAdmin()?`<button class="light" onclick="editProfile('${a.id}')">✏️ Editar</button>`:""}</div>`).join("")}</div>`:""}</div>`;
+}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}}
+
+async function viewAdvisorProduction(id){try{const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url,gender").eq("id",id).single();if(r.error)throw r.error;await renderAdvisorProduction(r.data)}catch(e){err("Producción",e)}}
+
+async function renderAdvisorProduction(advisor){try{const r=await supabaseClient.from("prospects").select("*").eq("advisor_id",advisor.id).order("created_at",{ascending:false});if(r.error)throw r.error;const p=r.data||[];const norm=x=>String(x||"").toLowerCase();const sales=p.filter(x=>["venta","cerrado","vendido"].includes(norm(x.status))).length;const visits=p.filter(x=>norm(x.status)==="visita programada").length;const active=p.filter(x=>!["venta","cerrado","vendido","no interesado"].includes(norm(x.status))).length;const initials=String(advisor.full_name||"A").split(/\s+/).filter(Boolean).slice(0,2).map(v=>v[0]).join("").toUpperCase();const rows=p.length?p.map(x=>`<tr><td><b>${esc(x.name||"Sin nombre")}</b><div class="muted">📱 ${esc(x.phone||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td>${esc(x.status||"—")}</td><td>${x.created_at?new Date(x.created_at).toLocaleDateString("es-BO"):"—"}</td></tr>`).join(""):"<tr><td colspan='5'><div class='empty'>Este asesor todavía no tiene prospectos asignados.</div></td></tr>";$("equipo").innerHTML=`<div class="production"><div class="production-back"><button class="light" onclick="renderTeam()">← Volver al equipo</button></div><div class="card"><div class="production-profile"><div class="avatar">${esc(initials)}</div><div><div class="production-title">${esc(advisor.full_name)}</div><div class="production-sub">${advisor.gender==="male"?"Asesor":"Asesora"} · ${esc(advisor.email||"")} · ${advisor.active===false?"Inactivo":"Activo"}</div></div></div></div><div class="production-kpis"><div class="production-kpi"><span>Total prospectos</span><b>${p.length}</b><small>Asignados actualmente</small></div><div class="production-kpi"><span>Activos</span><b>${active}</b><small>En gestión</small></div><div class="production-kpi"><span>Visitas</span><b>${visits}</b><small>Programadas</small></div><div class="production-kpi"><span>Ventas</span><b>${sales}</b><small>Cerradas</small></div></div><div class="card"><div class="top"><h3>Prospectos del asesor</h3><span class="muted">${p.length} registro(s)</span></div><div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Nivel</th><th>Estado</th><th>Fecha</th></tr>${rows}</table></div></div></div>`}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Producción</h3><p>${esc(e.message||e)}</p><button class="light" onclick="renderTeam()">← Volver</button></div>`}}
 
 /* =========================================================
 PROYECTOS
