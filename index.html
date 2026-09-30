@@ -9,466 +9,187 @@
 <title>Tveo Business CRM</title>
 
 <style>
+
 *{box-sizing:border-box}
-
+:root{
+  --tveo-blue:#0b3d91;
+  --tveo-blue-2:#1565c0;
+  --navy:#0a1b33;
+  --ink:#172033;
+  --muted:#718096;
+  --bg:#f5f7fb;
+  --card:#fff;
+  --line:#e7ecf3;
+  --success:#16a34a;
+  --warning:#d97706;
+  --danger:#dc2626;
+  --shadow:0 10px 30px rgba(15,35,70,.07);
+}
+*{scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent}
 body{
-margin:0;
-background:#f4f7fb;
-color:#162033;
-font-family:Arial,sans-serif
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  letter-spacing:-.01em
 }
-
-button,input,select,textarea{
-font:inherit
-}
-
-button{
-border:0;
-border-radius:10px;
-padding:10px 13px;
-font-weight:700;
-cursor:pointer
-}
-
-button:disabled{
-opacity:.6;
-cursor:not-allowed
-}
-
-.primary{
-background:#1565c0;
-color:#fff
-}
-
-.light{
-background:#eaf0f8;
-color:#17365f
-}
-
-.danger{
-background:#fee2e2;
-color:#991b1b
-}
-
-.meet{
-background:#ea4335;
-color:#fff
-}
-
+button,input,select,textarea{font:inherit}
+button{border:0;border-radius:11px;padding:10px 14px;font-weight:750;cursor:pointer;transition:.18s ease}
+button:hover{transform:translateY(-1px)}
+button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,var(--tveo-blue),var(--tveo-blue-2));color:#fff;box-shadow:0 7px 18px rgba(21,101,192,.18)}
+.light{background:#eef3f9;color:#17365f}
+.danger{background:#fee2e2;color:#991b1b}
+.meet{background:#ea4335;color:#fff}
 .login{
-min-height:100vh;
-display:grid;
-place-items:center;
-background:linear-gradient(145deg,#0b3d91,#102b52);
-padding:20px
+  min-height:100vh;display:grid;place-items:center;
+  background:radial-gradient(circle at 20% 10%,#2d6fd0 0,#123e87 32%,#07182e 100%);
+  padding:20px
 }
-
 .box{
-background:#fff;
-border-radius:20px;
-padding:26px;
-width:min(520px,100%);
-box-shadow:0 20px 60px #0004
+  background:#fff;border-radius:22px;padding:28px;width:min(520px,100%);
+  box-shadow:0 25px 70px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.7)
 }
-
-.logo{
-font-weight:900;
-color:#0b3d91;
-font-size:24px
+.logo{font-weight:950;color:var(--tveo-blue);font-size:24px;letter-spacing:.02em}
+.muted{font-size:12px;color:var(--muted)}
+.field{margin:11px 0}
+.field label{display:block;font-size:12px;font-weight:800;color:#64748b;margin-bottom:6px}
+.field input,.field select,.field textarea{
+  width:100%;padding:12px 13px;border:1px solid #dce4ee;border-radius:11px;
+  background:#fff;outline:none;transition:.18s
 }
-
-.muted{
-font-size:12px;
-color:#6b7280
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#5b91d8;box-shadow:0 0 0 4px rgba(21,101,192,.09)
 }
-
-.field{
-margin:11px 0
-}
-
-.field label{
-display:block;
-font-size:12px;
-font-weight:700;
-color:#657086;
-margin-bottom:5px
-}
-
-.field input,
-.field select,
-.field textarea{
-width:100%;
-padding:11px;
-border:1px solid #dbe2ec;
-border-radius:9px;
-background:#fff
-}
-
-.field textarea{
-min-height:80px
-}
-
-.app{
-display:none
-}
-
+.field textarea{min-height:90px}
+.app{display:none}
 .side{
-position:fixed;
-inset:0 auto 0 0;
-width:240px;
-background:#0b1f3a;
-color:#fff;
-padding:20px;
-z-index:20
+  position:fixed;inset:0 auto 0 0;width:248px;
+  background:linear-gradient(180deg,#081a32 0%,#0b2548 100%);
+  color:#fff;padding:22px 16px;z-index:20;box-shadow:8px 0 30px rgba(9,30,66,.10)
 }
-
-.brand{
-font-weight:900;
-font-size:21px;
-margin-bottom:22px
-}
-
-.brand span{
-font-weight:700
-}
-
+.brand{font-weight:950;font-size:21px;margin:4px 10px 30px;letter-spacing:.02em}
+.brand span{font-weight:650;opacity:.75}
 .nav button{
-display:block;
-width:100%;
-text-align:left;
-background:transparent;
-color:#dbeafe;
-margin:3px 0
+  display:flex;width:100%;align-items:center;gap:10px;text-align:left;
+  background:transparent;color:#cdd9ea;margin:5px 0;padding:12px 13px;border-radius:12px
 }
-
+.nav button:hover{background:rgba(255,255,255,.07);transform:none}
 .nav button.active{
-background:#17365f
+  background:linear-gradient(135deg,rgba(54,123,219,.42),rgba(21,101,192,.18));
+  color:#fff;box-shadow:inset 3px 0 #65a3f2
 }
-
-.main{
-margin-left:240px;
-padding:24px;
-max-width:1450px
-}
-
-.view{
-display:none
-}
-
-.view.active{
-display:block
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px
-}
-
-.card{
-background:#fff;
-border:1px solid #e6ebf2;
-border-radius:15px;
-padding:16px;
-margin:12px 0;
-box-shadow:0 2px 9px #0000000b
-}
-
-.num{
-font-size:28px;
-font-weight:900
-}
-
-.toolbar{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-align-items:center
-}
-
-.search{
-padding:11px;
-border:1px solid #dbe2ec;
-border-radius:9px;
-flex:1;
-min-width:180px
-}
-
-.tablewrap{
-overflow:auto
-}
-
-.table{
-width:100%;
-border-collapse:collapse;
-min-width:760px
-}
-
-.table th,
-.table td{
-padding:10px 7px;
-border-bottom:1px solid #e8edf3;
-text-align:left;
-font-size:13px;
-vertical-align:top
-}
-
-.badge{
-display:inline-block;
-border-radius:20px;
-padding:4px 8px;
-font-size:10px;
-font-weight:900
-}
-
-.A{
-background:#dcfce7;
-color:#166534
-}
-
-.B{
-background:#fef3c7;
-color:#92400e
-}
-
-.C{
-background:#eef0f3;
-color:#4b5563
-}
-
-.blue{
-background:#e8f0fe;
-color:#174ea6
-}
-
-.green{
-background:#dcfce7;
-color:#166534
-}
-
-.orange{
-background:#fff7ed;
-color:#c2410c
-}
-
-.purple{
-background:#f3e8ff;
-color:#7e22ce
-}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:#0008;
-align-items:center;
-padding:12px;
-z-index:50
-}
-
-.modal.show{
-display:flex
-}
-
-.modal .box{
-max-height:94vh;
-overflow:auto;
-width:100%;
-max-width:720px;
-margin:auto
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-.full{
-grid-column:1/-1
-}
-
-.toast{
-position:fixed;
-right:15px;
-bottom:15px;
-background:#162033;
-color:#fff;
-padding:12px;
-border-radius:10px;
-display:none;
-z-index:100;
-max-width:min(520px,90vw)
-}
-
 .logout{
-position:absolute;
-bottom:18px;
-left:20px;
-right:20px;
-background:#17365f;
-color:#fff
+  position:absolute;bottom:18px;left:16px;right:16px;
+  background:rgba(255,255,255,.08);color:#dbeafe
 }
-
-.empty{
-padding:20px;
-text-align:center;
-color:#6b7280
-}
-
-.small{
-font-size:11px
-}
-
-.actions{
-display:flex;
-gap:5px;
-flex-wrap:wrap
-}
-
-.kpi{
-display:flex;
-gap:8px;
-flex-wrap:wrap
-}
-
-.kpi .badge{
-font-size:11px
-}
-
-.gosen-header{
-background:linear-gradient(135deg,#0b3d91,#1565c0);
-color:#fff;
-border-radius:16px;
-padding:20px;
-margin-bottom:14px
-}
-
-.gosen-header h2{
-margin:0 0 5px
-}
-
-.gosen-header p{
-margin:0;
-opacity:.9;
-font-size:13px
-}
-
-.gosen-card{
-border:1px solid #dbeafe;
-background:#fff
-}
-
-.readonly{
-background:#f8fafc!important;
-color:#64748b
-}
-
-.partner-label{
-font-size:11px;
-font-weight:700;
-color:#64748b;
-margin-top:5px
-}
-
-@media(max-width:800px){
-
-.side{
-top:auto;
-bottom:0;
-left:0;
-right:0;
-width:100%;
-height:66px;
-padding:6px 8px;
-box-shadow:0 -3px 15px #0002
-}
-
-.brand,
-.logout{
-display:none
-}
-
-.nav{
-display:flex;
-width:100%;
-justify-content:space-around;
-gap:2px
-}
-
-.nav button{
-margin:0;
-padding:7px 5px;
-text-align:center;
-border-radius:9px;
-font-size:18px;
-line-height:1
-}
-
-.nav button span{
-display:block;
-font-size:9px;
-margin-top:2px
-}
-
-.main{
-margin-left:0;
-padding:12px 12px 82px
-}
-
-.main h1{
-font-size:22px;
-margin:5px 0 0
-}
-
+.main{margin-left:248px;padding:30px;max-width:1540px}
 .top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:8px
+  display:flex;justify-content:space-between;align-items:center;gap:15px;
+  margin-bottom:18px
 }
-
-.stats{
-grid-template-columns:1fr 1fr
+.main h1{font-size:29px;margin:0;font-weight:900;letter-spacing:-.03em}
+.view{display:none}
+.view.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:19px;margin:14px 0;box-shadow:var(--shadow)
 }
-
-.grid{
-grid-template-columns:1fr
+.num{font-size:30px;font-weight:950;line-height:1.1}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.search{padding:12px;border:1px solid #dce4ee;border-radius:11px;flex:1;min-width:180px;background:#fff}
+.tablewrap{overflow:auto;border-radius:13px}
+.table{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}
+.table th,.table td{
+  padding:13px 10px;border-bottom:1px solid #edf1f6;text-align:left;
+  font-size:13px;vertical-align:top
 }
-
-.full{
-grid-column:auto
+.table th{
+  color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  background:#f8fafc;font-weight:850
 }
-
+.table tr:hover td{background:#fbfdff}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}
+.A{background:#dcfce7;color:#166534}.B{background:#fef3c7;color:#92400e}.C{background:#eef0f3;color:#4b5563}
+.blue{background:#e8f0fe;color:#174ea6}.green{background:#dcfce7;color:#166534}
+.orange{background:#fff7ed;color:#c2410c}.purple{background:#f3e8ff;color:#7e22ce}
 .modal{
-padding:0;
-align-items:end
+  display:none;position:fixed;inset:0;background:rgba(5,18,36,.64);
+  align-items:center;padding:18px;z-index:50;backdrop-filter:blur(4px)
 }
+.modal.show{display:flex}
+.modal .box{max-height:94vh;overflow:auto;width:100%;max-width:720px;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.toast{
+  position:fixed;right:18px;bottom:18px;background:#12233c;color:#fff;
+  padding:13px 16px;border-radius:12px;display:none;z-index:100;
+  max-width:min(520px,90vw);box-shadow:0 12px 35px rgba(0,0,0,.2)
+}
+.empty{padding:30px;text-align:center;color:#718096}
+.small{font-size:11px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.kpi{display:flex;gap:8px;flex-wrap:wrap}
+.kpi .badge{font-size:11px}
+.gosen-header{
+  background:linear-gradient(135deg,#0b3d91,#1565c0);color:#fff;border-radius:18px;
+  padding:22px;margin-bottom:16px;box-shadow:0 12px 30px rgba(11,61,145,.16)
+}
+.gosen-header h2{margin:0 0 5px}.gosen-header p{margin:0;opacity:.9;font-size:13px}
+.gosen-card{border:1px solid #dbeafe;background:#fff}.readonly{background:#f8fafc!important;color:#64748b}
+.partner-label{font-size:11px;font-weight:700;color:#64748b;margin-top:5px}
 
-.modal .box{
-border-radius:20px 20px 0 0;
-max-height:92vh
+.team-modern{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px
 }
+.team-leader-card{
+  background:#fff;border:1px solid var(--line);border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden
+}
+.team-leader-head{
+  padding:18px 19px;background:linear-gradient(135deg,#0b3d91,#1b6bc7);color:#fff;
+  display:flex;justify-content:space-between;align-items:center;gap:10px
+}
+.team-leader-name{font-weight:900;font-size:17px}.team-leader-role{font-size:11px;opacity:.82}
+.team-count{background:rgba(255,255,255,.16);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800}
+.team-members{padding:12px}
+.advisor-card{
+  border:1px solid #e8edf4;border-radius:15px;padding:14px;margin:8px 0;
+  background:#fbfcfe;cursor:pointer;transition:.18s
+}
+.advisor-card:hover{border-color:#b9d0ee;box-shadow:0 7px 20px rgba(21,101,192,.08);transform:translateY(-1px)}
+.advisor-row{display:flex;align-items:center;gap:12px}
+.avatar{
+  width:42px;height:42px;border-radius:13px;background:#e8f0fe;color:#174ea6;
+  display:grid;place-items:center;font-weight:950;flex:none
+}
+.advisor-info{min-width:0;flex:1}.advisor-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.advisor-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.mini-stat{background:#f3f6fa;border-radius:10px;padding:8px;text-align:center}
+.mini-stat strong{display:block;font-size:16px}.mini-stat span{font-size:9px;color:#718096}
+.production-panel{margin-top:14px;border-top:1px solid #edf1f6;padding-top:14px}
+.production-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.production-kpi{padding:13px;border:1px solid #e7edf5;border-radius:13px;background:#fff}
+.production-kpi strong{font-size:22px;display:block}.production-kpi span{font-size:10px;color:#718096}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.section-title h3{margin:0;font-size:17px}
+.hero-title{margin:0;font-size:22px;font-weight:900}.hero-sub{margin:5px 0 0;color:#718096;font-size:13px}
 
-.primary{
-min-height:44px
+@media(max-width:900px){
+  .stats{grid-template-columns:1fr 1fr}.production-grid{grid-template-columns:1fr 1fr}
+  .team-modern{grid-template-columns:1fr}
 }
-
-.field input,
-.field select,
-.field textarea{
-min-height:44px
+@media(max-width:800px){
+  .side{top:auto;bottom:0;left:0;right:0;width:100%;height:68px;padding:6px 8px;box-shadow:0 -4px 18px #0002}
+  .brand,.logout{display:none}
+  .nav{display:flex;width:100%;justify-content:space-around;gap:2px}
+  .nav button{margin:0;padding:7px 5px;text-align:center;border-radius:9px;font-size:18px;line-height:1;display:block}
+  .nav button span{display:block;font-size:9px;margin-top:2px}
+  .main{margin-left:0;padding:14px 12px 84px}
+  .main h1{font-size:23px}.top{margin-bottom:12px}
+  .stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .modal{padding:0;align-items:end}.modal .box{border-radius:20px 20px 0 0;max-height:92vh}
+  .primary{min-height:44px}.field input,.field select,.field textarea{min-height:44px}
 }
-}
-
-/* TVEO BUSINESS MODERN UI V2 */
-:root{--tv1:#0b3d91;--tv2:#1565c0;--ink:#12213a;--muted:#6b7890;--line:#e5eaf2;--shadow:0 10px 30px rgba(15,35,70,.07)}
-body{background:linear-gradient(180deg,#f7f9fc,#f2f5fa);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
-.side{width:258px;background:linear-gradient(180deg,#081d38,#0b2b50);padding:22px 16px;box-shadow:8px 0 30px rgba(6,28,55,.08)}
-.brand{padding:8px 12px 20px;font-size:22px}.nav button{border-radius:13px;padding:12px 13px;color:#dce9f8;transition:.18s;margin:4px 0}.nav button:hover{background:rgba(255,255,255,.08);transform:translateX(2px)}.nav button.active{background:linear-gradient(90deg,rgba(21,101,192,.95),rgba(21,101,192,.55));box-shadow:0 8px 18px #0002;color:#fff}
-.logout{left:16px;right:16px;border-radius:12px;background:rgba(255,255,255,.08)}.main{margin-left:258px;max-width:none;padding:28px 32px 40px}.main>.top{padding:0 2px 18px;border-bottom:1px solid var(--line);margin-bottom:20px}.main h1{font-size:28px;letter-spacing:-.5px}.card{border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin:14px 0}.stats{gap:16px}.num{font-size:31px}.tablewrap{border:1px solid var(--line);border-radius:14px;background:#fff}.table th{background:#f7f9fc;color:#64718a;font-size:11px;text-transform:uppercase;letter-spacing:.5px}.table td,.table th{padding:13px 11px}.table tr:last-child td{border-bottom:0}.badge{padding:5px 9px;border-radius:999px}button{border-radius:11px;transition:.16s}button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px #142d5017}.primary{background:linear-gradient(135deg,#1565c0,#0b3d91);box-shadow:0 6px 15px #1565c02e}.light{background:#f2f5fa;border:1px solid #e1e7f0}.field input,.field select,.field textarea,.search{border-color:#dfe6ef}.field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:none;border-color:#76a8df;box-shadow:0 0 0 4px #1565c014}
-.team-shell{display:grid;gap:18px}.team-hero{background:linear-gradient(135deg,#081d38,#1565c0);color:#fff;border-radius:22px;padding:24px;box-shadow:0 16px 35px #0b3d912e;display:flex;justify-content:space-between;gap:20px;align-items:center}.team-hero h2{margin:0 0 6px;font-size:24px}.team-hero p{margin:0;color:#dbeafe;font-size:13px}.team-hero-kpi{display:flex;gap:10px;flex-wrap:wrap}.team-kpi{min-width:90px;padding:12px 14px;border:1px solid #ffffff29;background:#ffffff17;border-radius:14px;text-align:center}.team-kpi b{display:block;font-size:22px}.team-kpi span{font-size:10px;color:#dbeafe}.leader-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}.leader-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}.leader-head{padding:18px 20px;background:linear-gradient(180deg,#f9fbff,#eef4fb);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:13px}.avatar{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#0b3d91,#3c8dde);color:#fff;font-weight:900;font-size:17px;flex:none}.avatar.small{width:38px;height:38px;border-radius:12px;font-size:14px}.member-meta{min-width:0;flex:1}.member-meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-meta span{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-count{background:#e8f0fe;color:#174ea6;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}.advisor-list{padding:10px}.advisor-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;transition:.16s}.advisor-row:hover{background:#f6f9fd}.advisor-info{flex:1;min-width:0}.advisor-info b{display:block;font-size:13px}.advisor-info span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.advisor-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.production{display:grid;gap:16px}.production-back{display:flex;justify-content:space-between;align-items:center;gap:10px}.production-profile{display:flex;align-items:center;gap:13px}.production-title{font-size:21px;font-weight:900}.production-sub{font-size:12px;color:var(--muted);margin-top:3px}.production-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.production-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}.production-kpi span{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.5px}.production-kpi b{display:block;font-size:27px;margin-top:5px}.production-kpi small{color:var(--muted)}.section-label{font-size:12px;font-weight:900;color:#52617a;text-transform:uppercase;letter-spacing:.6px;margin:4px 0}
-@media(max-width:1000px){.production-kpis{grid-template-columns:1fr 1fr}.team-hero{align-items:flex-start;flex-direction:column}}@media(max-width:800px){.side{width:100%;height:70px;padding:6px 8px}.main{margin-left:0;padding:14px 12px 86px}.team-hero{padding:18px;border-radius:18px}.leader-grid{grid-template-columns:1fr}.production-kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.team-kpi{min-width:78px}.team-hero-kpi{width:100%}}
 
 </style>
 
@@ -2613,24 +2334,128 @@ ${esc(e.message||e)}
 EQUIPO
 ========================================================= */
 
+
+function initials(name){
+  return String(name||"U").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase();
+}
+function roleLabel(role){
+  return role==="team_leader"?"Team Leader":role==="asesora"?"Asesor / Asesora":role==="administrador"?"Administrador":role==="gosen"?"Gosen S.R.L.":"Usuario";
+}
+async function teamProduction(advisorId){
+  const r=await supabaseClient.from("prospects").select("id,status").eq("advisor_id",advisorId);
+  if(r.error) return {total:0,active:0,visits:0,sales:0};
+  const p=r.data||[];
+  return {
+    total:p.length,
+    active:p.filter(x=>!["Venta","No interesado"].includes(x.status)).length,
+    visits:p.filter(x=>x.status==="Visita programada").length,
+    sales:p.filter(x=>x.status==="Venta").length
+  };
+}
+async function openAdvisorProduction(id,name){
+  const panel=document.createElement("div");
+  panel.className="modal show";
+  panel.innerHTML=`<div class="box"><div class="top"><div><h2 style="margin:0">${esc(name)}</h2><div class="muted">Producción y cartera del asesor</div></div><button class="light">✕</button></div><div id="prodBody"><div class="empty">Cargando producción...</div></div></div>`;
+  panel.querySelector("button").onclick=()=>panel.remove();
+  document.body.appendChild(panel);
+  try{
+    const r=await supabaseClient.from("prospects").select("*").eq("advisor_id",id).order("created_at",{ascending:false});
+    if(r.error) throw r.error;
+    const p=r.data||[];
+    const sales=p.filter(x=>x.status==="Venta").length;
+    const visits=p.filter(x=>x.status==="Visita programada").length;
+    const active=p.filter(x=>!["Venta","No interesado"].includes(x.status)).length;
+    panel.querySelector("#prodBody").innerHTML=`
+      <div class="production-grid">
+        <div class="production-kpi"><strong>${p.length}</strong><span>PROSPECTOS</span></div>
+        <div class="production-kpi"><strong>${active}</strong><span>ACTIVOS</span></div>
+        <div class="production-kpi"><strong>${visits}</strong><span>VISITAS</span></div>
+        <div class="production-kpi"><strong>${sales}</strong><span>VENTAS</span></div>
+      </div>
+      <div class="production-panel">
+        <div class="section-title"><h3>Prospectos</h3><span class="muted">${p.length} registros</span></div>
+        ${prospectRows(p)}
+      </div>`;
+  }catch(e){panel.querySelector("#prodBody").innerHTML=`<div class="empty">${esc(e.message||e)}</div>`}
+}
+
 async function renderTeam(){
-if(isGosen())return;
+if(isGosen()) return;
 try{
-const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url,gender").order("full_name");
-if(r.error)throw r.error;
-const all=r.data||[];
-let visible=all;if(isTeamLeader())visible=all.filter(x=>x.id===me.id||x.leader_id===me.id);if(isAdvisor())visible=all.filter(x=>x.id===me.id);
-const leaders=visible.filter(x=>x.role==="team_leader"), advisors=visible.filter(x=>x.role==="asesora"), admins=visible.filter(x=>x.role==="administrador");
-const initials=n=>String(n||"T").split(/\s+/).filter(Boolean).slice(0,2).map(v=>v[0]).join("").toUpperCase();
-const teamOf=l=>advisors.filter(x=>x.leader_id===l.id), direct=advisors.filter(x=>!x.leader_id);
-if(isAdvisor())return renderAdvisorProduction(advisors[0]||profile);
-const advisorRow=ad=>`<div class="advisor-row"><div class="avatar small">${esc(initials(ad.full_name))}</div><div class="advisor-info"><b>${esc(ad.full_name)}</b><span>${ad.gender==="male"?"Asesor":"Asesora"} · ${ad.active===false?"Inactivo":"Activo"}</span></div><div class="advisor-actions">${ad.meet_url?`<a href="${esc(fixUrl(ad.meet_url))}" target="_blank" class="badge meet">🎥 Meet</a>`:""}<button class="primary" onclick="viewAdvisorProduction('${ad.id}')">📊 Producción</button>${isAdmin()||ad.id===me.id?`<button class="light" onclick="editProfile('${ad.id}')">✏️</button>`:""}</div></div>`;
-$("equipo").innerHTML=`<div class="team-shell"><div class="team-hero"><div><h2>Equipo comercial</h2><p>Organización por Team Leader y asesores. Selecciona un asesor para consultar su producción.</p></div><div class="team-hero-kpi"><div class="team-kpi"><b>${leaders.length}</b><span>Team Leaders</span></div><div class="team-kpi"><b>${advisors.length}</b><span>Asesores</span></div><div class="team-kpi"><b>${visible.filter(x=>x.active!==false).length}</b><span>Activos</span></div></div></div>${isAdmin()?`<div class="toolbar"><button class="primary" onclick="openNewMemberModal('team_leader')">+ Nuevo Team Leader</button><button class="light" onclick="openNewMemberModal('asesora')">+ Nuevo asesor</button></div>`:""}<div class="leader-grid">${leaders.map(l=>{const m=teamOf(l);return `<article class="leader-card"><div class="leader-head"><div class="avatar">${esc(initials(l.full_name))}</div><div class="member-meta"><b>${esc(l.full_name)}</b><span>${esc(l.email||"")} · ${esc(l.phone||"Sin teléfono")}</span></div><span class="member-count">${m.length} asesor${m.length===1?"":"es"}</span></div><div class="advisor-list">${m.length?m.map(advisorRow).join(""):"<div class='empty'>Este Team Leader todavía no tiene asesores asignados.</div>"}</div></article>`}).join("")}${direct.length?`<article class="leader-card"><div class="leader-head"><div class="avatar">TV</div><div class="member-meta"><b>Asesores directos TVEO Business</b><span>Sin Team Leader asignado</span></div><span class="member-count">${direct.length}</span></div><div class="advisor-list">${direct.map(advisorRow).join("")}</div></article>`:""}</div>${admins.length?`<div class="card"><div class="section-label">Administración</div>${admins.map(a=>`<div class="advisor-row"><div class="avatar small">${esc(initials(a.full_name))}</div><div class="advisor-info"><b>${esc(a.full_name)}</b><span>${esc(a.email||"")} · Administrador</span></div>${isAdmin()?`<button class="light" onclick="editProfile('${a.id}')">✏️ Editar</button>`:""}</div>`).join("")}</div>`:""}</div>`;
-}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`}}
+  const r=await supabaseClient.from("profiles")
+    .select("id,full_name,email,role,phone,active,leader_id,meet_url,gender")
+    .order("full_name");
+  if(r.error) throw r.error;
+  const all=r.data||[];
+  const leaders=all.filter(x=>x.role==="team_leader");
+  let visible=all;
+  if(isTeamLeader()) visible=all.filter(x=>x.id===me.id||x.leader_id===me.id);
+  if(isAdvisor()) visible=all.filter(x=>x.id===me.id);
 
-async function viewAdvisorProduction(id){try{const r=await supabaseClient.from("profiles").select("id,full_name,email,role,phone,active,leader_id,meet_url,gender").eq("id",id).single();if(r.error)throw r.error;await renderAdvisorProduction(r.data)}catch(e){err("Producción",e)}}
+  const advisors=visible.filter(x=>x.role==="asesora");
+  const direct=visible.filter(x=>x.role==="asesora" && !x.leader_id);
+  const leaderCards=leaders.filter(l=>visible.some(x=>x.leader_id===l.id));
 
-async function renderAdvisorProduction(advisor){try{const r=await supabaseClient.from("prospects").select("*").eq("advisor_id",advisor.id).order("created_at",{ascending:false});if(r.error)throw r.error;const p=r.data||[];const norm=x=>String(x||"").toLowerCase();const sales=p.filter(x=>["venta","cerrado","vendido"].includes(norm(x.status))).length;const visits=p.filter(x=>norm(x.status)==="visita programada").length;const active=p.filter(x=>!["venta","cerrado","vendido","no interesado"].includes(norm(x.status))).length;const initials=String(advisor.full_name||"A").split(/\s+/).filter(Boolean).slice(0,2).map(v=>v[0]).join("").toUpperCase();const rows=p.length?p.map(x=>`<tr><td><b>${esc(x.name||"Sin nombre")}</b><div class="muted">📱 ${esc(x.phone||"")}</div></td><td>${esc(x.project_name||"Sin proyecto")}</td><td><span class="badge ${esc(x.grade||"C")}">${esc(x.grade||"—")}</span></td><td>${esc(x.status||"—")}</td><td>${x.created_at?new Date(x.created_at).toLocaleDateString("es-BO"):"—"}</td></tr>`).join(""):"<tr><td colspan='5'><div class='empty'>Este asesor todavía no tiene prospectos asignados.</div></td></tr>";$("equipo").innerHTML=`<div class="production"><div class="production-back"><button class="light" onclick="renderTeam()">← Volver al equipo</button></div><div class="card"><div class="production-profile"><div class="avatar">${esc(initials)}</div><div><div class="production-title">${esc(advisor.full_name)}</div><div class="production-sub">${advisor.gender==="male"?"Asesor":"Asesora"} · ${esc(advisor.email||"")} · ${advisor.active===false?"Inactivo":"Activo"}</div></div></div></div><div class="production-kpis"><div class="production-kpi"><span>Total prospectos</span><b>${p.length}</b><small>Asignados actualmente</small></div><div class="production-kpi"><span>Activos</span><b>${active}</b><small>En gestión</small></div><div class="production-kpi"><span>Visitas</span><b>${visits}</b><small>Programadas</small></div><div class="production-kpi"><span>Ventas</span><b>${sales}</b><small>Cerradas</small></div></div><div class="card"><div class="top"><h3>Prospectos del asesor</h3><span class="muted">${p.length} registro(s)</span></div><div class="tablewrap"><table class="table"><tr><th>Cliente</th><th>Proyecto</th><th>Nivel</th><th>Estado</th><th>Fecha</th></tr>${rows}</table></div></div></div>`}catch(e){$("equipo").innerHTML=`<div class="card"><h3>Producción</h3><p>${esc(e.message||e)}</p><button class="light" onclick="renderTeam()">← Volver</button></div>`}}
+  const memberCard=(x)=>`
+    <div class="advisor-card" onclick="openAdvisorProduction('${x.id}','${esc(x.full_name)}')">
+      <div class="advisor-row">
+        <div class="avatar">${initials(x.full_name)}</div>
+        <div class="advisor-info">
+          <b>${esc(x.full_name)}</b>
+          <span class="muted">${esc(x.email||"")} · ${x.active===false?"Inactivo":"Activo"}</span>
+        </div>
+        <span class="badge blue">Ver producción →</span>
+      </div>
+      <div class="advisor-stats" data-advisor="${x.id}">
+        <div class="mini-stat"><strong>—</strong><span>PROSPECTOS</span></div>
+        <div class="mini-stat"><strong>—</strong><span>VISITAS</span></div>
+        <div class="mini-stat"><strong>—</strong><span>VENTAS</span></div>
+      </div>
+    </div>`;
+
+  $("equipo").innerHTML=`
+    <div class="section-title">
+      <div><div class="hero-title">Equipo comercial</div><div class="hero-sub">Organización por Team Leader y producción de cada asesor.</div></div>
+      ${isAdmin()?`<button class="primary" onclick="openNewMemberModal('asesora')">+ Nuevo integrante</button>`:""}
+    </div>
+    <div class="team-modern">
+      ${leaderCards.map(l=>{
+        const members=visible.filter(x=>x.role==="asesora"&&x.leader_id===l.id);
+        return `<div class="team-leader-card">
+          <div class="team-leader-head">
+            <div><div class="team-leader-name">${esc(l.full_name)}</div><div class="team-leader-role">TEAM LEADER</div></div>
+            <div class="team-count">${members.length} asesor${members.length===1?"":"es"}</div>
+          </div>
+          <div class="team-members">${members.length?members.map(memberCard).join(""):`<div class="empty">Sin asesores asignados.</div>`}</div>
+        </div>`;
+      }).join("")}
+      ${direct.length?`<div class="team-leader-card">
+        <div class="team-leader-head">
+          <div><div class="team-leader-name">Asesores directos</div><div class="team-leader-role">TVEO BUSINESS</div></div>
+          <div class="team-count">${direct.length}</div>
+        </div>
+        <div class="team-members">${direct.map(memberCard).join("")}</div>
+      </div>`:""}
+    </div>
+    ${!leaderCards.length&&!direct.length?`<div class="card empty">No hay integrantes visibles para este usuario.</div>`:""}
+  `;
+
+  // Load lightweight KPIs without changing database structure.
+  for(const x of advisors){
+    const rr=await supabaseClient.from("prospects").select("status").eq("advisor_id",x.id);
+    const p=rr.data||[];
+    const el=document.querySelector(`[data-advisor="${x.id}"]`);
+    if(el){
+      el.innerHTML=`
+        <div class="mini-stat"><strong>${p.length}</strong><span>PROSPECTOS</span></div>
+        <div class="mini-stat"><strong>${p.filter(y=>y.status==="Visita programada").length}</strong><span>VISITAS</span></div>
+        <div class="mini-stat"><strong>${p.filter(y=>y.status==="Venta").length}</strong><span>VENTAS</span></div>`;
+    }
+  }
+}catch(e){
+  $("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`;
+}
+}
 
 /* =========================================================
 PROYECTOS
