@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -9,191 +10,461 @@
 <title>Tveo Business CRM</title>
 
 <style>
-
 *{box-sizing:border-box}
-:root{
-  --tveo-blue:#0b3d91;
-  --tveo-blue-2:#1565c0;
-  --navy:#0a1b33;
-  --ink:#172033;
-  --muted:#718096;
-  --bg:#f5f7fb;
-  --card:#fff;
-  --line:#e7ecf3;
-  --success:#16a34a;
-  --warning:#d97706;
-  --danger:#dc2626;
-  --shadow:0 10px 30px rgba(15,35,70,.07);
-}
-*{scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent}
+
 body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  letter-spacing:-.01em
+margin:0;
+background:#f4f7fb;
+color:#162033;
+font-family:Arial,sans-serif
 }
-button,input,select,textarea{font:inherit}
-button{border:0;border-radius:11px;padding:10px 14px;font-weight:750;cursor:pointer;transition:.18s ease}
-button:hover{transform:translateY(-1px)}
-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.primary{background:linear-gradient(135deg,var(--tveo-blue),var(--tveo-blue-2));color:#fff;box-shadow:0 7px 18px rgba(21,101,192,.18)}
-.light{background:#eef3f9;color:#17365f}
-.danger{background:#fee2e2;color:#991b1b}
-.meet{background:#ea4335;color:#fff}
+
+button,input,select,textarea{
+font:inherit
+}
+
+button{
+border:0;
+border-radius:10px;
+padding:10px 13px;
+font-weight:700;
+cursor:pointer
+}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed
+}
+
+.primary{
+background:#1565c0;
+color:#fff
+}
+
+.light{
+background:#eaf0f8;
+color:#17365f
+}
+
+.danger{
+background:#fee2e2;
+color:#991b1b
+}
+
+.meet{
+background:#ea4335;
+color:#fff
+}
+
 .login{
-  min-height:100vh;display:grid;place-items:center;
-  background:radial-gradient(circle at 20% 10%,#2d6fd0 0,#123e87 32%,#07182e 100%);
-  padding:20px
+min-height:100vh;
+display:grid;
+place-items:center;
+background:linear-gradient(145deg,#0b3d91,#102b52);
+padding:20px
 }
+
 .box{
-  background:#fff;border-radius:22px;padding:28px;width:min(520px,100%);
-  box-shadow:0 25px 70px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.7)
+background:#fff;
+border-radius:20px;
+padding:26px;
+width:min(520px,100%);
+box-shadow:0 20px 60px #0004
 }
-.logo{font-weight:950;color:var(--tveo-blue);font-size:24px;letter-spacing:.02em}
-.muted{font-size:12px;color:var(--muted)}
-.field{margin:11px 0}
-.field label{display:block;font-size:12px;font-weight:800;color:#64748b;margin-bottom:6px}
-.field input,.field select,.field textarea{
-  width:100%;padding:12px 13px;border:1px solid #dce4ee;border-radius:11px;
-  background:#fff;outline:none;transition:.18s
+
+.logo{
+font-weight:900;
+color:#0b3d91;
+font-size:24px
 }
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:#5b91d8;box-shadow:0 0 0 4px rgba(21,101,192,.09)
+
+.muted{
+font-size:12px;
+color:#6b7280
 }
-.field textarea{min-height:90px}
-.app{display:none}
+
+.field{
+margin:11px 0
+}
+
+.field label{
+display:block;
+font-size:12px;
+font-weight:700;
+color:#657086;
+margin-bottom:5px
+}
+
+.field input,
+.field select,
+.field textarea{
+width:100%;
+padding:11px;
+border:1px solid #dbe2ec;
+border-radius:9px;
+background:#fff
+}
+
+.field textarea{
+min-height:80px
+}
+
+.app{
+display:none
+}
+
 .side{
-  position:fixed;inset:0 auto 0 0;width:248px;
-  background:linear-gradient(180deg,#081a32 0%,#0b2548 100%);
-  color:#fff;padding:22px 16px;z-index:20;box-shadow:8px 0 30px rgba(9,30,66,.10)
+position:fixed;
+inset:0 auto 0 0;
+width:240px;
+background:#0b1f3a;
+color:#fff;
+padding:20px;
+z-index:20
 }
-.brand{font-weight:950;font-size:21px;margin:4px 10px 30px;letter-spacing:.02em}
-.brand span{font-weight:650;opacity:.75}
+
+.brand{
+font-weight:900;
+font-size:21px;
+margin-bottom:22px
+}
+
+.brand span{
+font-weight:700
+}
+
 .nav button{
-  display:flex;width:100%;align-items:center;gap:10px;text-align:left;
-  background:transparent;color:#cdd9ea;margin:5px 0;padding:12px 13px;border-radius:12px
+display:block;
+width:100%;
+text-align:left;
+background:transparent;
+color:#dbeafe;
+margin:3px 0
 }
-.nav button:hover{background:rgba(255,255,255,.07);transform:none}
+
 .nav button.active{
-  background:linear-gradient(135deg,rgba(54,123,219,.42),rgba(21,101,192,.18));
-  color:#fff;box-shadow:inset 3px 0 #65a3f2
+background:#17365f
 }
-.logout{
-  position:absolute;bottom:18px;left:16px;right:16px;
-  background:rgba(255,255,255,.08);color:#dbeafe
+
+.main{
+margin-left:240px;
+padding:24px;
+max-width:1450px
 }
-.main{margin-left:248px;padding:30px;max-width:1540px}
-.top{
-  display:flex;justify-content:space-between;align-items:center;gap:15px;
-  margin-bottom:18px
+
+.view{
+display:none
 }
-.main h1{font-size:29px;margin:0;font-weight:900;letter-spacing:-.03em}
-.view{display:none}
-.view.active{display:block}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+.view.active{
+display:block
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px
+}
+
 .card{
-  background:var(--card);border:1px solid var(--line);border-radius:18px;
-  padding:19px;margin:14px 0;box-shadow:var(--shadow)
+background:#fff;
+border:1px solid #e6ebf2;
+border-radius:15px;
+padding:16px;
+margin:12px 0;
+box-shadow:0 2px 9px #0000000b
 }
-.num{font-size:30px;font-weight:950;line-height:1.1}
-.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-.search{padding:12px;border:1px solid #dce4ee;border-radius:11px;flex:1;min-width:180px;background:#fff}
-.tablewrap{overflow:auto;border-radius:13px}
-.table{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}
-.table th,.table td{
-  padding:13px 10px;border-bottom:1px solid #edf1f6;text-align:left;
-  font-size:13px;vertical-align:top
+
+.num{
+font-size:28px;
+font-weight:900
 }
-.table th{
-  color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
-  background:#f8fafc;font-weight:850
+
+.toolbar{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+align-items:center
 }
-.table tr:hover td{background:#fbfdff}
-.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}
-.A{background:#dcfce7;color:#166534}.B{background:#fef3c7;color:#92400e}.C{background:#eef0f3;color:#4b5563}
-.blue{background:#e8f0fe;color:#174ea6}.green{background:#dcfce7;color:#166534}
-.orange{background:#fff7ed;color:#c2410c}.purple{background:#f3e8ff;color:#7e22ce}
+
+.search{
+padding:11px;
+border:1px solid #dbe2ec;
+border-radius:9px;
+flex:1;
+min-width:180px
+}
+
+.tablewrap{
+overflow:auto
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+min-width:760px
+}
+
+.table th,
+.table td{
+padding:10px 7px;
+border-bottom:1px solid #e8edf3;
+text-align:left;
+font-size:13px;
+vertical-align:top
+}
+
+.badge{
+display:inline-block;
+border-radius:20px;
+padding:4px 8px;
+font-size:10px;
+font-weight:900
+}
+
+.A{
+background:#dcfce7;
+color:#166534
+}
+
+.B{
+background:#fef3c7;
+color:#92400e
+}
+
+.C{
+background:#eef0f3;
+color:#4b5563
+}
+
+.blue{
+background:#e8f0fe;
+color:#174ea6
+}
+
+.green{
+background:#dcfce7;
+color:#166534
+}
+
+.orange{
+background:#fff7ed;
+color:#c2410c
+}
+
+.purple{
+background:#f3e8ff;
+color:#7e22ce
+}
+
 .modal{
-  display:none;position:fixed;inset:0;background:rgba(5,18,36,.64);
-  align-items:center;padding:18px;z-index:50;backdrop-filter:blur(4px)
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+align-items:center;
+padding:12px;
+z-index:50
 }
-.modal.show{display:flex}
-.modal .box{max-height:94vh;overflow:auto;width:100%;max-width:720px;margin:auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.full{grid-column:1/-1}
+
+.modal.show{
+display:flex
+}
+
+.modal .box{
+max-height:94vh;
+overflow:auto;
+width:100%;
+max-width:720px;
+margin:auto
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.full{
+grid-column:1/-1
+}
+
 .toast{
-  position:fixed;right:18px;bottom:18px;background:#12233c;color:#fff;
-  padding:13px 16px;border-radius:12px;display:none;z-index:100;
-  max-width:min(520px,90vw);box-shadow:0 12px 35px rgba(0,0,0,.2)
+position:fixed;
+right:15px;
+bottom:15px;
+background:#162033;
+color:#fff;
+padding:12px;
+border-radius:10px;
+display:none;
+z-index:100;
+max-width:min(520px,90vw)
 }
-.empty{padding:30px;text-align:center;color:#718096}
-.small{font-size:11px}
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-.kpi{display:flex;gap:8px;flex-wrap:wrap}
-.kpi .badge{font-size:11px}
+
+.logout{
+position:absolute;
+bottom:18px;
+left:20px;
+right:20px;
+background:#17365f;
+color:#fff
+}
+
+.empty{
+padding:20px;
+text-align:center;
+color:#6b7280
+}
+
+.small{
+font-size:11px
+}
+
+.actions{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+.kpi{
+display:flex;
+gap:8px;
+flex-wrap:wrap
+}
+
+.kpi .badge{
+font-size:11px
+}
+
 .gosen-header{
-  background:linear-gradient(135deg,#0b3d91,#1565c0);color:#fff;border-radius:18px;
-  padding:22px;margin-bottom:16px;box-shadow:0 12px 30px rgba(11,61,145,.16)
+background:linear-gradient(135deg,#0b3d91,#1565c0);
+color:#fff;
+border-radius:16px;
+padding:20px;
+margin-bottom:14px
 }
-.gosen-header h2{margin:0 0 5px}.gosen-header p{margin:0;opacity:.9;font-size:13px}
-.gosen-card{border:1px solid #dbeafe;background:#fff}.readonly{background:#f8fafc!important;color:#64748b}
-.partner-label{font-size:11px;font-weight:700;color:#64748b;margin-top:5px}
 
-.team-modern{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px
+.gosen-header h2{
+margin:0 0 5px
 }
-.team-leader-card{
-  background:#fff;border:1px solid var(--line);border-radius:20px;
-  box-shadow:var(--shadow);overflow:hidden
-}
-.team-leader-head{
-  padding:18px 19px;background:linear-gradient(135deg,#0b3d91,#1b6bc7);color:#fff;
-  display:flex;justify-content:space-between;align-items:center;gap:10px
-}
-.team-leader-name{font-weight:900;font-size:17px}.team-leader-role{font-size:11px;opacity:.82}
-.team-count{background:rgba(255,255,255,.16);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800}
-.team-members{padding:12px}
-.advisor-card{
-  border:1px solid #e8edf4;border-radius:15px;padding:14px;margin:8px 0;
-  background:#fbfcfe;cursor:pointer;transition:.18s
-}
-.advisor-card:hover{border-color:#b9d0ee;box-shadow:0 7px 20px rgba(21,101,192,.08);transform:translateY(-1px)}
-.advisor-row{display:flex;align-items:center;gap:12px}
-.avatar{
-  width:42px;height:42px;border-radius:13px;background:#e8f0fe;color:#174ea6;
-  display:grid;place-items:center;font-weight:950;flex:none
-}
-.advisor-info{min-width:0;flex:1}.advisor-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.advisor-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
-.mini-stat{background:#f3f6fa;border-radius:10px;padding:8px;text-align:center}
-.mini-stat strong{display:block;font-size:16px}.mini-stat span{font-size:9px;color:#718096}
-.production-panel{margin-top:14px;border-top:1px solid #edf1f6;padding-top:14px}
-.production-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.production-kpi{padding:13px;border:1px solid #e7edf5;border-radius:13px;background:#fff}
-.production-kpi strong{font-size:22px;display:block}.production-kpi span{font-size:10px;color:#718096}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-.section-title h3{margin:0;font-size:17px}
-.hero-title{margin:0;font-size:22px;font-weight:900}.hero-sub{margin:5px 0 0;color:#718096;font-size:13px}
 
-@media(max-width:900px){
-  .stats{grid-template-columns:1fr 1fr}.production-grid{grid-template-columns:1fr 1fr}
-  .team-modern{grid-template-columns:1fr}
+.gosen-header p{
+margin:0;
+opacity:.9;
+font-size:13px
 }
+
+.gosen-card{
+border:1px solid #dbeafe;
+background:#fff
+}
+
+.readonly{
+background:#f8fafc!important;
+color:#64748b
+}
+
+.partner-label{
+font-size:11px;
+font-weight:700;
+color:#64748b;
+margin-top:5px
+}
+
 @media(max-width:800px){
-  .side{top:auto;bottom:0;left:0;right:0;width:100%;height:68px;padding:6px 8px;box-shadow:0 -4px 18px #0002}
-  .brand,.logout{display:none}
-  .nav{display:flex;width:100%;justify-content:space-around;gap:2px}
-  .nav button{margin:0;padding:7px 5px;text-align:center;border-radius:9px;font-size:18px;line-height:1;display:block}
-  .nav button span{display:block;font-size:9px;margin-top:2px}
-  .main{margin-left:0;padding:14px 12px 84px}
-  .main h1{font-size:23px}.top{margin-bottom:12px}
-  .stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}
-  .modal{padding:0;align-items:end}.modal .box{border-radius:20px 20px 0 0;max-height:92vh}
-  .primary{min-height:44px}.field input,.field select,.field textarea{min-height:44px}
+
+.side{
+top:auto;
+bottom:0;
+left:0;
+right:0;
+width:100%;
+height:66px;
+padding:6px 8px;
+box-shadow:0 -3px 15px #0002
 }
 
+.brand,
+.logout{
+display:none
+}
+
+.nav{
+display:flex;
+width:100%;
+justify-content:space-around;
+gap:2px
+}
+
+.nav button{
+margin:0;
+padding:7px 5px;
+text-align:center;
+border-radius:9px;
+font-size:18px;
+line-height:1
+}
+
+.nav button span{
+display:block;
+font-size:9px;
+margin-top:2px
+}
+
+.main{
+margin-left:0;
+padding:12px 12px 82px
+}
+
+.main h1{
+font-size:22px;
+margin:5px 0 0
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.grid{
+grid-template-columns:1fr
+}
+
+.full{
+grid-column:auto
+}
+
+.modal{
+padding:0;
+align-items:end
+}
+
+.modal .box{
+border-radius:20px 20px 0 0;
+max-height:92vh
+}
+
+.primary{
+min-height:44px
+}
+
+.field input,
+.field select,
+.field textarea{
+min-height:44px
+}
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -256,7 +527,6 @@ Guardar nueva contraseña
 
 </div>
 
-
 <!-- =========================================================
 APP
 ========================================================= -->
@@ -316,7 +586,6 @@ Salir
 
 </aside>
 
-
 <main class="main">
 
 <div class="top">
@@ -342,7 +611,6 @@ Salir
 </main>
 
 </div>
-
 
 <!-- =========================================================
 PROSPECTO
@@ -478,7 +746,6 @@ Guardar prospecto
 
 </div>
 
-
 <!-- =========================================================
 SEGUIMIENTO
 ========================================================= -->
@@ -545,7 +812,6 @@ Guardar seguimiento
 
 </div>
 
-
 <!-- =========================================================
 PROYECTO
 ========================================================= -->
@@ -606,7 +872,6 @@ Guardar proyecto
 </div>
 
 </div>
-
 
 <!-- =========================================================
 NUEVO INTEGRANTE
@@ -686,7 +951,6 @@ Continuar
 </div>
 
 </div>
-
 
 <!-- =========================================================
 PERFIL
@@ -866,9 +1130,7 @@ Guardar cambios
 
 </div>
 
-
 <div id="toast" class="toast"></div>
-
 
 <script>
 
@@ -2334,128 +2596,242 @@ ${esc(e.message||e)}
 EQUIPO
 ========================================================= */
 
-
-function initials(name){
-  return String(name||"U").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase();
-}
-function roleLabel(role){
-  return role==="team_leader"?"Team Leader":role==="asesora"?"Asesor / Asesora":role==="administrador"?"Administrador":role==="gosen"?"Gosen S.R.L.":"Usuario";
-}
-async function teamProduction(advisorId){
-  const r=await supabaseClient.from("prospects").select("id,status").eq("advisor_id",advisorId);
-  if(r.error) return {total:0,active:0,visits:0,sales:0};
-  const p=r.data||[];
-  return {
-    total:p.length,
-    active:p.filter(x=>!["Venta","No interesado"].includes(x.status)).length,
-    visits:p.filter(x=>x.status==="Visita programada").length,
-    sales:p.filter(x=>x.status==="Venta").length
-  };
-}
-async function openAdvisorProduction(id,name){
-  const panel=document.createElement("div");
-  panel.className="modal show";
-  panel.innerHTML=`<div class="box"><div class="top"><div><h2 style="margin:0">${esc(name)}</h2><div class="muted">Producción y cartera del asesor</div></div><button class="light">✕</button></div><div id="prodBody"><div class="empty">Cargando producción...</div></div></div>`;
-  panel.querySelector("button").onclick=()=>panel.remove();
-  document.body.appendChild(panel);
-  try{
-    const r=await supabaseClient.from("prospects").select("*").eq("advisor_id",id).order("created_at",{ascending:false});
-    if(r.error) throw r.error;
-    const p=r.data||[];
-    const sales=p.filter(x=>x.status==="Venta").length;
-    const visits=p.filter(x=>x.status==="Visita programada").length;
-    const active=p.filter(x=>!["Venta","No interesado"].includes(x.status)).length;
-    panel.querySelector("#prodBody").innerHTML=`
-      <div class="production-grid">
-        <div class="production-kpi"><strong>${p.length}</strong><span>PROSPECTOS</span></div>
-        <div class="production-kpi"><strong>${active}</strong><span>ACTIVOS</span></div>
-        <div class="production-kpi"><strong>${visits}</strong><span>VISITAS</span></div>
-        <div class="production-kpi"><strong>${sales}</strong><span>VENTAS</span></div>
-      </div>
-      <div class="production-panel">
-        <div class="section-title"><h3>Prospectos</h3><span class="muted">${p.length} registros</span></div>
-        ${prospectRows(p)}
-      </div>`;
-  }catch(e){panel.querySelector("#prodBody").innerHTML=`<div class="empty">${esc(e.message||e)}</div>`}
-}
-
 async function renderTeam(){
-if(isGosen()) return;
+
+if(isGosen())
+return;
+
+
 try{
-  const r=await supabaseClient.from("profiles")
-    .select("id,full_name,email,role,phone,active,leader_id,meet_url,gender")
-    .order("full_name");
-  if(r.error) throw r.error;
-  const all=r.data||[];
-  const leaders=all.filter(x=>x.role==="team_leader");
-  let visible=all;
-  if(isTeamLeader()) visible=all.filter(x=>x.id===me.id||x.leader_id===me.id);
-  if(isAdvisor()) visible=all.filter(x=>x.id===me.id);
 
-  const advisors=visible.filter(x=>x.role==="asesora");
-  const direct=visible.filter(x=>x.role==="asesora" && !x.leader_id);
-  const leaderCards=leaders.filter(l=>visible.some(x=>x.leader_id===l.id));
+const r=
+await supabaseClient
+.from("profiles")
+.select(
+"id,full_name,email,role,phone,active,leader_id,meet_url,gender"
+)
+.order("role")
+.order("full_name");
 
-  const memberCard=(x)=>`
-    <div class="advisor-card" onclick="openAdvisorProduction('${x.id}','${esc(x.full_name)}')">
-      <div class="advisor-row">
-        <div class="avatar">${initials(x.full_name)}</div>
-        <div class="advisor-info">
-          <b>${esc(x.full_name)}</b>
-          <span class="muted">${esc(x.email||"")} · ${x.active===false?"Inactivo":"Activo"}</span>
-        </div>
-        <span class="badge blue">Ver producción →</span>
-      </div>
-      <div class="advisor-stats" data-advisor="${x.id}">
-        <div class="mini-stat"><strong>—</strong><span>PROSPECTOS</span></div>
-        <div class="mini-stat"><strong>—</strong><span>VISITAS</span></div>
-        <div class="mini-stat"><strong>—</strong><span>VENTAS</span></div>
-      </div>
-    </div>`;
 
-  $("equipo").innerHTML=`
-    <div class="section-title">
-      <div><div class="hero-title">Equipo comercial</div><div class="hero-sub">Organización por Team Leader y producción de cada asesor.</div></div>
-      ${isAdmin()?`<button class="primary" onclick="openNewMemberModal('asesora')">+ Nuevo integrante</button>`:""}
-    </div>
-    <div class="team-modern">
-      ${leaderCards.map(l=>{
-        const members=visible.filter(x=>x.role==="asesora"&&x.leader_id===l.id);
-        return `<div class="team-leader-card">
-          <div class="team-leader-head">
-            <div><div class="team-leader-name">${esc(l.full_name)}</div><div class="team-leader-role">TEAM LEADER</div></div>
-            <div class="team-count">${members.length} asesor${members.length===1?"":"es"}</div>
-          </div>
-          <div class="team-members">${members.length?members.map(memberCard).join(""):`<div class="empty">Sin asesores asignados.</div>`}</div>
-        </div>`;
-      }).join("")}
-      ${direct.length?`<div class="team-leader-card">
-        <div class="team-leader-head">
-          <div><div class="team-leader-name">Asesores directos</div><div class="team-leader-role">TVEO BUSINESS</div></div>
-          <div class="team-count">${direct.length}</div>
-        </div>
-        <div class="team-members">${direct.map(memberCard).join("")}</div>
-      </div>`:""}
-    </div>
-    ${!leaderCards.length&&!direct.length?`<div class="card empty">No hay integrantes visibles para este usuario.</div>`:""}
-  `;
+if(r.error)
+throw r.error;
 
-  // Load lightweight KPIs without changing database structure.
-  for(const x of advisors){
-    const rr=await supabaseClient.from("prospects").select("status").eq("advisor_id",x.id);
-    const p=rr.data||[];
-    const el=document.querySelector(`[data-advisor="${x.id}"]`);
-    if(el){
-      el.innerHTML=`
-        <div class="mini-stat"><strong>${p.length}</strong><span>PROSPECTOS</span></div>
-        <div class="mini-stat"><strong>${p.filter(y=>y.status==="Visita programada").length}</strong><span>VISITAS</span></div>
-        <div class="mini-stat"><strong>${p.filter(y=>y.status==="Venta").length}</strong><span>VENTAS</span></div>`;
-    }
-  }
+
+let all=r.data||[];
+
+let u=all;
+
+
+if(profile.role==="team_leader"){
+
+u=all.filter(
+x=>
+x.id===me.id||
+x.leader_id===me.id
+);
+
+}
+
+
+if(profile.role==="asesora"){
+
+u=all.filter(
+x=>x.id===me.id
+);
+
+}
+
+
+const leaders=
+all.filter(
+x=>x.role==="team_leader"
+);
+
+
+const roleName=x=>
+
+x==="administrador"
+?"Administrador"
+:
+x==="team_leader"
+?"Team Leader"
+:
+x==="asesora"
+?"Asesora"
+:
+x==="gosen"
+?"Gosen S.R.L."
+:
+"Asesor";
+
+
+const leaderName=id=>
+
+leaders.find(
+x=>x.id===id
+)?.full_name||
+"Asesor/a directo Tveo";
+
+
+const actions=x=>
+
+isAdmin()||x.id===me.id
+?`
+
+<button
+class="light"
+onclick="editProfile('${x.id}')">
+
+✏️ Editar
+
+</button>
+
+`
+:'—';
+
+
+$("equipo").innerHTML=`
+
+<div class="card">
+
+<div class="top">
+
+<h3>
+Equipo y Salas de Reunión
+</h3>
+
+<span class="muted">
+${u.length} integrante(s)
+</span>
+
+</div>
+
+
+${u.length
+?`
+
+<div class="tablewrap">
+
+<table class="table">
+
+<tr>
+
+<th>Nombre</th>
+<th>Correo</th>
+<th>Rol</th>
+<th>Team Leader</th>
+<th>Sala Virtual</th>
+<th>Acciones</th>
+
+</tr>
+
+
+${u.map(x=>`
+
+<tr>
+
+<td>
+
+<b>
+${esc(x.full_name)}
+</b>
+
+<div class="muted">
+${esc(x.phone||"")}
+</div>
+
+</td>
+
+
+<td>
+${esc(x.email||"")}
+</td>
+
+
+<td>
+${roleName(x.role)}
+</td>
+
+
+<td>
+
+${x.role==="asesora"
+?esc(
+leaderName(x.leader_id)
+)
+:"—"}
+
+</td>
+
+
+<td>
+
+${x.meet_url
+?`
+
+<a
+href="${esc(
+fixUrl(x.meet_url)
+)}"
+target="_blank"
+class="badge meet">
+
+🎥 Entrar
+
+</a>
+
+`
+:
+'<span class="muted">No configurada</span>'
+}
+
+</td>
+
+
+<td>
+${actions(x)}
+</td>
+
+</tr>
+
+`).join("")}
+
+</table>
+
+</div>
+
+`
+:
+'<div class="empty">No hay integrantes.</div>'
+}
+
+</div>
+
+`;
+
 }catch(e){
-  $("equipo").innerHTML=`<div class="card"><h3>Equipo</h3><p>${esc(e.message||e)}</p></div>`;
+
+$("equipo").innerHTML=`
+
+<div class="card">
+
+<h3>
+Equipo
+</h3>
+
+<p>
+${esc(e.message||e)}
+</p>
+
+</div>
+
+`;
+
 }
+
 }
+
 
 /* =========================================================
 PROYECTOS
