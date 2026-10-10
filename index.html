@@ -311,6 +311,21 @@ background:#17365f;
 color:#fff
 }
 
+.logout-top{
+background:#17365f;
+color:#fff;
+white-space:nowrap;
+flex-shrink:0;
+}
+
+.top-actions{
+display:flex;
+align-items:center;
+justify-content:flex-end;
+gap:10px;
+min-width:0
+}
+
 .empty{
 padding:20px;
 text-align:center;
@@ -386,8 +401,14 @@ box-shadow:0 -3px 15px #0002
 }
 
 .brand,
-.logout{
+.side .logout{
 display:none
+}
+
+.logout-top{
+padding:9px 11px;
+font-size:13px;
+min-height:40px
 }
 
 .nav{
@@ -592,7 +613,10 @@ Salir
 
 <h1 id="title">Dashboard</h1>
 
+<div class="top-actions">
 <span id="who" class="muted"></span>
+<button type="button" class="logout-top" onclick="signOut()">↪ Salir</button>
+</div>
 
 </div>
 
@@ -1318,9 +1342,15 @@ err("Ingreso",e);
 
 async function signOut(){
 
-await supabaseClient.auth.signOut();
-
-location.reload();
+try{
+  const {error}=await supabaseClient.auth.signOut();
+  if(error) throw error;
+  me=null;
+  profile=null;
+  location.reload();
+}catch(e){
+  err("Cerrar sesión",e);
+}
 
 }
 
