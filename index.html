@@ -1413,6 +1413,9 @@ configuramos su panel restringido.
 
 configurarPanelGosen();
 
+const adminUsers=$("navUsuarios");
+if(adminUsers) adminUsers.style.display=isAdmin()?"block":"none";
+
 await render();
 
 }catch(e){
@@ -1460,9 +1463,6 @@ el.style.display="none";
 /*
 Dashboard inicial
 */
-
-const adminUsers=$("navUsuarios");
-if(adminUsers) adminUsers.style.display=isAdmin()?"block":"none";
 
 const dash=$("navDashboard");
 
