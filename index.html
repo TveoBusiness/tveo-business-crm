@@ -598,6 +598,7 @@ id="navReportes"
 onclick="go('reportes',this)">
 📈 <span>Reportes</span>
 </button>
+<button id="navUsuarios" style="display:none" onclick="go('usuarios',this)">🔐 <span>Usuarios</span></button>
 
 </nav>
 
@@ -631,6 +632,7 @@ Salir
 <section id="proyectos" class="view"></section>
 
 <section id="reportes" class="view"></section>
+<section id="usuarios" class="view"></section>
 
 </main>
 
@@ -921,9 +923,15 @@ onclick="closeNewMemberModal()">
 
 <form id="newMemberForm">
 
-<input
-id="newMemberRole"
-type="hidden">
+<div class="field">
+<label for="newMemberRole">Rol del usuario *</label>
+<select id="newMemberRole" required>
+<option value="gerencia_comercial">Gerente Comercial</option>
+<option value="jefe_comercial">Jefe Comercial</option>
+<option value="team_leader">Team Leader</option>
+<option value="asesora">Asesora</option>
+</select>
+</div>
 
 <div class="field">
 
@@ -1453,6 +1461,9 @@ el.style.display="none";
 Dashboard inicial
 */
 
+const adminUsers=$("navUsuarios");
+if(adminUsers) adminUsers.style.display=isAdmin()?"block":"none";
+
 const dash=$("navDashboard");
 
 if(dash)
@@ -1511,7 +1522,8 @@ prospectos:"Prospectos",
 seguimientos:"Seguimientos",
 equipo:"Equipo",
 proyectos:"Proyectos",
-reportes:"Reportes"
+reportes:"Reportes",
+usuarios:"Administración de usuarios"
 }[id]||"CRM";
 
 render();
@@ -2235,6 +2247,7 @@ ${prospectRows(all)}
 await renderFollowups();
 
 await renderTeam();
+if(isAdmin()) $("usuarios").innerHTML=$("equipo").innerHTML;
 
 await renderProjects();
 
@@ -2739,6 +2752,8 @@ onclick="editProfile('${x.id}')">
 
 $("equipo").innerHTML=`
 
+${isAdmin()?'<div class="card"><h3>Administración de usuarios</h3><p class="muted">Gestiona cuentas y roles del equipo TVEO BUSINESS.</p><button class="primary" onclick="openNewMemberModal()">＋ Crear usuario</button><p class="muted">Roles: Gerente Comercial, Jefe Comercial, Team Leader y Asesora.</p></div>':""}
+
 <div class="card">
 
 <div class="top">
@@ -2746,10 +2761,10 @@ $("equipo").innerHTML=`
 <h3>
 Equipo y Salas de Reunión
 </h3>
-
-<span class="muted">
-${u.length} integrante(s)
-</span>
+<div class="toolbar">
+<span class="muted">${u.length} integrante(s)</span>
+${isAdmin()?'<button class="primary" onclick="openNewMemberModal()">＋ Crear usuario</button>':""}
+</div>
 
 </div>
 
@@ -4780,6 +4795,13 @@ e
 NUEVO INTEGRANTE
 ========================================================= */
 
+function openNewMemberModal(){
+if(!isAdmin()) return toast("Solo el administrador puede crear usuarios.");
+$("newMemberForm").reset();
+$("newMemberRole").value="gerencia_comercial";
+$("newMemberModal").classList.add("show");
+}
+
 function closeNewMemberModal(){
 
 $("newMemberModal")
@@ -4789,6 +4811,16 @@ $("newMemberForm").reset();
 
 }
 
+
+$("newMemberForm").addEventListener("submit",e=>{
+e.preventDefault();
+if(!isAdmin()) return toast("Solo el administrador puede crear usuarios.");
+const fullName=$("newMemberName").value.trim();
+const email=$("newMemberEmail").value.trim();
+const role=$("newMemberRole").value;
+if(!fullName||!email||!role) return toast("Completa nombre, correo y rol.");
+toast("Formulario validado. Falta conectar la creación segura de la cuenta en Supabase Auth y su perfil. No se ha creado ningún usuario todavía.");
+});
 
 /* =========================================================
 ACTUALIZAR PASSWORD
