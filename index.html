@@ -1067,6 +1067,10 @@ Asesor / Asesora
 Gosen S.R.L.
 </option>
 
+<option value="gerencia_comercial">
+Gerencia Comercial
+</option>
+
 </select>
 
 </div>
@@ -1246,9 +1250,9 @@ return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}
 }
 
 
-function isAdmin(){
+function canManageCommercial(){
 
-return profile?.role==="administrador";
+return ["administrador","gerencia_comercial"].includes(profile?.role);
 
 }
 
@@ -1664,7 +1668,7 @@ onclick="newFollowup('${x.id}')">
 
 </button>
 
-${isAdmin()
+${canManageCommercial()
 ?`
 
 <button
@@ -2075,7 +2079,7 @@ ADMIN:
 todos los prospectos.
 */
 
-if(isAdmin()){
+if(canManageCommercial()){
 
 const r=
 await supabaseClient
@@ -2562,7 +2566,7 @@ onclick="completeFollowup('${x.id}')">
 :""}
 
 
-${isAdmin()
+${canManageCommercial()
 ?`
 
 <button
@@ -2649,6 +2653,7 @@ throw r.error;
 
 
 let all=r.data||[];
+const manager=all.find(x=>x.role==="gerencia_comercial");
 
 let u=all;
 
@@ -2693,6 +2698,9 @@ x==="asesora"
 x==="gosen"
 ?"Gosen S.R.L."
 :
+x==="gerencia_comercial"
+?"Gerencia Comercial"
+:
 "Asesor";
 
 
@@ -2706,7 +2714,7 @@ x=>x.id===id
 
 const actions=x=>
 
-isAdmin()||x.id===me.id
+canManageCommercial()||x.id===me.id
 ?`
 
 <button
@@ -2722,6 +2730,27 @@ onclick="editProfile('${x.id}')">
 
 
 $("equipo").innerHTML=`
+
+${manager ? `
+<div class="card" style="border-left:5px solid #1565c0">
+  <div class="top">
+    <div>
+      <span class="badge blue">SECCIÓN EXCLUSIVA</span>
+      <h3 style="margin:8px 0 4px">Gerencia Comercial</h3>
+      <b>${esc(manager.full_name||"Miguel Coimbra Noriega")}</b>
+      <div class="muted">${esc(manager.email||"tveobiz.gcomercial@gmail.com")}</div>
+      <div class="muted">${esc(manager.phone||"Teléfono pendiente de completar")}</div>
+    </div>
+    <div>
+      <span class="badge ${manager.active ? "green" : "orange"}">${manager.active ? "Activo" : "Inactivo"}</span>
+      <div style="margin-top:10px">
+        <button class="primary" onclick="editProfile('${manager.id}')">Administrar perfil</button>
+      </div>
+    </div>
+  </div>
+  <p class="muted">Responsable de la gestión comercial: prospectos, seguimientos, equipo, proyectos y reportes.</p>
+</div>
+` : ""}
 
 <div class="card">
 
@@ -2893,7 +2922,7 @@ $("proyectos").innerHTML=`
 
 <div class="toolbar">
 
-${isAdmin()
+${canManageCommercial()
 ?`
 
 <button
@@ -2951,7 +2980,7 @@ ${esc(x.location||"")}
 
 <td>
 
-${isAdmin()
+${canManageCommercial()
 ?`
 
 <div class="actions">
@@ -3346,7 +3375,7 @@ ${esc(label)}
 }).join("");
 
 
-if(isAdmin()){
+if(canManageCommercial()){
 
 $("fteam").innerHTML=`
 
@@ -3521,7 +3550,7 @@ ELIMINAR PROSPECTO
 
 async function deleteProspect(id){
 
-if(!isAdmin())
+if(!canManageCommercial())
 return toast(
 "Solo el administrador puede eliminar prospectos."
 );
@@ -4215,7 +4244,7 @@ ELIMINAR SEGUIMIENTO
 
 async function deleteFollowup(id){
 
-if(!isAdmin())
+if(!canManageCommercial())
 return;
 
 
@@ -4540,7 +4569,7 @@ PROYECTOS
 
 function openProjectModal(id=null){
 
-if(!isAdmin())
+if(!canManageCommercial())
 return toast(
 "Solo el administrador puede gestionar proyectos."
 );
@@ -4629,7 +4658,7 @@ async e=>{
 e.preventDefault();
 
 
-if(!isAdmin())
+if(!canManageCommercial())
 return toast(
 "Solo el administrador puede gestionar proyectos"
 );
@@ -4709,7 +4738,7 @@ e
 
 async function editProject(id){
 
-if(!isAdmin())
+if(!canManageCommercial())
 return;
 
 openProjectModal(id);
@@ -4719,7 +4748,7 @@ openProjectModal(id);
 
 async function deleteProject(id){
 
-if(!isAdmin())
+if(!canManageCommercial())
 return;
 
 
